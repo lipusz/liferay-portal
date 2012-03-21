@@ -86,7 +86,7 @@ Collections.sort(activityCounterNames, new SocialActivityCounterNameComparator(l
 	<aui:select inlineField="<%= true %>" label="" name='<%= "preferences--chartWidth" + index + "--" %>'>
 
 		<%
-		for (int i = 5; i < 100; i = i + 5) {
+		for (int i = 5; i < 100; i = i + 15) {
 		%>
 
 			<aui:option label="<%= i + StringPool.PERCENT %>" selected="<%= chartWidth == i %>" value="<%= i %>" />
