@@ -111,7 +111,7 @@ if (fieldParamSelection.equals("0")) {
 					<aui:input label="to" name='<%= facet.getFieldName() + "to" %>' size="14" />
 				</div>
 
-				<aui:button onClick='<%= renderResponse.getNamespace() + facet.getFieldName() + "searchCustomRange(" + (index + 1) + ");" %>' value="search" />
+				<aui:button name="searchCustomRangeButton" onClick='<%= renderResponse.getNamespace() + facet.getFieldName() + "searchCustomRange(" + (index + 1) + ");" %>' value="search" />
 			</div>
 		</ul>
 	</aui:field-wrapper>
@@ -264,6 +264,57 @@ if (fieldParamSelection.equals("0")) {
 			event.halt();
 
 			A.one('#<%= randomNamespace + "custom-range" %>').toggle();
+		}
+	);
+</aui:script>
+
+<aui:script use="aui-form-validator">
+	var Util = Liferay.Util;
+
+	var DEFAULTS_FORM_VALIDATOR = AUI.defaults.FormValidator;
+
+	var REGEX_RANGE = /^\d{4}-\d{2}-\d{2}$/;
+
+	var searchButton = A.one('#<portlet:namespace />searchCustomRangeButton');
+
+	A.mix(
+		DEFAULTS_FORM_VALIDATOR.STRINGS,
+		{
+			customRange: Liferay.Language.get('search-custom-range-format')
+		},
+		true
+	);
+
+	A.mix(
+		DEFAULTS_FORM_VALIDATOR.RULES,
+		{
+			customRange: function(val, fieldNode, ruleValue) {
+				return REGEX_RANGE.test(val);
+			}
+		},
+		true
+	);
+
+	var ruleCustomRange = {
+		customRange: true
+	};
+
+	var customRangeValidator = new A.FormValidator(
+		{
+			boundingBox: document.<portlet:namespace />fm,
+			fieldContainer: 'div',
+			on: {
+				errorField: function(event) {
+					Util.toggleDisabled(searchButton, true);
+				},
+				validField: function(event) {
+					Util.toggleDisabled(searchButton, false);
+				}
+			},
+			rules: {
+				<portlet:namespace /><%= facet.getFieldName() %>from: ruleCustomRange,
+				<portlet:namespace /><%= facet.getFieldName() %>to: ruleCustomRange
+			}
 		}
 	);
 </aui:script>
