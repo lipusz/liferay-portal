@@ -162,8 +162,9 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 			customDisplayOptions[action]();
 
-			data['_<%= HtmlUtil.escapeJS(portletResource) %>_bulletStyle'] = selectBulletStyle.val();
-			data['_<%= HtmlUtil.escapeJS(portletResource) %>_displayStyle'] = selectDisplayStyle.val();
+			data['_<%= portletResource %>_bulletStyle'] = selectBulletStyle.val();
+			data['_<%= portletResource %>_displayStyle'] = selectDisplayStyle.val();
+			data['_<%= portletResource %>_preview'] = 'true';
 
 			Liferay.Portlet.refresh(curPortletBoundaryId, data);
 		}
