@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.model.SystemEventConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
@@ -50,6 +51,7 @@ import com.liferay.portlet.asset.model.AssetLink;
 import com.liferay.portlet.asset.model.AssetLinkConstants;
 import com.liferay.portlet.asset.model.AssetRendererFactory;
 import com.liferay.portlet.asset.model.AssetTag;
+import com.liferay.portlet.asset.model.AssetTagProperty;
 import com.liferay.portlet.asset.service.base.AssetEntryLocalServiceBaseImpl;
 import com.liferay.portlet.asset.service.persistence.AssetEntryQuery;
 import com.liferay.portlet.asset.util.AssetEntryValidator;
@@ -666,15 +668,57 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 					tag = assetTagLocalService.getTag(siteGroupId, tagName);
 				}
 				catch (NoSuchTagException nste) {
+					try {
+						long companyId =
+							companyLocalService.getCompanyIdByUserId(userId);
+
+						Group companyGroup = groupLocalService.getCompanyGroup(
+							companyId);
+
+						tag = assetTagLocalService.getTag(
+							companyGroup.getGroupId(), tagName);
+					}
+					catch (Exception e) {
+					}
+
 					ServiceContext serviceContext = new ServiceContext();
 
 					serviceContext.setAddGroupPermissions(true);
 					serviceContext.setAddGuestPermissions(true);
 					serviceContext.setScopeGroupId(siteGroupId);
 
+					String[] tagProperties =
+						PropsValues.ASSET_TAG_PROPERTIES_DEFAULT;
+
+					if (tag != null) {
+						List<AssetTagProperty> assetTagProperties =
+							assetTagPropertyLocalService.getTagProperties(
+								tag.getTagId());
+
+						if (!assetTagProperties.isEmpty()) {
+							tagProperties =
+								new String[assetTagProperties.size()];
+
+							int i = 0;
+
+							for (
+								AssetTagProperty assetTagProperty :
+									assetTagProperties) {
+
+								String tagProperty =
+									assetTagProperty.getKey() +
+									StringPool.COLON +
+									assetTagProperty.getValue();
+
+								tagProperties[i] = tagProperty;
+
+								i++;
+							}
+						}
+					}
+
 					tag = assetTagLocalService.addTag(
-						user.getUserId(), tagName,
-						PropsValues.ASSET_TAG_PROPERTIES_DEFAULT,
+						user.getUserId(), tagName, tagProperties,
 						serviceContext);
 				}
 
