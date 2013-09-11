@@ -184,7 +184,7 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 	public void checkTags(long userId, long groupId, String[] names)
 		throws PortalException, SystemException {
 
-		checkTags(userId, groupId, names, false);
+		checkTagsWithProperties(userId, groupId, names);
 	}
 
 	/**
@@ -203,13 +203,12 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 	 * @param  groupId the primary key of the group where the method checks the
 	 *         names
 	 * @param  names the names of tags that the method looks for
-	 * @param  checkGlobal whether to check or not the names in the global group
 	 * @throws PortalException if a portal exception occurred
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
-	public List<AssetTag> checkTags(
-			long userId, long groupId, String[] names, boolean checkGlobal)
+	public List<AssetTag> checkTagsWithProperties(
+			long userId, long groupId, String[] names)
 		throws PortalException, SystemException {
 
 		List<AssetTag> tags = new ArrayList<AssetTag>();
@@ -233,27 +232,25 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 
 				// Properties
 
-				if (checkGlobal) {
-					Group companyGroup =
-						groupLocalService.getCompanyGroup(
-							CompanyThreadLocal.getCompanyId());
+				Group companyGroup =
+					groupLocalService.getCompanyGroup(
+						CompanyThreadLocal.getCompanyId());
 
-					try {
-						AssetTag globalTag = getTag(
-							companyGroup.getGroupId(), name);
+				try {
+					AssetTag globalTag = getTag(
+						companyGroup.getGroupId(), name);
 
-						List<AssetTagProperty> tagProperties =
-							assetTagPropertyLocalService.getTagProperties(
-								globalTag.getTagId());
+					List<AssetTagProperty> tagProperties =
+						assetTagPropertyLocalService.getTagProperties(
+							globalTag.getTagId());
 
-						for (AssetTagProperty tagProperty : tagProperties) {
-							assetTagPropertyLocalService.addTagProperty(
-								userId, tag.getTagId(), tagProperty.getKey(),
-								tagProperty.getValue());
-						}
+					for (AssetTagProperty tagProperty : tagProperties) {
+						assetTagPropertyLocalService.addTagProperty(
+							userId, tag.getTagId(), tagProperty.getKey(),
+							tagProperty.getValue());
 					}
-					catch (NoSuchTagException nste2) {
-					}
+				}
+				catch (NoSuchTagException nste2) {
 				}
 			}
 

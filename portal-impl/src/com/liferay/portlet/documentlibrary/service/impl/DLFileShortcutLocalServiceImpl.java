@@ -388,9 +388,9 @@ public class DLFileShortcutLocalServiceImpl
 		String[] assetTagNames = assetTagLocalService.getTagNames(
 			FileEntry.class.getName(), fileEntry.getFileEntryId());
 
-		assetTagLocalService.checkTags(
+		assetTagLocalService.checkTagsWithProperties(
 			serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-			assetTagNames, true);
+			assetTagNames);
 
 		serviceContext.setAssetTagNames(assetTagNames);
 	}

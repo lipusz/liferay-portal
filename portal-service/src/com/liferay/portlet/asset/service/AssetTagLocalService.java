@@ -395,16 +395,16 @@ public interface AssetTagLocalService extends BaseLocalService,
 	*
 	* Returns the tags containing the newly added ones as well.
 	*
-	* @param userId the primary key of the user
-	* @param groupId the primary key of the group where the method checks the
-	names
-	* @param names the names of tags that the method looks for
-	* @param checkGlobal whether to check or not the names in the global group
-	* @throws PortalException if a portal exception occurred
+	*
+	 * @param userId the primary key of the user
+	 * @param groupId the primary key of the group where the method checks the
+	 names
+	 * @param names the names of tags that the method looks for
+	 * @throws PortalException if a portal exception occurred
 	* @throws SystemException if a system exception occurred
 	*/
-	public java.util.List<com.liferay.portlet.asset.model.AssetTag> checkTags(
-		long userId, long groupId, java.lang.String[] names, boolean checkGlobal)
+	public java.util.List<com.liferay.portlet.asset.model.AssetTag> checkTagsWithProperties(
+		long userId, long groupId, String[] names)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
