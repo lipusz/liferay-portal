@@ -69,7 +69,7 @@ public class PortletConfigurationUtil {
 			LocaleUtil.getSiteDefault());
 
 		String defaultPortletTitle = portletSetup.getValue(
-			"portletSetupTitle_" + defaultLanguageId, StringPool.BLANK);
+			"portletSetupTitle_" + defaultLanguageId, null);
 
 		String portletTitle = portletSetup.getValue(
 			"portletSetupTitle_" + languageId, defaultPortletTitle);
