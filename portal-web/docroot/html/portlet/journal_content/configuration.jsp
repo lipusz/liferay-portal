@@ -149,7 +149,9 @@ catch (NoSuchArticleException nsae) {
 	dynamicRenderRequest.setParameter("type", type);
 	dynamicRenderRequest.setParameter("groupId", String.valueOf(groupId));
 
-	ArticleSearch searchContainer = new ArticleSearch(dynamicRenderRequest, configurationRenderURL, "no-web-content-was-found-that-matched-the-specified-filters");
+	ArticleSearch searchContainer = new ArticleSearch(dynamicRenderRequest, configurationRenderURL);
+
+	searchContainer.setEmptyResultsMessage("no-web-content-was-found-that-matched-the-specified-filters");
 
 	List<String> headerNames = searchContainer.getHeaderNames();
 

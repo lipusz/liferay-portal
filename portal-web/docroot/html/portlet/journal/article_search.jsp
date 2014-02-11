@@ -24,7 +24,9 @@ PortletURL portletURL = liferayPortletResponse.createRenderURL();
 portletURL.setParameter("struts_action", "/journal/view");
 portletURL.setParameter("folderId", String.valueOf(folderId));
 
-ArticleSearch searchContainer = new ArticleSearch(liferayPortletRequest, portletURL, "no-web-content-was-found-that-matched-the-specified-filters");
+ArticleSearch searchContainer = new ArticleSearch(liferayPortletRequest, portletURL);
+
+searchContainer.setEmptyResultsMessage("no-web-content-was-found-that-matched-the-specified-filters");
 
 ArticleDisplayTerms displayTerms = (ArticleDisplayTerms)searchContainer.getDisplayTerms();
 %>

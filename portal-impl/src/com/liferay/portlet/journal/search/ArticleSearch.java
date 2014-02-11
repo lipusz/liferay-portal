@@ -66,17 +66,10 @@ public class ArticleSearch extends SearchContainer<JournalArticle> {
 		PortletRequest portletRequest, int cur, int delta,
 		PortletURL iteratorURL) {
 
-		this(portletRequest, cur, delta, iteratorURL, null);
-	}
-
-	public ArticleSearch(
-		PortletRequest portletRequest, int cur, int delta,
-		PortletURL iteratorURL, String emptyResultsMessage) {
-
 		super(
 			portletRequest, new ArticleDisplayTerms(portletRequest),
 			new ArticleSearchTerms(portletRequest), DEFAULT_CUR_PARAM, cur,
-			delta, iteratorURL, headerNames, emptyResultsMessage);
+			delta, iteratorURL, headerNames, null);
 
 		PortletConfig portletConfig =
 			(PortletConfig)portletRequest.getAttribute(
@@ -164,13 +157,6 @@ public class ArticleSearch extends SearchContainer<JournalArticle> {
 		PortletRequest portletRequest, PortletURL iteratorURL) {
 
 		this(portletRequest, 0, DEFAULT_DELTA, iteratorURL);
-	}
-
-	public ArticleSearch(
-		PortletRequest portletRequest, PortletURL iteratorURL,
-		String emptyResultMessage) {
-
-		this(portletRequest, 0, DEFAULT_DELTA, iteratorURL, emptyResultMessage);
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(ArticleSearch.class);
