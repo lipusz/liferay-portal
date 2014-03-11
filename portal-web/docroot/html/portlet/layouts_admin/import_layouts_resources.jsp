@@ -176,6 +176,8 @@ ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(user
 						<aui:fieldset cssClass="portlet-data-section" label="pages">
 							<aui:input helpMessage="delete-missing-layouts-help" label="delete-missing-layouts" name="<%= PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS %>" type="checkbox" value="<%= false %>" />
 
+							<aui:input label="site-pages-order" name="<%= PortletDataHandlerKeys.LAYOUT_SET_PAGE_ORDER %>" type="checkbox" value="<%= true %>" />
+
 							<aui:input label="site-pages-settings" name="<%= PortletDataHandlerKeys.LAYOUT_SET_SETTINGS %>" type="checkbox" value="<%= true %>" />
 
 							<aui:input helpMessage="export-import-theme-settings-help" label="theme-settings" name="<%= PortletDataHandlerKeys.THEME_REFERENCE %>" type="checkbox" value="<%= true %>" />

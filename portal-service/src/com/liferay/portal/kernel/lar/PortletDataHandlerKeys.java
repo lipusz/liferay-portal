@@ -47,6 +47,8 @@ public class PortletDataHandlerKeys {
 	public static final String IGNORE_LAST_PUBLISH_DATE =
 		"IGNORE_LAST_PUBLISH_DATE";
 
+	public static final String LAYOUT_SET_PAGE_ORDER = "LAYOUT_SET_PAGE_ORDER";
+
 	public static final String LAYOUT_SET_PROTOTYPE_LINK_ENABLED =
 		"LAYOUT_SET_PROTOTYPE_LINK_ENABLED";
 

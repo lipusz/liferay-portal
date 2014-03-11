@@ -229,6 +229,8 @@ public class LayoutExporter {
 
 		boolean exportIgnoreLastPublishDate = MapUtil.getBoolean(
 			parameterMap, PortletDataHandlerKeys.IGNORE_LAST_PUBLISH_DATE);
+		boolean exportPageOrder = MapUtil.getBoolean(
+			parameterMap, PortletDataHandlerKeys.LAYOUT_SET_PAGE_ORDER);
 		boolean exportPermissions = MapUtil.getBoolean(
 			parameterMap, PortletDataHandlerKeys.PERMISSIONS);
 		boolean exportLogo = MapUtil.getBoolean(
@@ -468,7 +470,8 @@ public class LayoutExporter {
 
 		for (Layout layout : layouts) {
 			exportLayout(
-				portletDataContext, portlets, layoutIds, portletIds, layout);
+				exportPageOrder, portletDataContext, portlets, layoutIds,
+				portletIds, layout);
 		}
 
 		Element portletsElement = rootElement.addElement("portlets");
@@ -561,8 +564,9 @@ public class LayoutExporter {
 	}
 
 	protected void exportLayout(
-			PortletDataContext portletDataContext, List<Portlet> portlets,
-			long[] layoutIds, Map<String, Object[]> portletIds, Layout layout)
+			boolean exportPageOrder, PortletDataContext portletDataContext,
+			List<Portlet> portlets, long[] layoutIds, Map<String,
+			Object[]> portletIds, Layout layout)
 		throws Exception {
 
 		if (!ArrayUtil.contains(layoutIds, layout.getLayoutId()) &&
@@ -572,6 +576,11 @@ public class LayoutExporter {
 				layout);
 
 			layoutElement.addAttribute("action", Constants.SKIP);
+
+			if (exportPageOrder) {
+				layoutElement.addAttribute(
+					"priority", String.valueOf(layout.getPriority()));
+			}
 
 			return;
 		}

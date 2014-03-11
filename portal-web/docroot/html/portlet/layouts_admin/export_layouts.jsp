@@ -241,6 +241,8 @@ if (!cmd.equals(Constants.ADD)) {
 										<liferay-util:param name="selectedLayoutIds" value="<%= StringUtil.merge(selectedLayoutIds) %>" />
 									</liferay-util:include>
 
+									<aui:input label="site-pages-order" name="<%= PortletDataHandlerKeys.LAYOUT_SET_PAGE_ORDER %>" type="checkbox" value="<%= MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.LAYOUT_SET_PAGE_ORDER, true) %>" />
+
 									<aui:input label="site-pages-settings" name="<%= PortletDataHandlerKeys.LAYOUT_SET_SETTINGS %>" type="checkbox" value="<%= MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.LAYOUT_SET_SETTINGS, true) %>" />
 								</aui:fieldset>
 

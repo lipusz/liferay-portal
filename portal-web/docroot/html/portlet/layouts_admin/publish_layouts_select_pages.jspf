@@ -72,6 +72,8 @@
 
 		<aui:input helpMessage="delete-missing-layouts-staging-help" label="delete-missing-layouts" name="<%= PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS %>" type="checkbox" />
 
+		<aui:input label="site-pages-order" name="<%= PortletDataHandlerKeys.LAYOUT_SET_PAGE_ORDER %>" type="checkbox" value="<%= true %>" />
+
 		<aui:input inlineLabel="right" label="site-pages-settings" name="<%= PortletDataHandlerKeys.LAYOUT_SET_SETTINGS %>" type="checkbox" value="<%= true %>" />
 	</aui:fieldset>
 

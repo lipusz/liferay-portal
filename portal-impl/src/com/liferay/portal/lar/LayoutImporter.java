@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.lar.MissingReference;
 import com.liferay.portal.kernel.lar.MissingReferences;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataContextFactoryUtil;
-import com.liferay.portal.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.portal.kernel.lar.PortletDataHandlerStatusMessageSenderUtil;
 import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.portal.kernel.lar.UserIdStrategy;
@@ -193,6 +192,8 @@ public class LayoutImporter {
 			Boolean.TRUE.booleanValue());
 		boolean deletePortletData = MapUtil.getBoolean(
 			parameterMap, PortletDataHandlerKeys.DELETE_PORTLET_DATA);
+		boolean importPageOrder = MapUtil.getBoolean(
+			parameterMap, PortletDataHandlerKeys.LAYOUT_SET_PAGE_ORDER, true);
 		boolean importPermissions = MapUtil.getBoolean(
 			parameterMap, PortletDataHandlerKeys.PERMISSIONS);
 		boolean importLogo = MapUtil.getBoolean(
@@ -509,8 +510,8 @@ public class LayoutImporter {
 
 		for (Element layoutElement : _layoutElements) {
 			importLayout(
-				portletDataContext, sourceLayoutsUuids, newLayouts,
-				layoutElement);
+				importPageOrder, portletDataContext, sourceLayoutsUuids,
+				newLayouts, layoutElement);
 		}
 
 		// Delete portlet data
@@ -757,7 +758,7 @@ public class LayoutImporter {
 	}
 
 	protected void importLayout(
-			PortletDataContext portletDataContext,
+			boolean importPageOrder, PortletDataContext portletDataContext,
 			List<String> sourceLayoutsUuids, List<Layout> newLayouts,
 			Element layoutElement)
 		throws Exception {
@@ -774,6 +775,26 @@ public class LayoutImporter {
 			newLayouts.addAll(portletDataContextNewLayouts);
 
 			portletDataContextNewLayouts.clear();
+		}
+		else if (importPageOrder) {
+			String priority = layoutElement.attributeValue("priority");
+
+			if (Validator.isNotNull(priority)) {
+				String uuid = layoutElement.attributeValue("uuid");
+
+				try {
+					Layout layout =
+						LayoutLocalServiceUtil.getLayoutByUuidAndGroupId(
+							uuid, portletDataContext.getScopeGroupId(),
+							portletDataContext.isPrivateLayout());
+
+					layout.setPriority(GetterUtil.getInteger(priority));
+
+					LayoutUtil.update(layout);
+				}
+				catch (NoSuchLayoutException nsle) {
+				}
+			}
 		}
 
 		if (!action.equals(Constants.DELETE)) {
