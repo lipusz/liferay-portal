@@ -18,7 +18,7 @@
 for (int i = 0; i < allSections.length; i++) {
 	String section = allSections[i];
 
-	String sectionId = namespace + _getSectionId(section);
+	String sectionId = randomNamespace + _getSectionId(section);
 	String sectionJsp = jspPath + _getSectionJsp(section) + ".jsp";
 %>
 
