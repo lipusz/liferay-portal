@@ -4760,8 +4760,6 @@ public class JournalArticleLocalServiceImpl
 			article.setResourcePrimKey(latestArticle.getResourcePrimKey());
 			article.setGroupId(latestArticle.getGroupId());
 			article.setCompanyId(latestArticle.getCompanyId());
-			article.setUserId(user.getUserId());
-			article.setUserName(user.getFullName());
 			article.setCreateDate(serviceContext.getModifiedDate(now));
 			article.setClassNameId(latestArticle.getClassNameId());
 			article.setClassPK(latestArticle.getClassPK());
@@ -4808,6 +4806,8 @@ public class JournalArticleLocalServiceImpl
 		article.setReviewDate(reviewDate);
 		article.setIndexable(indexable);
 		article.setSmallImage(smallImage);
+		article.setUserId(user.getUserId());
+		article.setUserName(user.getFullName());
 
 		if (smallImage) {
 			if ((smallImageFile != null) && (smallImageBytes != null)) {
