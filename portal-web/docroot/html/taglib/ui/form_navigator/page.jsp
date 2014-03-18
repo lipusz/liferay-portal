@@ -19,6 +19,8 @@
 <portlet:defineObjects />
 
 <%
+String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_form_navigator_page") + StringPool.UNDERLINE;
+
 String backURL = (String)request.getAttribute("liferay-ui:form-navigator:backURL");
 String[][] categorySections = (String[][])request.getAttribute("liferay-ui:form-navigator:categorySections");
 String[] categoryNames = (String[])request.getAttribute("liferay-ui:form-navigator:categoryNames");
@@ -60,7 +62,7 @@ if (Validator.isNotNull(historyKey)) {
 }
 %>
 
-<div class="taglib-form-navigator" id="<portlet:namespace />tabsBoundingBox">
+<div class="taglib-form-navigator" id="<%= randomNamespace %>tabsBoundingBox">
 	<aui:input name="modifiedSections" type="hidden" />
 
 	<c:choose>
@@ -74,7 +76,7 @@ if (Validator.isNotNull(historyKey)) {
 			</aui:button-row>
 		</c:when>
 		<c:otherwise>
-			<div class="taglib-form-navigator row-fluid" id="<portlet:namespace />tabs">
+			<div class="taglib-form-navigator row-fluid" id="<%= randomNamespace %>tabs">
 				<liferay-util:buffer var="formSectionsBuffer">
 					<div class="form-navigator-content span8">
 						<%@ include file="/html/taglib/ui/form_navigator/sections.jspf" %>
@@ -114,7 +116,7 @@ if (Validator.isNotNull(historyKey)) {
 							}
 
 							for (String section : sections) {
-								String sectionId = namespace + _getSectionId(section);
+								String sectionId = randomNamespace + _getSectionId(section);
 
 								Boolean show = (Boolean)request.getAttribute(WebKeys.FORM_NAVIGATOR_SECTION_SHOW + sectionId);
 
@@ -124,7 +126,7 @@ if (Validator.isNotNull(historyKey)) {
 
 								String cssClass = StringPool.BLANK;
 
-								if (sectionId.equals(namespace + errorSection)) {
+								if (sectionId.equals(randomNamespace + errorSection)) {
 									cssClass += "section-error";
 
 									curSection = section;
@@ -177,8 +179,8 @@ if (Validator.isNotNull(historyKey)) {
 
 				var tabview = new A.TabView(
 					{
-						boundingBox: '#<portlet:namespace />tabsBoundingBox',
-						srcNode: '#<portlet:namespace />tabs',
+						boundingBox: '#<%= randomNamespace %>tabsBoundingBox',
+						srcNode: '#<%= randomNamespace %>tabs',
 						type: 'list'
 					}
 				).render();
@@ -217,7 +219,7 @@ if (Validator.isNotNull(historyKey)) {
 
 					var sectionId = tabNode.getData('sectionId');
 
-					var modifiedSectionsNode = A.one('#<portlet:namespace/>modifiedSections');
+					var modifiedSectionsNode = A.one('#<%= randomNamespace %>modifiedSections');
 
 					var modifiedSections = modifiedSectionsNode.val().split(',');
 
@@ -229,7 +231,7 @@ if (Validator.isNotNull(historyKey)) {
 				}
 
 				function updateRedirectForSectionId(sectionId) {
-					var redirect = A.one('#<portlet:namespace />redirect');
+					var redirect = A.one('#<%= randomNamespace %>redirect');
 
 					if (redirect) {
 						var url = new A.Url(redirect.val() || location.href);
@@ -250,7 +252,7 @@ if (Validator.isNotNull(historyKey)) {
 
 						var sectionId = boundingBox.getData('sectionId');
 
-						history.addValue('<portlet:namespace />tab', sectionId);
+						history.addValue('<%= randomNamespace %>tab', sectionId);
 					}
 				);
 
@@ -259,9 +261,9 @@ if (Validator.isNotNull(historyKey)) {
 					function(event) {
 						var state = event.newVal;
 
-						var changed = event.changed.<portlet:namespace />tab;
+						var changed = event.changed.<%= randomNamespace %>tab;
 
-						var removed = event.removed.<portlet:namespace />tab;
+						var removed = event.removed.<%= randomNamespace %>tab;
 
 						if (event.src === A.HistoryHash.SRC_HASH || event.src === A.HistoryBase.SRC_ADD) {
 							if (changed) {
@@ -271,10 +273,10 @@ if (Validator.isNotNull(historyKey)) {
 								tabview.selectChild(0);
 							}
 							else if (state) {
-								var sectionId = state.<portlet:namespace />tab;
+								var sectionId = state.<%= randomNamespace %>tab;
 
 								if (!sectionId) {
-									sectionId = '<portlet:namespace />' + state.tab;
+									sectionId = '<%= randomNamespace %>' + state.tab;
 								}
 
 								selectTabBySectionId(sectionId);
@@ -294,15 +296,15 @@ if (Validator.isNotNull(historyKey)) {
 				if (currentAnchor) {
 					var locationSectionId = currentAnchor.substring(currentAnchor.indexOf('=') + 1);
 
-					if (locationSectionId.indexOf('<portlet:namespace />') === -1) {
-						locationSectionId = '<portlet:namespace />' + locationSectionId;
+					if (locationSectionId.indexOf('<%= randomNamespace %>') === -1) {
+						locationSectionId = '<%= randomNamespace %>' + locationSectionId;
 					}
 
 					selectTabBySectionId(locationSectionId);
 				}
 
 				if (<%= error %>) {
-					Liferay.fire('formNavigator:reveal<portlet:namespace /><%= errorSection %>');
+					Liferay.fire('formNavigator:reveal<%= randomNamespace %><%= errorSection %>');
 				}
 
 				if (formNode) {
@@ -313,7 +315,7 @@ if (Validator.isNotNull(historyKey)) {
 
 					<c:choose>
 						<c:when test="<%= Validator.isNotNull(focusField) %>">
-							var focusField = formNode.one('#<portlet:namespace /><%= focusField %>');
+							var focusField = formNode.one('#<%= randomNamespace %><%= focusField %>');
 						</c:when>
 						<c:otherwise>
 							var focusField = formNode.one('.form-section.active input:not([type="hidden"]).field');
