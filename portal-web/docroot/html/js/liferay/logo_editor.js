@@ -136,7 +136,7 @@ AUI.add(
 						}
 
 						if (responseText.errorMessage) {
-							var messageNode = instance._getMessageNode(responseText.errorMessage, 'aui-alert aui-alert-error');
+							var messageNode = instance._getMessageNode(responseText.errorMessage, 'alert alert-error');
 
 							instance._formNode.prepend(messageNode);
 						}
