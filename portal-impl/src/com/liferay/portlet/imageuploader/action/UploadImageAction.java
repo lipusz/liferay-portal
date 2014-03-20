@@ -34,14 +34,22 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StreamUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileUtil;
+import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.struts.PortletAction;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.util.PrefsPropsUtil;
+import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.WebKeys;
+import com.liferay.portlet.documentlibrary.DuplicateFileException;
+import com.liferay.portlet.documentlibrary.FileExtensionException;
 import com.liferay.portlet.documentlibrary.FileSizeException;
 import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
 import com.liferay.portlet.documentlibrary.NoSuchFileException;
@@ -77,9 +85,9 @@ public class UploadImageAction extends PortletAction {
 			ActionResponse actionResponse)
 		throws Exception {
 
-		try {
-			String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
+		try {
 			UploadException uploadException =
 				(UploadException)actionRequest.getAttribute(
 					WebKeys.UPLOAD_EXCEPTION);
@@ -122,18 +130,69 @@ public class UploadImageAction extends PortletAction {
 
 				setForward(actionRequest, "portal.error");
 			}
-			else if (e instanceof ImageTypeException) {
-				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-				jsonObject.putException(e);
-
-				writeJSON(actionRequest, actionResponse, jsonObject);
-			}
-			else if (e instanceof FileSizeException ||
+			else if (e instanceof DuplicateFileException ||
+					 e instanceof FileExtensionException ||
+					 e instanceof FileSizeException ||
+					 e instanceof ImageTypeException ||
 					 e instanceof NoSuchFileException ||
 					 e instanceof UploadException) {
 
-				SessionErrors.add(actionRequest, e.getClass());
+				if (cmd.equals(Constants.ADD_TEMP)) {
+					hideDefaultErrorMessage(actionRequest);
+				}
+
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)actionRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
+				String errorMessage = StringPool.BLANK;
+
+				if (e instanceof DuplicateFileException) {
+					errorMessage = themeDisplay.translate(
+						"please-enter-a-unique-document-name");
+				}
+
+				if (e instanceof FileExtensionException) {
+					errorMessage = themeDisplay.translate(
+						"please-enter-a-file-with-a-valid-extension-x",
+						StringUtil.merge(
+							PropsValues.DL_FILE_EXTENSIONS, StringPool.COMMA));
+				}
+				else if (e instanceof FileSizeException) {
+					long fileMaxSize = PropsValues.DL_FILE_MAX_SIZE;
+
+					if (fileMaxSize == 0) {
+						fileMaxSize = PrefsPropsUtil.getLong(
+							PropsKeys.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE);
+					}
+
+					errorMessage = themeDisplay.translate(
+						"please-enter-a-file-with-a-valid-file-size-no" +
+							"-larger-than-x",
+						TextFormatter.formatStorageSize(
+							fileMaxSize, themeDisplay.getLocale()));
+				}
+				else if (e instanceof ImageTypeException) {
+					errorMessage =
+						themeDisplay.translate(
+							"please-enter-a-file-with-a-valid-file-type");
+				}
+				else if (e instanceof NoSuchFileException) {
+					errorMessage = themeDisplay.translate(
+						"an-unexpected-error-occurred-while-uploading-your" +
+						"-file");
+				}
+				else if (e instanceof UploadException) {
+					errorMessage = themeDisplay.translate(
+						"an-unexpected-error-occurred-while-uploading-your" +
+						"-file");
+				}
+
+				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+				jsonObject.put("errorMessage", errorMessage);
+
+				writeJSON(actionRequest, actionResponse, jsonObject);
 			}
 			else {
 				throw e;
