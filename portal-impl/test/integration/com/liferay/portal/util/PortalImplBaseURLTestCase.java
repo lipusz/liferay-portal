@@ -14,7 +14,6 @@
 
 package com.liferay.portal.util;
 
-import com.liferay.portal.RequiredGroupException;
 import com.liferay.portal.kernel.test.ExecutionTestListeners;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.Company;
@@ -61,12 +60,10 @@ public class PortalImplBaseURLTestCase {
 
 	@After
 	public void tearDown() throws Exception {
-		try {
-			GroupLocalServiceUtil.deleteGroup(group);
-		}
-		catch (RequiredGroupException rge) {
-			LayoutLocalServiceUtil.deleteLayout(publicLayout);
-		}
+		LayoutLocalServiceUtil.deleteLayout(privateLayout);
+		LayoutLocalServiceUtil.deleteLayout(publicLayout);
+
+		GroupLocalServiceUtil.deleteGroup(group);
 	}
 
 	protected ThemeDisplay initThemeDisplay(
