@@ -888,14 +888,14 @@ public class LayoutImporter {
 			PortletDataContext portletDataContext, List<Layout> previousLayouts)
 		throws PortalException, SystemException {
 
-		List<Layout> newLayouts = new LinkedList<Layout>();
-
 		Map<Long, Layout> layoutMap =
 			(Map<Long, Layout>)portletDataContext.getNewPrimaryKeysMap(
 				Layout.class + ".layout");
 
 		Map<Long, NavigableSet<Layout>> layoutSets =
 			new HashMap<Long, NavigableSet<Layout>>();
+
+		List<Layout> newLayouts = new LinkedList<Layout>();
 
 		for (Element element : _layoutElements) {
 			String action = element.attributeValue(Constants.ACTION);
@@ -922,6 +922,7 @@ public class LayoutImporter {
 
 		List<Layout> unmodifiedLayouts = new LinkedList<Layout>(
 			previousLayouts);
+
 		unmodifiedLayouts.removeAll(newLayouts);
 
 		if (unmodifiedLayouts.isEmpty()) {
