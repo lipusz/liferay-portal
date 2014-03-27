@@ -52,7 +52,10 @@ public class PortalImplBaseURLTestCase {
 
 		group = GroupTestUtil.addGroup();
 
-		layout = LayoutTestUtil.addLayout(
+		privateLayout = LayoutTestUtil.addLayout(
+			group.getGroupId(), ServiceTestUtil.randomString(), true);
+
+		publicLayout = LayoutTestUtil.addLayout(
 			group.getGroupId(), ServiceTestUtil.randomString());
 	}
 
@@ -62,15 +65,26 @@ public class PortalImplBaseURLTestCase {
 			GroupLocalServiceUtil.deleteGroup(group);
 		}
 		catch (RequiredGroupException rge) {
-			LayoutLocalServiceUtil.deleteLayout(layout);
+			LayoutLocalServiceUtil.deleteLayout(publicLayout);
 		}
 	}
 
 	protected ThemeDisplay initThemeDisplay(
-			Company company, Group group, Layout layout, String virtualHostname)
+			Company company, Group group, Layout layout,
+			String companyVirtualHostname)
 		throws Exception {
 
-		company.setVirtualHostname(virtualHostname);
+		return initThemeDisplay(
+			company, group, layout, companyVirtualHostname,
+			companyVirtualHostname);
+	}
+
+	protected ThemeDisplay initThemeDisplay(
+			Company company, Group group, Layout layout,
+			String companyVirtualHostname, String serverName)
+		throws Exception {
+
+		company.setVirtualHostname(companyVirtualHostname);
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -79,7 +93,7 @@ public class PortalImplBaseURLTestCase {
 		themeDisplay.setLayout(layout);
 		themeDisplay.setLayoutSet(layout.getLayoutSet());
 		themeDisplay.setSecure(false);
-		themeDisplay.setServerName(virtualHostname);
+		themeDisplay.setServerName(serverName);
 		themeDisplay.setServerPort(8080);
 		themeDisplay.setSiteGroupId(group.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
@@ -90,11 +104,18 @@ public class PortalImplBaseURLTestCase {
 
 	protected static final String LOCALHOST = "localhost";
 
+	protected static final String PRIVATE_GROUP_SERVLET_MAPPING =
+		PropsValues.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING;
+
+	protected static final String PUBLIC_SERVLET_MAPPING =
+		PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING;
+
 	protected static final String VIRTUAL_HOSTNAME = "test.com";
 
 	protected Company company;
 	protected Layout controlPanelLayout;
 	protected Group group;
-	protected Layout layout;
+	protected Layout privateLayout;
+	protected Layout publicLayout;
 
 }
