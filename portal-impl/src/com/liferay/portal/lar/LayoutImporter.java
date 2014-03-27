@@ -25,6 +25,7 @@ import com.liferay.portal.NoSuchLayoutPrototypeException;
 import com.liferay.portal.NoSuchLayoutSetPrototypeException;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lar.ExportImportHelperUtil;
 import com.liferay.portal.kernel.lar.ExportImportThreadLocal;
@@ -77,15 +78,21 @@ import com.liferay.portal.service.ServiceContextThreadLocal;
 import com.liferay.portal.service.persistence.LayoutUtil;
 import com.liferay.portal.service.persistence.UserUtil;
 import com.liferay.portal.servlet.filters.cache.CacheUtil;
+import com.liferay.portal.util.comparator.LayoutPriorityComparator;
 import com.liferay.portlet.journalcontent.util.JournalContentUtil;
 import com.liferay.portlet.sites.util.Sites;
 
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.time.StopWatch;
 
@@ -731,6 +738,8 @@ public class LayoutImporter {
 			}
 		}
 
+		updatePriorities(portletDataContext, previousLayouts);
+
 		// Deletion system events
 
 		_deletionSystemEventImporter.importDeletionSystemEvents(
@@ -872,6 +881,91 @@ public class LayoutImporter {
 		}
 		catch (Exception e) {
 			_log.error(e, e);
+		}
+	}
+
+	protected void updatePriorities(
+			PortletDataContext portletDataContext, List<Layout> previousLayouts)
+		throws PortalException, SystemException {
+
+		Map<Long, Layout> layoutMap =
+			(Map<Long, Layout>)portletDataContext.getNewPrimaryKeysMap(
+				Layout.class + ".layout");
+
+		Map<Long, NavigableSet<Layout>> layoutSets =
+			new HashMap<Long, NavigableSet<Layout>>();
+
+		List<Layout> newLayouts = new LinkedList<Layout>();
+
+		for (Element element : _layoutElements) {
+			String action = element.attributeValue(Constants.ACTION);
+
+			if (Constants.ADD.equals(action)) {
+				long layoutId = GetterUtil.getLong(
+					element.attributeValue("layout-id"));
+
+				Layout layout = layoutMap.get(layoutId);
+
+				NavigableSet<Layout> layoutSet = layoutSets.get(
+					layout.getParentLayoutId());
+
+				if (layoutSet == null) {
+					layoutSets.put(
+						layout.getParentLayoutId(),
+						new TreeSet<Layout>(new LayoutPriorityComparator()));
+				}
+
+				newLayouts.add(
+					LayoutLocalServiceUtil.getLayout(layout.getPlid()));
+			}
+		}
+
+		List<Layout> unmodifiedLayouts = new LinkedList<Layout>(
+			previousLayouts);
+
+		unmodifiedLayouts.removeAll(newLayouts);
+
+		if (unmodifiedLayouts.isEmpty()) {
+			return;
+		}
+
+		for (Layout layout : unmodifiedLayouts) {
+			NavigableSet<Layout> layoutSet = layoutSets.get(
+				layout.getParentLayoutId());
+
+			if (layoutSet != null) {
+				layoutSet.add(layout);
+			}
+		}
+
+		for (Layout layout : newLayouts) {
+			NavigableSet<Layout> layoutSet = layoutSets.get(
+				layout.getParentLayoutId());
+
+			if (layoutSet.isEmpty()) {
+				continue;
+			}
+
+			SortedSet<Layout> tailSet = layoutSet.tailSet(layout, true);
+
+			int priority = layout.getPriority();
+
+			for (Layout tail : tailSet) {
+				if (tail.getPriority() == priority) {
+					tail.setPriority(++priority);
+				}
+				else {
+					break;
+				}
+			}
+
+			layoutSet.add(layout);
+		}
+
+		for (NavigableSet<Layout> layoutSet : layoutSets.values()) {
+			for (Layout layout : layoutSet) {
+				LayoutUtil.update(layout);
+			}
 		}
 	}
 
