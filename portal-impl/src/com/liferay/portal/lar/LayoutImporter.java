@@ -25,6 +25,7 @@ import com.liferay.portal.NoSuchLayoutPrototypeException;
 import com.liferay.portal.NoSuchLayoutSetPrototypeException;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lar.ExportImportHelperUtil;
 import com.liferay.portal.kernel.lar.ExportImportThreadLocal;
@@ -77,15 +78,21 @@ import com.liferay.portal.service.ServiceContextThreadLocal;
 import com.liferay.portal.service.persistence.LayoutUtil;
 import com.liferay.portal.service.persistence.UserUtil;
 import com.liferay.portal.servlet.filters.cache.CacheUtil;
+import com.liferay.portal.util.comparator.LayoutPriorityComparator;
 import com.liferay.portlet.journalcontent.util.JournalContentUtil;
 import com.liferay.portlet.sites.util.Sites;
 
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.time.StopWatch;
 
@@ -731,6 +738,10 @@ public class LayoutImporter {
 			}
 		}
 
+		// Update priorities
+
+		updatePriorities(portletDataContext);
+
 		// Deletion system events
 
 		_deletionSystemEventImporter.importDeletionSystemEvents(
@@ -872,6 +883,107 @@ public class LayoutImporter {
 		}
 		catch (Exception e) {
 			_log.error(e, e);
+		}
+	}
+
+	protected void updatePriorities(PortletDataContext portletDataContext)
+		throws PortalException, SystemException {
+
+		Map<Long, Layout> layoutMap =
+			(Map<Long, Layout>)portletDataContext.getNewPrimaryKeysMap(
+				Layout.class + ".layout");
+
+		Map<Long, NavigableSet<Layout>> layoutSets =
+			new HashMap<Long, NavigableSet<Layout>>();
+
+		List<Layout> newLayouts = new LinkedList<Layout>();
+
+		// Gathering imported layouts and create a NavigableSet for each
+		// parentLayoutId to handle each priority queue separately
+		for (Element element : _layoutElements) {
+			String action = element.attributeValue(Constants.ACTION);
+
+			if (Constants.ADD.equals(action)) {
+				long layoutId = GetterUtil.getLong(
+					element.attributeValue("layout-id"));
+
+				Layout layout = layoutMap.get(layoutId);
+
+				NavigableSet<Layout> layoutSet = layoutSets.get(
+					layout.getParentLayoutId());
+
+				if (layoutSet == null) {
+					layoutSets.put(
+						layout.getParentLayoutId(),
+						new TreeSet<Layout>(new LayoutPriorityComparator()));
+				}
+
+				newLayouts.add(
+					LayoutLocalServiceUtil.getLayout(layout.getPlid()));
+			}
+		}
+
+		List<Layout> layouts = LayoutUtil.findByG_P(
+			portletDataContext.getGroupId(),
+			portletDataContext.isPrivateLayout());
+
+		List<Layout> unmodifiedLayouts = new LinkedList<Layout>(layouts);
+
+		unmodifiedLayouts.removeAll(newLayouts);
+
+		// If there are no unmodified layouts then every priority is updated
+		// so there is nothing else to do
+		if (unmodifiedLayouts.isEmpty()) {
+			return;
+		}
+
+		// Fill the NavigableSets with the layouts which weren't updated
+		// by the import
+		for (Layout layout : unmodifiedLayouts) {
+			NavigableSet<Layout> layoutSet = layoutSets.get(
+				layout.getParentLayoutId());
+
+			// If there isn't any updated/new layout under a parent, there is
+			// nothing to do
+			if (layoutSet != null) {
+				layoutSet.add(layout);
+			}
+		}
+
+		for (Layout layout : newLayouts) {
+			NavigableSet<Layout> layoutSet = layoutSets.get(
+				layout.getParentLayoutId());
+
+			// If there isn't any unmodified layout under a parent, there is
+			// nothing to do
+			if (layoutSet.isEmpty()) {
+				continue;
+			}
+
+			SortedSet<Layout> tailSet = layoutSet.tailSet(layout, true);
+
+			int priority = layout.getPriority();
+
+			// If a layout's priority collides with an existing one, then we
+			// "push it back" by 1, and do it until there is no collision
+			for (Layout tail : tailSet) {
+				if (tail.getPriority() == priority) {
+					tail.setPriority(++priority);
+				}
+				else {
+					// Stop the loop if there was a "hole" in the priority
+					// queue and we don't have to push back more layouts
+					break;
+				}
+			}
+
+			layoutSet.add(layout);
+		}
+
+		for (NavigableSet<Layout> layoutSet : layoutSets.values()) {
+			for (Layout layout : layoutSet) {
+				LayoutUtil.update(layout);
+			}
 		}
 	}
 
