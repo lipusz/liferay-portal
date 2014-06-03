@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListMergeable;
+import com.liferay.portal.kernel.util.ListUtil_IW;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil_IW;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
@@ -562,6 +563,15 @@ public class TemplateContextHelper {
 
 		try {
 			variables.put("languageUtil", LanguageUtil.getLanguage());
+		}
+		catch (SecurityException se) {
+			_log.error(se, se);
+		}
+
+		// List util
+
+		try {
+			variables.put("listUtil", ListUtil_IW.getInstance());
 		}
 		catch (SecurityException se) {
 			_log.error(se, se);
