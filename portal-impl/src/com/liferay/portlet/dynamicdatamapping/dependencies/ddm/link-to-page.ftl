@@ -16,26 +16,34 @@
 			<optgroup label="<#if (privateLayout)>${languageUtil.get(requestedLocale, "private-pages")}<#else>${languageUtil.get(requestedLocale, "public-pages")}</#if>">
 		</#if>
 
+		<#assign selectedLayout = layoutLocalService.fetchLayout(selectedPlid)>
+
+		<#if (selectedLayout?? && selectedLayout != "")>
+			<#assign selectedLayoutAncerstorsIds = listUtil.toList(selectedLayout.getAncestors(), staticUtil["com.liferay.portal.model.Layout"].LAYOUT_ID_ACCESSOR)>
+		</#if>
+
 		<#list layouts as curLayout>
 			<#assign curLayoutJSON = escapeAttribute("{ \"layoutId\": ${curLayout.getLayoutId()}, \"groupId\": ${groupId}, \"privateLayout\": ${privateLayout?string} }")>
 
-			<#assign selected = (selectedPlid == curLayout.getPlid())>
+			<#if layoutPermission.contains(permissionChecker, curLayout, "VIEW") || (selectedPlid == curLayout.getPlid()) || selectedLayoutAncerstorsIds?seq_contains(curLayout.getLayoutId())>
+				<#assign selected = (selectedPlid == curLayout.getPlid())>
 
-			<@aui.option selected=selected useModelValue=false value=curLayoutJSON>
-				<#list 0..level as i>
-					&ndash;&nbsp;
-				</#list>
+				<@aui.option selected=selected useModelValue=false value=curLayoutJSON>
+					<#list 0..level as i>
+						&ndash;&nbsp;
+					</#list>
 
-				${escape(curLayout.getName(requestedLocale))}
-			</@>
+					${escape(curLayout.getName(requestedLocale))}
+				</@>
 
-			<@getLayoutsOptions
-				groupId = scopeGroupId
-				level = level + 1
-				parentLayoutId = curLayout.getLayoutId()
-				privateLayout = privateLayout
-				selectedPlid = selectedPlid
-			/>
+				<@getLayoutsOptions
+					groupId = scopeGroupId
+					level = level + 1
+					parentLayoutId = curLayout.getLayoutId()
+					privateLayout = privateLayout
+					selectedPlid = selectedPlid
+				/>
+			</#if>
 		</#list>
 
 		<#if (level == 0)>
