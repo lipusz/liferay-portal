@@ -9,23 +9,31 @@
 	selectedPlid
 	level = 0
 >
-	<#assign layouts = layoutLocalService.getLayouts(groupId, privateLayout, parentLayoutId)>
+	<#assign layouts = {}>
+
+	<#assign selectedLayout = layoutLocalService.fetchLayout(selectedPlid)!"">
+
+	<#assign selectedLayoutAncerstorsIds = {}>
+
+	<#if (validator.isNotNull(selectedLayout))>
+		<#assign layouts = layoutLocalService.getLayouts(groupId, privateLayout, parentLayoutId)>
+
+		<#assign selectedLayoutAncerstorsIds = listUtil.toList(selectedLayout.getAncestors(), staticUtil["com.liferay.portal.model.Layout"].LAYOUT_ID_ACCESSOR)>
+	<#else>
+		<#assign layoutService = serviceLocator.findService("com.liferay.portal.service.LayoutService")>
+
+		<#assign layouts = layoutService.getLayouts(groupId, privateLayout, parentLayoutId)>
+	</#if>
 
 	<#if (layouts?size > 0)>
 		<#if (level == 0)>
 			<optgroup label="<#if (privateLayout)>${languageUtil.get(requestedLocale, "private-pages")}<#else>${languageUtil.get(requestedLocale, "public-pages")}</#if>">
 		</#if>
 
-		<#assign selectedLayout = layoutLocalService.fetchLayout(selectedPlid)>
-
-		<#if (selectedLayout?? && selectedLayout != "")>
-			<#assign selectedLayoutAncerstorsIds = listUtil.toList(selectedLayout.getAncestors(), staticUtil["com.liferay.portal.model.Layout"].LAYOUT_ID_ACCESSOR)>
-		</#if>
-
 		<#list layouts as curLayout>
 			<#assign curLayoutJSON = escapeAttribute("{ \"layoutId\": ${curLayout.getLayoutId()}, \"groupId\": ${groupId}, \"privateLayout\": ${privateLayout?string} }")>
 
-			<#if layoutPermission.contains(permissionChecker, curLayout, "VIEW") || (selectedPlid == curLayout.getPlid()) || selectedLayoutAncerstorsIds?seq_contains(curLayout.getLayoutId())>
+			<#if validator.isNull(selectedLayout) || layoutPermission.contains(permissionChecker, curLayout, "VIEW") || (selectedPlid == curLayout.getPlid()) || (selectedLayoutAncerstorsIds?has_content && selectedLayoutAncerstorsIds?seq_contains(curLayout.getLayoutId()))>
 				<#assign selected = (selectedPlid == curLayout.getPlid())>
 
 				<@aui.option selected=selected useModelValue=false value=curLayoutJSON>
