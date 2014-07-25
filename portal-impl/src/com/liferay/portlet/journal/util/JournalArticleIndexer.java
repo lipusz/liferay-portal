@@ -452,10 +452,22 @@ public class JournalArticleIndexer extends BaseIndexer {
 				document.get("defaultLanguageId"));
 		}
 
-		String prefix = Field.SNIPPET + StringPool.UNDERLINE;
-
 		String title = document.get(
-			snippetLocale, prefix + Field.TITLE, Field.TITLE);
+			snippetLocale, Field.SNIPPET + StringPool.UNDERLINE + Field.TITLE);
+
+		if (Validator.isNull(title)) {
+			String localizedName = DocumentImpl.getLocalizedName(
+				snippetLocale, Field.TITLE);
+
+			title = document.get(localizedName);
+
+			if (Validator.isNull(title)) {
+				snippetLocale = LocaleUtil.fromLanguageId(
+					document.get("defaultLanguageId"));
+
+				title = document.get(snippetLocale, Field.TITLE);
+			}
+		}
 
 		String content = getDDMContentSummary(
 			document, snippetLocale, portletRequest, portletResponse);
