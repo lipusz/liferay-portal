@@ -127,6 +127,10 @@ public class LocaleUtil {
 		return getInstance()._getISOLanguages(locale);
 	}
 
+	public static String getLanguageKeyForLocale(Locale locale) {
+		return getInstance()._getLanguageKeyForLocale(locale);
+	}
+
 	public static String getLongDisplayName(
 		Locale locale, Set<String> duplicateLanguages) {
 
@@ -342,6 +346,64 @@ public class LocaleUtil {
 		}
 
 		return isoLanguages;
+	}
+
+	private String _getLanguageKeyForLocale(Locale locale) {
+		String languageKey = StringPool.BLANK;
+
+		if (_equals(locale, LocaleUtil.BRAZIL)) {
+			languageKey = "brazilian";
+		}
+		else if (_equals(locale, LocaleUtil.CHINA) ||
+				 _equals(locale, LocaleUtil.CHINESE)) {
+
+			languageKey = "chinese";
+		}
+		else if (_equals(locale, LocaleUtil.ENGLISH) ||
+				 _equals(locale, LocaleUtil.UK) ||
+				 _equals(locale, LocaleUtil.US)) {
+
+			languageKey = "english";
+		}
+		else if (_equals(locale, LocaleUtil.FRANCE) ||
+				 _equals(locale, LocaleUtil.FRENCH)) {
+
+			languageKey = "french";
+		}
+		else if (_equals(locale, LocaleUtil.GERMAN) ||
+				 _equals(locale, LocaleUtil.GERMANY)) {
+
+			languageKey = "german";
+		}
+		else if (_equals(locale, LocaleUtil.ITALIAN) ||
+				 _equals(locale, LocaleUtil.ITALY)) {
+
+			languageKey = "italian";
+		}
+		else if (_equals(locale, LocaleUtil.JAPAN) ||
+				 _equals(locale, LocaleUtil.JAPANESE)) {
+
+			languageKey = "japanese";
+		}
+		else if (_equals(locale, LocaleUtil.KOREA) ||
+				 _equals(locale, LocaleUtil.KOREAN)) {
+
+			languageKey = "korean";
+		}
+		else if (_equals(locale, LocaleUtil.NETHERLANDS)) {
+			languageKey = "dutch";
+		}
+		else if (_equals(locale, LocaleUtil.PORTUGAL)) {
+			languageKey = "portuguese";
+		}
+		else if (_equals(locale, LocaleUtil.SPAIN)) {
+			languageKey = "spanish";
+		}
+		else if (_equals(locale, LocaleUtil.TAIWAN)) {
+			languageKey = "taiwanese";
+		}
+
+		return languageKey;
 	}
 
 	private String _getLongDisplayName(
