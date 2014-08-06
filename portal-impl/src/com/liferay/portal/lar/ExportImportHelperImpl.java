@@ -73,6 +73,7 @@ import com.liferay.portal.model.Company;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.GroupConstants;
 import com.liferay.portal.model.Layout;
+import com.liferay.portal.model.LayoutConstants;
 import com.liferay.portal.model.LayoutFriendlyURL;
 import com.liferay.portal.model.LayoutSet;
 import com.liferay.portal.model.Organization;
@@ -607,6 +608,30 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 		actionableDynamicQuery.setCompanyId(portletDataContext.getCompanyId());
 
 		return actionableDynamicQuery.performCount();
+	}
+
+	@Override
+	public String getSelectedLayoutsJSON(
+		long groupId, boolean privateLayout, String selectedNodes) {
+
+		long[] nodeList = StringUtil.split(selectedNodes, 0L);
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		List<Layout> layoutList = LayoutLocalServiceUtil.getLayouts(
+			groupId, privateLayout, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+
+		for (Layout layout : layoutList) {
+			createLayoutsJSON(layout, jsonArray, nodeList);
+		}
+
+		String selectedLayoutsJSON = StringPool.BLANK;
+
+		if (jsonArray.length() > 0) {
+			selectedLayoutsJSON = jsonArray.toString();
+		}
+
+		return selectedLayoutsJSON;
 	}
 
 	@Override
@@ -1729,6 +1754,56 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 		Date endDate = portletDataContext.getEndDate();
 
 		dynamicQuery.add(createDateProperty.le(endDate));
+	}
+
+	protected boolean createLayoutsJSON(
+		Layout layout, JSONArray parentJSONArray, long[] layoutIds) {
+
+		boolean checked = true;
+
+		JSONArray childrenJSONArray = null;
+
+		List<Layout> children = layout.getChildren();
+
+		if (children.size() > 0) {
+			childrenJSONArray = JSONFactoryUtil.createJSONArray();
+
+			for (Layout childLayout : layout.getChildren()) {
+				if (!createLayoutsJSON(
+						childLayout, childrenJSONArray, layoutIds)) {
+
+					checked = false;
+				}
+			}
+		}
+
+		JSONObject layoutJSON = null;
+
+		if (!checked && (childrenJSONArray != null)) {
+			for (int i = 0; i < childrenJSONArray.length(); i++) {
+				parentJSONArray.put(childrenJSONArray.getJSONObject(i));
+			}
+		}
+
+		if (ArrayUtil.contains(layoutIds, layout.getLayoutId())) {
+			layoutJSON = JSONFactoryUtil.createJSONObject();
+
+			boolean includeChildren = true;
+
+			if (!checked) {
+				includeChildren = false;
+			}
+
+			layoutJSON.put("includeChildren", includeChildren);
+			layoutJSON.put("plid", layout.getPlid());
+
+			parentJSONArray.put(layoutJSON);
+		}
+		else {
+			checked = false;
+		}
+
+		return checked;
 	}
 
 	protected void deleteTimestampParameters(StringBuilder sb, int beginPos) {
