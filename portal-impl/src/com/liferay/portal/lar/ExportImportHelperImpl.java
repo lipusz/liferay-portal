@@ -73,7 +73,6 @@ import com.liferay.portal.model.Company;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.GroupConstants;
 import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutConstants;
 import com.liferay.portal.model.LayoutFriendlyURL;
 import com.liferay.portal.model.LayoutSet;
 import com.liferay.portal.model.Organization;
@@ -612,17 +611,18 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 
 	@Override
 	public String getSelectedLayoutsJSON(
-		long groupId, boolean privateLayout, String selectedNodes) {
+			long groupId, boolean privateLayout, String selectedNodes)
+		throws PortalException {
 
-		long[] nodeList = StringUtil.split(selectedNodes, 0L);
+		long[] selectedLayoutIds = StringUtil.split(selectedNodes, 0L);
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-		List<Layout> layoutList = LayoutLocalServiceUtil.getLayouts(
-			groupId, privateLayout, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+		List<Layout> selectedLayouts = LayoutLocalServiceUtil.getLayouts(
+			groupId, privateLayout, selectedLayoutIds);
 
-		for (Layout layout : layoutList) {
-			createLayoutsJSON(layout, jsonArray, nodeList);
+		for (Layout layout : selectedLayouts) {
+			createLayoutsJSON(layout, jsonArray, selectedLayoutIds);
 		}
 
 		String selectedLayoutsJSON = StringPool.BLANK;
@@ -1757,7 +1757,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 	}
 
 	protected boolean createLayoutsJSON(
-		Layout layout, JSONArray parentJSONArray, long[] layoutIds) {
+		Layout layout, JSONArray parentJSONArray, long[] selectedlayoutIds) {
 
 		boolean checked = true;
 
@@ -1770,7 +1770,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 
 			for (Layout childLayout : layout.getChildren()) {
 				if (!createLayoutsJSON(
-						childLayout, childrenJSONArray, layoutIds)) {
+						childLayout, childrenJSONArray, selectedlayoutIds)) {
 
 					checked = false;
 				}
@@ -1785,7 +1785,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 			}
 		}
 
-		if (ArrayUtil.contains(layoutIds, layout.getLayoutId())) {
+		if (ArrayUtil.contains(selectedlayoutIds, layout.getLayoutId())) {
 			layoutJSON = JSONFactoryUtil.createJSONObject();
 
 			boolean includeChildren = true;

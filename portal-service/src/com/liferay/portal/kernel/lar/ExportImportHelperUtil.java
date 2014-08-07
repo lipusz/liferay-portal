@@ -268,7 +268,8 @@ public class ExportImportHelperUtil {
 	}
 
 	public static String getSelectedLayoutsJSON(
-		long groupId, boolean privateLayout, String selectedNodes) {
+			long groupId, boolean privateLayout, String selectedNodes)
+		throws PortalException {
 
 		return getExportImportHelper().getSelectedLayoutsJSON(
 			groupId, privateLayout, selectedNodes);

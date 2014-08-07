@@ -210,7 +210,8 @@ public interface ExportImportHelper {
 		throws PortalException;
 
 	public String getSelectedLayoutsJSON(
-		long groupId, boolean privateLayout, String selectedNodes);
+			long groupId, boolean privateLayout, String selectedNodes)
+		throws PortalException;
 
 	public FileEntry getTempFileEntry(
 			long groupId, long userId, String folderName)
