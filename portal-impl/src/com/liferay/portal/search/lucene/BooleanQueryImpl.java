@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanClauseOccurImpl;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.Query;
+import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.QueryTranslatorUtil;
 
 import java.util.ArrayList;
@@ -318,7 +319,61 @@ public class BooleanQueryImpl extends BaseBooleanQueryImpl {
 
 	@Override
 	public String toString() {
+		QueryConfig queryConfig = getQueryConfig();
+
+		if (queryConfig.escapeTermsInToString()) {
+			org.apache.lucene.search.BooleanQuery escapedBoolanQuery =
+				new org.apache.lucene.search.BooleanQuery();
+
+			processClauses(escapedBoolanQuery, _booleanQuery.clauses());
+
+			return escapedBoolanQuery.toString();
+		}
+
 		return _booleanQuery.toString();
+	}
+
+	protected void processClauses(
+		org.apache.lucene.search.BooleanQuery escapedBoolanQuery,
+		List<org.apache.lucene.search.BooleanClause> clauses) {
+
+		for (org.apache.lucene.search.BooleanClause booleanClause : clauses) {
+			org.apache.lucene.search.BooleanClause escapedClause =
+				booleanClause;
+
+			org.apache.lucene.search.Query query = booleanClause.getQuery();
+
+			if (query instanceof org.apache.lucene.search.TermQuery) {
+				org.apache.lucene.search.TermQuery termQuery =
+					(org.apache.lucene.search.TermQuery)query;
+			}
+			else if (query instanceof org.apache.lucene.search.BooleanQuery) {
+				org.apache.lucene.search.BooleanQuery booleanQuery =
+					(org.apache.lucene.search.BooleanQuery)query;
+			}
+			else if (query instanceof org.apache.lucene.search.FuzzyQuery) {
+				org.apache.lucene.search.FuzzyQuery fuzzyQuery =
+					(org.apache.lucene.search.FuzzyQuery)query;
+			}
+			else if (query instanceof org.apache.lucene.search.PhraseQuery) {
+				org.apache.lucene.search.PhraseQuery phraseQuery =
+					(org.apache.lucene.search.PhraseQuery)query;
+			}
+			else if (query instanceof org.apache.lucene.search.PrefixQuery) {
+				org.apache.lucene.search.PrefixQuery prefixQuery =
+					(org.apache.lucene.search.PrefixQuery)query;
+			}
+			else if (query instanceof org.apache.lucene.search.TermRangeQuery) {
+				org.apache.lucene.search.TermRangeQuery termRangeQuery =
+					(org.apache.lucene.search.TermRangeQuery)query;
+			}
+			else if (query instanceof org.apache.lucene.search.WildcardQuery) {
+				org.apache.lucene.search.WildcardQuery wildcardQuery =
+					(org.apache.lucene.search.WildcardQuery)query;
+			}
+
+			escapedBoolanQuery.add(escapedClause);
+		}
 	}
 
 	private org.apache.lucene.search.BooleanQuery _booleanQuery;
