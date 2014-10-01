@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.QueryTranslatorUtil;
+import com.liferay.util.lucene.KeywordsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -346,10 +347,37 @@ public class BooleanQueryImpl extends BaseBooleanQueryImpl {
 			if (query instanceof org.apache.lucene.search.TermQuery) {
 				org.apache.lucene.search.TermQuery termQuery =
 					(org.apache.lucene.search.TermQuery)query;
+
+				org.apache.lucene.index.Term term = termQuery.getTerm();
+
+				term = term.createTerm(KeywordsUtil.escape(term.text()));
+
+				org.apache.lucene.search.TermQuery escapedTermQuery =
+					new org.apache.lucene.search.TermQuery(term);
+
+				escapedTermQuery.setBoost(termQuery.getBoost());
+
+				escapedClause =
+					new org.apache.lucene.search.BooleanClause(
+						escapedTermQuery, booleanClause.getOccur());
 			}
 			else if (query instanceof org.apache.lucene.search.BooleanQuery) {
 				org.apache.lucene.search.BooleanQuery booleanQuery =
 					(org.apache.lucene.search.BooleanQuery)query;
+
+				org.apache.lucene.search.BooleanQuery subBooleanQuery =
+					new org.apache.lucene.search.BooleanQuery(
+						booleanQuery.isCoordDisabled());
+
+				processClauses(subBooleanQuery, booleanQuery.clauses());
+
+				subBooleanQuery.setBoost(booleanQuery.getBoost());
+				subBooleanQuery.setMinimumNumberShouldMatch(
+					booleanQuery.getMinimumNumberShouldMatch());
+
+				escapedClause =
+					new org.apache.lucene.search.BooleanClause(
+						subBooleanQuery, booleanClause.getOccur());
 			}
 			else if (query instanceof org.apache.lucene.search.FuzzyQuery) {
 				org.apache.lucene.search.FuzzyQuery fuzzyQuery =
