@@ -382,22 +382,102 @@ public class BooleanQueryImpl extends BaseBooleanQueryImpl {
 			else if (query instanceof org.apache.lucene.search.FuzzyQuery) {
 				org.apache.lucene.search.FuzzyQuery fuzzyQuery =
 					(org.apache.lucene.search.FuzzyQuery)query;
+
+				org.apache.lucene.index.Term term = fuzzyQuery.getTerm();
+
+				term = term.createTerm(KeywordsUtil.escape(term.text()));
+
+				org.apache.lucene.search.FuzzyQuery escapedFuzzyQuery =
+					new org.apache.lucene.search.FuzzyQuery(
+						term, fuzzyQuery.getMinSimilarity(),
+						fuzzyQuery.getPrefixLength());
+
+				escapedFuzzyQuery.setBoost(fuzzyQuery.getBoost());
+
+				escapedClause =
+					new org.apache.lucene.search.BooleanClause(
+						escapedFuzzyQuery, booleanClause.getOccur());
 			}
 			else if (query instanceof org.apache.lucene.search.PhraseQuery) {
 				org.apache.lucene.search.PhraseQuery phraseQuery =
 					(org.apache.lucene.search.PhraseQuery)query;
+
+				org.apache.lucene.search.PhraseQuery escapedPhraseQuery =
+					new org.apache.lucene.search.PhraseQuery();
+
+				org.apache.lucene.index.Term[] terms = phraseQuery.getTerms();
+
+				for (org.apache.lucene.index.Term term : terms) {
+					term = term.createTerm(KeywordsUtil.escape(term.text()));
+
+					escapedPhraseQuery.add(term);
+				}
+
+				escapedPhraseQuery.setBoost(phraseQuery.getBoost());
+				escapedPhraseQuery.setSlop(phraseQuery.getSlop());
+
+				escapedClause =
+					new org.apache.lucene.search.BooleanClause(
+						escapedPhraseQuery, booleanClause.getOccur());
 			}
 			else if (query instanceof org.apache.lucene.search.PrefixQuery) {
 				org.apache.lucene.search.PrefixQuery prefixQuery =
 					(org.apache.lucene.search.PrefixQuery)query;
+
+				org.apache.lucene.index.Term term = prefixQuery.getPrefix();
+
+				term = term.createTerm(KeywordsUtil.escape(term.text()));
+
+				org.apache.lucene.search.PrefixQuery escapedPrefixQuery =
+					new org.apache.lucene.search.PrefixQuery(term);
+
+				escapedPrefixQuery.setBoost(prefixQuery.getBoost());
+				escapedPrefixQuery.setRewriteMethod(
+					prefixQuery.getRewriteMethod());
+
+				escapedClause =
+					new org.apache.lucene.search.BooleanClause(
+						escapedPrefixQuery, booleanClause.getOccur());
 			}
 			else if (query instanceof org.apache.lucene.search.TermRangeQuery) {
 				org.apache.lucene.search.TermRangeQuery termRangeQuery =
 					(org.apache.lucene.search.TermRangeQuery)query;
+
+				org.apache.lucene.search.TermRangeQuery escapedTermRangeQuery =
+					new org.apache.lucene.search.TermRangeQuery(
+						termRangeQuery.getField(),
+						KeywordsUtil.escape(termRangeQuery.getLowerTerm()),
+						KeywordsUtil.escape(termRangeQuery.getUpperTerm()),
+						termRangeQuery.includesLower(),
+						termRangeQuery.includesUpper(),
+						termRangeQuery.getCollator());
+
+				escapedTermRangeQuery.setBoost(termRangeQuery.getBoost());
+				escapedTermRangeQuery.setRewriteMethod(
+					termRangeQuery.getRewriteMethod());
+
+				escapedClause =
+					new org.apache.lucene.search.BooleanClause(
+						escapedTermRangeQuery, booleanClause.getOccur());
 			}
 			else if (query instanceof org.apache.lucene.search.WildcardQuery) {
 				org.apache.lucene.search.WildcardQuery wildcardQuery =
 					(org.apache.lucene.search.WildcardQuery)query;
+
+				org.apache.lucene.index.Term term = wildcardQuery.getTerm();
+
+				term = term.createTerm(KeywordsUtil.escape(term.text()));
+
+				org.apache.lucene.search.WildcardQuery escapedWildcardQuery =
+					new org.apache.lucene.search.WildcardQuery(term);
+
+				escapedWildcardQuery.setBoost(wildcardQuery.getBoost());
+				escapedWildcardQuery.setRewriteMethod(
+					wildcardQuery.getRewriteMethod());
+
+				escapedClause =
+					new org.apache.lucene.search.BooleanClause(
+						escapedWildcardQuery, booleanClause.getOccur());
 			}
 
 			escapedBoolanQuery.add(escapedClause);
