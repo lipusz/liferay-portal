@@ -392,9 +392,9 @@ public class ElasticsearchIndexSearcher extends BaseIndexSearcher {
 		SearchRequestBuilder searchRequestBuilder = client.prepareSearch(
 			String.valueOf(searchContext.getCompanyId()));
 
-		if (!count) {
-			QueryConfig queryConfig = query.getQueryConfig();
+		QueryConfig queryConfig = query.getQueryConfig();
 
+		if (!count) {
 			addFacets(searchRequestBuilder, searchContext);
 			addHighlights(searchRequestBuilder, queryConfig);
 			addPagination(searchRequestBuilder, start, end);
@@ -407,7 +407,11 @@ public class ElasticsearchIndexSearcher extends BaseIndexSearcher {
 			searchRequestBuilder.setSize(0);
 		}
 
+		queryConfig.setEscapeTermsInToString(true);
+
 		QueryBuilder queryBuilder = QueryBuilders.queryString(query.toString());
+
+		queryConfig.setEscapeTermsInToString(false);
 
 		searchRequestBuilder.setQuery(queryBuilder);
 

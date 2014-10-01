@@ -63,6 +63,10 @@ public class QueryConfig implements Serializable {
 				new String[selectedFieldNamesSet.size()]));
 	}
 
+	public boolean escapeTermsInToString() {
+		return _escapeTermsInToString;
+	}
+
 	public Serializable getAttribute(String name) {
 		return _attributes.get(name);
 	}
@@ -230,6 +234,10 @@ public class QueryConfig implements Serializable {
 			collatedSpellCheckResultScoresThreshold);
 	}
 
+	public void setEscapeTermsInToString(boolean escapeTermsInToString) {
+		_escapeTermsInToString = escapeTermsInToString;
+	}
+
 	public void setHighlightEnabled(boolean highlightEnabled) {
 		if (_INDEX_SEARCH_HIGHLIGHT_ENABLED) {
 			_attributes.put(
@@ -387,5 +395,5 @@ public class QueryConfig implements Serializable {
 
 	private final Map<String, Serializable> _attributes =
 		new HashMap<String, Serializable>();
-
+	private boolean _escapeTermsInToString;
 }
