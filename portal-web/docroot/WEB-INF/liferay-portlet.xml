@@ -264,6 +264,7 @@
 		<private-request-attributes>false</private-request-attributes>
 		<private-session-attributes>false</private-session-attributes>
 		<render-weight>50</render-weight>
+		<footer-portlet-javascript>/html/portlet/unit_converter/js/main.js</footer-portlet-javascript>
 		<css-class-wrapper>portlet-unit-converter</css-class-wrapper>
 	</portlet>
 	<portlet>
