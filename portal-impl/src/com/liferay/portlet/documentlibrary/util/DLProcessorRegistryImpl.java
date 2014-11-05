@@ -165,6 +165,7 @@ public class DLProcessorRegistryImpl implements DLProcessorRegistry {
 
 	@Override
 	public void register(DLProcessor dlProcessor) {
+		dlProcessor = _getDLProcessor(dlProcessor);
 		String type = _getType(dlProcessor);
 
 		if (type != null) {
@@ -210,6 +211,26 @@ public class DLProcessorRegistryImpl implements DLProcessorRegistry {
 		_dlProcessors.remove(type);
 	}
 
+	private DLProcessor _getDLProcessor(DLProcessor dlProcessor) {
+		if (ProxyUtil.isProxyClass(dlProcessor.getClass())) {
+			InvocationHandler invocationHandler =
+				ProxyUtil.getInvocationHandler(dlProcessor);
+
+			if (invocationHandler instanceof ClassLoaderBeanHandler) {
+				ClassLoaderBeanHandler classLoaderBeanHandler =
+					(ClassLoaderBeanHandler)invocationHandler;
+
+				Object bean = classLoaderBeanHandler.getBean();
+
+				if (bean instanceof DLProcessor) {
+					dlProcessor = (DLProcessor)bean;
+				}
+			}
+		}
+
+		return dlProcessor;
+	}
+
 	private FileVersion _getLatestFileVersion(
 		FileEntry fileEntry, boolean trusted) {
 
@@ -236,21 +257,7 @@ public class DLProcessorRegistryImpl implements DLProcessorRegistry {
 	}
 
 	private String _getType(DLProcessor dlProcessor) {
-		if (ProxyUtil.isProxyClass(dlProcessor.getClass())) {
-			InvocationHandler invocationHandler =
-				ProxyUtil.getInvocationHandler(dlProcessor);
-
-			if (invocationHandler instanceof ClassLoaderBeanHandler) {
-				ClassLoaderBeanHandler classLoaderBeanHandler =
-					(ClassLoaderBeanHandler)invocationHandler;
-
-				Object bean = classLoaderBeanHandler.getBean();
-
-				if (bean instanceof DLProcessor) {
-					dlProcessor = (DLProcessor)bean;
-				}
-			}
-		}
+		dlProcessor = _getDLProcessor(dlProcessor);
 
 		if (dlProcessor instanceof AudioProcessor) {
 			return DLProcessorConstants.AUDIO_PROCESSOR;
