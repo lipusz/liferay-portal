@@ -32,6 +32,11 @@ public class GroupPagesControlPanelEntry extends MyPagesControlPanelEntry {
 			PermissionChecker permissionChecker, Group group, Portlet portlet)
 		throws Exception {
 
+		if (group.isUser()) {
+			return super.hasAccessPermissionDenied(
+				permissionChecker, group, portlet);
+		}
+
 		return group.isCompany();
 	}
 
