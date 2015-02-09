@@ -852,15 +852,22 @@ public class AssetUtil {
 
 			sortType = getSortType(fieldType);
 
-			sortField = sortField.concat(StringPool.UNDERLINE).concat(
-				LocaleUtil.toLanguageId(locale));
+			if (locale != null) {
+				sortField = sortField.concat(StringPool.UNDERLINE).concat(
+					LocaleUtil.toLanguageId(locale));
+			}
 		}
 		else if (sortField.equals("modifiedDate")) {
 			sortField = Field.MODIFIED_DATE;
 		}
 		else if (sortField.equals("title")) {
-			sortField = DocumentImpl.getSortableFieldName(
-				"localized_title_".concat(LocaleUtil.toLanguageId(locale)));
+			if (locale != null) {
+				sortField = "localized_title_";
+
+				sortField = sortField.concat(LocaleUtil.toLanguageId(locale));
+			}
+
+			sortField = DocumentImpl.getSortableFieldName(sortField);
 		}
 
 		return SortFactoryUtil.getSort(
@@ -871,14 +878,31 @@ public class AssetUtil {
 			AssetEntryQuery assetEntryQuery, Locale locale)
 		throws Exception {
 
-		Sort sort1 = getSort(
-			assetEntryQuery.getOrderByType1(), assetEntryQuery.getOrderByCol1(),
-			locale);
-		Sort sort2 = getSort(
-			assetEntryQuery.getOrderByType2(), assetEntryQuery.getOrderByCol2(),
-			locale);
+		String orderByCol1 = assetEntryQuery.getOrderByCol1();
+		String orderByCol2 = assetEntryQuery.getOrderByCol2();
 
-		return new Sort[] {sort1, sort2};
+		Sort sort1 = getSort(
+			assetEntryQuery.getOrderByType1(), orderByCol1, locale);
+		Sort sort2 = getSort(
+			assetEntryQuery.getOrderByType2(), orderByCol2, locale);
+
+		Sort[] sorts = new Sort[] {sort1, sort2};
+
+		if (orderByCol1.equals("title")) {
+			Sort sort3 = getSort(
+				assetEntryQuery.getOrderByType1(), orderByCol1, null);
+
+			sorts = ArrayUtil.append(sorts, sort3);
+		}
+
+		if (orderByCol2.equals("title")) {
+			Sort sort4 = getSort(
+				assetEntryQuery.getOrderByType2(), orderByCol2, null);
+
+			sorts = ArrayUtil.append(sorts, sort4);
+		}
+
+		return sorts;
 	}
 
 	protected static int getSortType(String sortField) {
