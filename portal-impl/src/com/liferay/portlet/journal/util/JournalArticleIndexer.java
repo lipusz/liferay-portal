@@ -497,7 +497,8 @@ public class JournalArticleIndexer extends BaseIndexer {
 			int status = article.getStatus();
 
 			if ((status != WorkflowConstants.STATUS_APPROVED) &&
-				(status != WorkflowConstants.STATUS_IN_TRASH)) {
+				(status != WorkflowConstants.STATUS_IN_TRASH) &&
+				(status != WorkflowConstants.STATUS_SCHEDULED)) {
 
 				deleteDocument(
 					article.getCompanyId(), article.getResourcePrimKey());
@@ -766,7 +767,8 @@ public class JournalArticleIndexer extends BaseIndexer {
 
 				Integer[] statuses = {
 					WorkflowConstants.STATUS_APPROVED,
-					WorkflowConstants.STATUS_IN_TRASH
+					WorkflowConstants.STATUS_IN_TRASH,
+					WorkflowConstants.STATUS_SCHEDULED
 				};
 
 				dynamicQuery.add(statusProperty.in(statuses));
