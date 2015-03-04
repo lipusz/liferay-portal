@@ -20,6 +20,7 @@
 LinkedHashMap<String, Object> journalParams = new LinkedHashMap<String, Object>();
 
 journalParams.put("expandoAttributes", searchTerms.getKeywords());
+journalParams.put("scheduledHead", searchContainer.isIncludeScheduledHead());
 
 Sort sort = SortFactoryUtil.getSort(JournalArticle.class, searchContainer.getOrderByCol(), searchContainer.getOrderByType());
 
@@ -36,7 +37,7 @@ do {
 		hits = JournalArticleLocalServiceUtil.search(company.getCompanyId(), searchTerms.getGroupId(), searchTerms.getFolderIds(), JournalArticleConstants.CLASSNAME_ID_DEFAULT, searchTerms.getStructureId(), searchTerms.getTemplateId(), searchTerms.getKeywords(), journalParams, searchContainer.getStart(), searchContainer.getEnd(), sort);
 	}
 
-	tuple = JournalUtil.getArticles(hits);
+	tuple = JournalUtil.getArticles(hits, searchContainer.isIncludeScheduledHead());
 
 	corruptIndex = (Boolean)tuple.getObject(1);
 }

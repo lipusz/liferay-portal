@@ -191,15 +191,6 @@ public class JournalArticleIndexer extends BaseIndexer {
 		if (Validator.isNotNull(ddmTemplateKey)) {
 			contextQuery.addRequiredTerm("ddmTemplateKey", ddmTemplateKey);
 		}
-
-		boolean head = GetterUtil.getBoolean(
-			searchContext.getAttribute("head"), Boolean.TRUE);
-		boolean relatedClassName = GetterUtil.getBoolean(
-			searchContext.getAttribute("relatedClassName"));
-
-		if (head && !relatedClassName) {
-			contextQuery.addRequiredTerm("head", Boolean.TRUE);
-		}
 	}
 
 	@Override
@@ -305,6 +296,51 @@ public class JournalArticleIndexer extends BaseIndexer {
 		}
 		else {
 			searchQuery.addTerm(localizedField, value, like);
+		}
+	}
+
+	@Override
+	protected void addStatus(
+			BooleanQuery contextQuery, SearchContext searchContext)
+		throws Exception {
+
+		boolean scheduledHead = GetterUtil.getBoolean(
+			searchContext.getAttribute("scheduledHead"));
+
+		if (scheduledHead) {
+			BooleanQuery statusQueryHead = BooleanQueryFactoryUtil.create(
+				searchContext);
+
+			statusQueryHead.addRequiredTerm("head", Boolean.TRUE);
+			statusQueryHead.addRequiredTerm(
+				Field.STATUS, WorkflowConstants.STATUS_APPROVED);
+
+			BooleanQuery statusQueryScheduled = BooleanQueryFactoryUtil.create(
+				searchContext);
+
+			statusQueryScheduled.addRequiredTerm("scheduledHead", Boolean.TRUE);
+			statusQueryScheduled.addRequiredTerm(
+				Field.STATUS, WorkflowConstants.STATUS_SCHEDULED);
+
+			BooleanQuery statusQuery = BooleanQueryFactoryUtil.create(
+				searchContext);
+
+			statusQuery.add(statusQueryHead, BooleanClauseOccur.SHOULD);
+			statusQuery.add(statusQueryScheduled, BooleanClauseOccur.SHOULD);
+
+			contextQuery.add(statusQuery, BooleanClauseOccur.MUST);
+		}
+		else {
+			super.addStatus(contextQuery, searchContext);
+
+			boolean head = GetterUtil.getBoolean(
+				searchContext.getAttribute("head"), Boolean.TRUE);
+			boolean relatedClassName = GetterUtil.getBoolean(
+				searchContext.getAttribute("relatedClassName"));
+
+			if (head && !relatedClassName) {
+				contextQuery.addRequiredTerm("head", Boolean.TRUE);
+			}
 		}
 	}
 

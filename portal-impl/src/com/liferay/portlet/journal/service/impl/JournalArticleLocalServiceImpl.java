@@ -4111,6 +4111,9 @@ public class JournalArticleLocalServiceImpl
 			attributes.put("articleId", articleId);
 			attributes.put("ddmStructureKey", ddmStructureKey);
 			attributes.put("ddmTemplateKey", ddmTemplateKey);
+			attributes.put(
+				"scheduledHead",
+				GetterUtil.getBoolean(params.get("scheduledHead")));
 			attributes.put("params", params);
 
 			searchContext.setAttributes(attributes);
