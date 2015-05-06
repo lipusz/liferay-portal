@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
@@ -140,8 +139,6 @@ public class EditWorkflowInstanceAction extends PortletAction {
 		Map<String, Serializable> workflowContext =
 			workflowInstance.getWorkflowContext();
 
-		validateUser(workflowContext, actionRequest);
-
 		long companyId = GetterUtil.getLong(
 			workflowContext.get(WorkflowConstants.CONTEXT_COMPANY_ID));
 		long userId = GetterUtil.getLong(
@@ -152,6 +149,8 @@ public class EditWorkflowInstanceAction extends PortletAction {
 			workflowContext.get(WorkflowConstants.CONTEXT_ENTRY_CLASS_NAME));
 		long classPK = GetterUtil.getLong(
 			workflowContext.get(WorkflowConstants.CONTEXT_ENTRY_CLASS_PK));
+
+		validateUser(companyId, userId, workflowContext);
 
 		WorkflowHandler<?> workflowHandler =
 			WorkflowHandlerRegistryUtil.getWorkflowHandler(className);
@@ -208,20 +207,19 @@ public class EditWorkflowInstanceAction extends PortletAction {
 	}
 
 	protected void validateUser(
-		Map<String, Serializable> workflowContext,
-		ActionRequest actionRequest) {
-
-		long userId = GetterUtil.getLong(
-			workflowContext.get(WorkflowConstants.CONTEXT_USER_ID));
+			long companyId, long userId,
+			Map<String, Serializable> workflowContext)
+		throws Exception {
 
 		User user = UserLocalServiceUtil.fetchUser(userId);
 
-		if (Validator.isNull(user)) {
-			workflowContext.remove(
-				workflowContext.get(WorkflowConstants.CONTEXT_USER_ID));
+		if (user == null) {
+			long defaultUserId = UserLocalServiceUtil.getDefaultUserId(
+				companyId);
+
 			workflowContext.put(
 				WorkflowConstants.CONTEXT_USER_ID,
-				actionRequest.getRemoteUser());
+				String.valueOf(defaultUserId));
 		}
 	}
 
