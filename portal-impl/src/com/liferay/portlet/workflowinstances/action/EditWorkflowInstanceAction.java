@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
@@ -27,8 +28,10 @@ import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.WorkflowInstanceManagerUtil;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
+import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.service.WorkflowInstanceLinkLocalServiceUtil;
 import com.liferay.portal.service.permission.PortletPermissionUtil;
 import com.liferay.portal.struts.PortletAction;
@@ -137,6 +140,8 @@ public class EditWorkflowInstanceAction extends PortletAction {
 		Map<String, Serializable> workflowContext =
 			workflowInstance.getWorkflowContext();
 
+		validateUser(workflowContext, actionRequest);
+
 		long companyId = GetterUtil.getLong(
 			workflowContext.get(WorkflowConstants.CONTEXT_COMPANY_ID));
 		long userId = GetterUtil.getLong(
@@ -200,6 +205,24 @@ public class EditWorkflowInstanceAction extends PortletAction {
 		WorkflowInstanceManagerUtil.signalWorkflowInstance(
 			themeDisplay.getCompanyId(), themeDisplay.getUserId(),
 			workflowInstanceId, transitionName, null);
+	}
+
+	protected void validateUser(
+		Map<String, Serializable> workflowContext,
+		ActionRequest actionRequest) {
+
+		long userId = GetterUtil.getLong(
+			workflowContext.get(WorkflowConstants.CONTEXT_USER_ID));
+
+		User user = UserLocalServiceUtil.fetchUser(userId);
+
+		if (Validator.isNull(user)) {
+			workflowContext.remove(
+				workflowContext.get(WorkflowConstants.CONTEXT_USER_ID));
+			workflowContext.put(
+				WorkflowConstants.CONTEXT_USER_ID,
+				actionRequest.getRemoteUser());
+		}
 	}
 
 	private static final boolean _CHECK_METHOD_ON_PROCESS_ACTION = false;
