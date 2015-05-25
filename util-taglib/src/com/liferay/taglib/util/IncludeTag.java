@@ -61,15 +61,7 @@ public class IncludeTag extends AttributesTagSupport {
 	@Override
 	public int doEndTag() throws JspException {
 		try {
-			String page = null;
-
-			if (_useCustomPage) {
-				page = getCustomPage(servletContext, request);
-			}
-
-			if (Validator.isNull(page)) {
-				page = getPage();
-			}
+			String page = getPage();
 
 			if (Validator.isNull(page)) {
 				page = getEndPage();
@@ -227,6 +219,14 @@ public class IncludeTag extends AttributesTagSupport {
 
 		Theme theme = (Theme)request.getAttribute(WebKeys.THEME);
 
+		if (_useCustomPage) {
+			String customPage = getCustomPage(servletContext, request, page);
+
+			if (Validator.isNotNull(customPage)) {
+				page = customPage;
+			}
+		}
+
 		ThemeUtil.include(servletContext, request, response, page, theme);
 	}
 
@@ -248,7 +248,8 @@ public class IncludeTag extends AttributesTagSupport {
 	}
 
 	protected String getCustomPage(
-		ServletContext servletContext, HttpServletRequest request) {
+		ServletContext servletContext, HttpServletRequest request,
+		String page) {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -273,16 +274,6 @@ public class IncludeTag extends AttributesTagSupport {
 			"customJspServletContextName");
 
 		if (Validator.isNull(customJspServletContextName)) {
-			return null;
-		}
-
-		String page = getPage();
-
-		if (Validator.isNull(page)) {
-			page = getEndPage();
-		}
-
-		if (Validator.isNull(page)) {
 			return null;
 		}
 
@@ -319,6 +310,14 @@ public class IncludeTag extends AttributesTagSupport {
 
 	protected void include(String page, boolean doStartTag) throws Exception {
 		JspWriterHttpServletResponse jspWriterHttpServletResponse = null;
+
+		if (_useCustomPage) {
+			String customPage = getCustomPage(servletContext, request, page);
+
+			if (Validator.isNotNull(customPage)) {
+				page = customPage;
+			}
+		}
 
 		Class<?> clazz = getClass();
 
