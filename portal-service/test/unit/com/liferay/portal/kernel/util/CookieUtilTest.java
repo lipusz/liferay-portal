@@ -145,14 +145,14 @@ public class CookieUtilTest {
 
 		response.setHeader(HttpHeaders.SET_COOKIE, "name1=value1,name2=value2");
 
-		Map<String, HttpCookie> httpCookies = CookieUtil.parseHttpCookies(
+		Map<String, HttpCookie> map = CookieUtil.parseHttpCookies(
 			response.getHeader(HttpHeaders.SET_COOKIE));
 
-		Assert.assertEquals(2, httpCookies.size());
+		Assert.assertEquals(2, map.size());
 		Assert.assertEquals(
-			new HttpCookie("name1", "value1"), httpCookies.get("name1"));
+			new HttpCookie("name1", "value1"), map.get("name1"));
 		Assert.assertEquals(
-			new HttpCookie("name2", "value2"), httpCookies.get("name2"));
+			new HttpCookie("name2", "value2"), map.get("name2"));
 	}
 
 	@Test
