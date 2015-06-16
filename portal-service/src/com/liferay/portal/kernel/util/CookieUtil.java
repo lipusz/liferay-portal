@@ -163,11 +163,11 @@ public class CookieUtil {
 
 		httpCookie.setComment(cookie.getComment());
 		httpCookie.setDomain(cookie.getDomain());
-		httpCookie.setHttpOnly(cookie.isHttpOnly());
 		httpCookie.setMaxAge(cookie.getMaxAge());
 		httpCookie.setPath(cookie.getPath());
 		httpCookie.setSecure(cookie.getSecure());
 		httpCookie.setVersion(cookie.getVersion());
+		httpCookie.setHttpOnly(cookie.isHttpOnly());
 
 		return httpCookie;
 	}
