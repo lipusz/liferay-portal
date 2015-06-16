@@ -17,8 +17,6 @@ package com.liferay.portal.kernel.util;
 import com.liferay.portal.kernel.io.Deserializer;
 import com.liferay.portal.kernel.io.Serializer;
 
-import java.net.HttpCookie;
-
 import java.nio.ByteBuffer;
 
 import javax.servlet.http.Cookie;
@@ -155,21 +153,6 @@ public class CookieUtil {
 		ByteBuffer byteBuffer = serializer.toByteBuffer();
 
 		return byteBuffer.array();
-	}
-
-	public static HttpCookie toHttpCookie(Cookie cookie) {
-		HttpCookie httpCookie = new HttpCookie(
-			cookie.getName(), cookie.getValue());
-
-		httpCookie.setComment(cookie.getComment());
-		httpCookie.setDomain(cookie.getDomain());
-		httpCookie.setMaxAge(cookie.getMaxAge());
-		httpCookie.setPath(cookie.getPath());
-		httpCookie.setSecure(cookie.getSecure());
-		httpCookie.setVersion(cookie.getVersion());
-		httpCookie.setHttpOnly(cookie.isHttpOnly());
-
-		return httpCookie;
 	}
 
 	public static String toString(Cookie cookie) {
