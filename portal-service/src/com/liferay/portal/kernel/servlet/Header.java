@@ -26,8 +26,6 @@ import java.io.ObjectOutput;
 
 import java.net.HttpCookie;
 
-import java.util.Map;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -172,34 +170,9 @@ public class Header implements Externalizable {
 
 	public void setToResponse(String key, HttpServletResponse response) {
 		if (_type == Type.COOKIE) {
-			String cookieString = response.getHeader(HttpHeaders.SET_COOKIE);
+			HttpCookie httpCookie = CookieUtil.toHttpCookie(_cookieValue);
 
-			if (Validator.isNull(cookieString)) {
-				response.addCookie(_cookieValue);
-			}
-			else {
-				Map<String, HttpCookie> httpCookies =
-					CookieUtil.parseHttpCookies(cookieString);
-
-				httpCookies.put(
-					_cookieValue.getName(),
-					CookieUtil.toHttpCookie(_cookieValue));
-
-				boolean first = true;
-
-				for (HttpCookie httpCookie : httpCookies.values()) {
-					if (first) {
-						response.setHeader(
-							HttpHeaders.SET_COOKIE, httpCookie.toString());
-
-						first = false;
-					}
-					else {
-						response.addHeader(
-							HttpHeaders.SET_COOKIE, httpCookie.toString());
-					}
-				}
-			}
+			response.setHeader(HttpHeaders.SET_COOKIE, httpCookie.toString());
 		}
 		else if (_type == Type.DATE) {
 			response.setDateHeader(key, _dateValue);
