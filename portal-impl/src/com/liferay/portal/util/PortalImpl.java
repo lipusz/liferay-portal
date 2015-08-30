@@ -5567,7 +5567,7 @@ public class PortalImpl implements Portal {
 
 		long userId = getUserId(request);
 
-		if (userId <= 0) {
+		if ((userId <= 0) && !PropsValues.PORTAL_JAAS_ENABLE) {
 
 			// Portlet WARs may have the correct remote user and not have the
 			// correct user id because the user id is saved in the session and
