@@ -4861,7 +4861,12 @@ public class PortalImpl implements Portal {
 				user = UserLocalServiceUtil.getUserById(userId);
 			}
 		}
-		catch (NoSuchUserException nsue) {
+		catch (Exception e) {
+			if (!(e instanceof NoSuchUserException) ||
+				!(e instanceof PrincipalException)) {
+
+				throw e;
+			}
 		}
 
 		return user;

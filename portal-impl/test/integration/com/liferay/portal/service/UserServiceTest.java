@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
+import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.security.permission.PermissionCheckerFactoryUtil;
@@ -141,7 +142,7 @@ public class UserServiceTest {
 			new AggregateTestRule(
 				new LiferayIntegrationTestRule(), MainServletTestRule.INSTANCE);
 
-		@Test(expected = NoSuchUserException.class)
+		@Test(expected = PrincipalException.class)
 		public void shouldFailIfUserDeleted() throws Exception {
 			User user = UserTestUtil.addUser(true);
 

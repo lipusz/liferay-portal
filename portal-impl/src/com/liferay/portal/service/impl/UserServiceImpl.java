@@ -14,6 +14,7 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.NoSuchUserException;
 import com.liferay.portal.RequiredUserException;
 import com.liferay.portal.UserEmailAddressException;
 import com.liferay.portal.UserFieldException;
@@ -842,8 +843,17 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	public User getUserByEmailAddress(long companyId, String emailAddress)
 		throws PortalException {
 
-		User user = userLocalService.getUserByEmailAddress(
-			companyId, emailAddress);
+		User user = null;
+
+		try {
+			user = userLocalService.getUserByEmailAddress(
+				companyId, emailAddress);
+		}
+		catch (NoSuchUserException nsue) {
+			throw new PrincipalException.MustHavePermission(
+				getPermissionChecker(), User.class.getName(), 0l,
+				ActionKeys.VIEW);
+		}
 
 		UserPermissionUtil.check(
 			getPermissionChecker(), user.getUserId(), ActionKeys.VIEW);
@@ -861,10 +871,10 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 */
 	@Override
 	public User getUserById(long userId) throws PortalException {
-		User user = userPersistence.findByPrimaryKey(userId);
-
 		UserPermissionUtil.check(
-			getPermissionChecker(), user.getUserId(), ActionKeys.VIEW);
+			getPermissionChecker(), userId, ActionKeys.VIEW);
+
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		return user;
 	}
@@ -882,7 +892,16 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	public User getUserByScreenName(long companyId, String screenName)
 		throws PortalException {
 
-		User user = userLocalService.getUserByScreenName(companyId, screenName);
+		User user = null;
+
+		try {
+			user = userLocalService.getUserByScreenName(companyId, screenName);
+		}
+		catch (NoSuchUserException nsue) {
+			throw new PrincipalException.MustHavePermission(
+				getPermissionChecker(), User.class.getName(), 0l,
+				ActionKeys.VIEW);
+		}
 
 		UserPermissionUtil.check(
 			getPermissionChecker(), user.getUserId(), ActionKeys.VIEW);
