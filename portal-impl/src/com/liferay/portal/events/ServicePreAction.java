@@ -1558,8 +1558,18 @@ public class ServicePreAction extends Action {
 			String controlPanelCategory, boolean signedIn)
 		throws PortalException {
 
-		LayoutComposite defaultLayoutComposite =
-			getDefaultVirtualHostLayoutComposite(request);
+		LayoutComposite defaultLayoutComposite = null;
+
+		if (signedIn) {
+			defaultLayoutComposite = getDefaultUserPersonalSiteLayoutComposite(
+				user);
+
+			if (defaultLayoutComposite.getLayout() != null) {
+				return defaultLayoutComposite;
+			}
+		}
+
+		defaultLayoutComposite = getDefaultVirtualHostLayoutComposite(request);
 
 		defaultLayoutComposite = getViewableLayoutComposite(
 			request, user, permissionChecker, defaultLayoutComposite,
@@ -1570,9 +1580,6 @@ public class ServicePreAction extends Action {
 		}
 
 		if (signedIn) {
-			defaultLayoutComposite = getDefaultUserPersonalSiteLayoutComposite(
-				user);
-
 			if (defaultLayoutComposite.getLayout() == null) {
 				defaultLayoutComposite = getDefaultUserSitesLayoutComposite(
 					user);
