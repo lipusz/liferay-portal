@@ -77,6 +77,11 @@ public class ClassLoaderComponentConfiguration extends ComponentConfiguration {
 	public ComponentProperties getProperties() {
 		ComponentProperties componentProperties = _getAvailableProperties();
 
+		if (!componentProperties.hasBaseConfiguration()) {
+			throw new ConfigurationNotFoundException(
+				_componentName, "The base properties file was not found");
+		}
+
 		return componentProperties;
 	}
 
