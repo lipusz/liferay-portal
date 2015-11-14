@@ -77,19 +77,19 @@ public class VersionTest {
 	public void testSnapshot() {
 		Version version = Version.getInstance("1-SNAPSHOT");
 
-		Assert.assertEquals("1", version.toString());
+		Assert.assertEquals("1-SNAPSHOT", version.toString());
 
 		version = Version.getInstance("1.1-SNAPSHOT");
 
-		Assert.assertEquals("1.1", version.toString());
+		Assert.assertEquals("1.1-SNAPSHOT", version.toString());
 
 		version = Version.getInstance("1.1.1-SNAPSHOT");
 
-		Assert.assertEquals("1.1.1", version.toString());
+		Assert.assertEquals("1.1.1-SNAPSHOT", version.toString());
 
 		version = Version.getInstance("1.1.1.1-SNAPSHOT");
 
-		Assert.assertEquals("1.1.1.1", version.toString());
+		Assert.assertEquals("1.1.1.1-SNAPSHOT", version.toString());
 
 		assertPrevious("1", "2-SNAPSHOT");
 		assertPrevious("1.0", "1.1-SNAPSHOT");
@@ -99,6 +99,15 @@ public class VersionTest {
 		assertLater("1.1-SNAPSHOT", "1.0");
 		assertLater("1.1.1-SNAPSHOT", "1.1.0");
 		assertLater("1.1.1.1-SNAPSHOT", "1.1.1.0");
+
+		assertPrevious("1-SNAPSHOT", "1");
+		assertPrevious("1.1-SNAPSHOT", "1.1");
+		assertPrevious("1.1.1-SNAPSHOT", "1.1.1");
+		assertPrevious("1.1.1.1-SNAPSHOT", "1.1.1.1");
+		assertLater("1", "1-SNAPSHOT");
+		assertLater("1.1", "1.1-SNAPSHOT");
+		assertLater("1.1.1", "1.1.1-SNAPSHOT");
+		assertLater("1.1.1.1", "1.1.1.1-SNAPSHOT");
 	}
 
 	@Test
