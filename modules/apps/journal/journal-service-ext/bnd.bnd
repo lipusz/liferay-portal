@@ -1,0 +1,4 @@
+Bundle-SymbolicName: com.liferay.journal.service.ext
+Fragment-Host: com.liferay.journal.service;bundle-version=1.0.0
+
+-includeresource: src/main/resources
