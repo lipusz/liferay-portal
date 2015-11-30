@@ -330,6 +330,10 @@
 		<priority value="INFO" />
 	</category>
 
+	<category name="com.liferay.portal.kernel.search.BaseIndexer">
+		<priority value="DEBUG" />
+	</category>
+
 	<category name="com.liferay.portal.kernel.search.HitsOpenSearchImpl">
 		<priority value="WARN" />
 	</category>
@@ -442,6 +446,10 @@
 		<priority value="WARN" />
 	</category>
 
+	<category name="com.liferay.portal.search.SearchPermissionCheckerImpl">
+		<priority value="DEBUG" />
+	</category>
+
 	<category name="com.liferay.portal.search.lucene">
 		<priority value="ERROR" />
 	</category>
@@ -450,8 +458,8 @@
 		<priority value="ERROR" />
 	</category>
 
-	<category name="com.liferay.portal.search.lucene.LuceneIndexSearcherImpl">
-		<priority value="ERROR" />
+	<category name="com.liferay.portal.search.lucene.LuceneIndexSearcher">
+		<priority value="INFO" />
 	</category>
 
 	<category name="com.liferay.portal.search.lucene.LuceneIndexWriterImpl">
@@ -978,6 +986,10 @@
 		<priority value="ERROR" />
 	</category>
 
+	<category name="com.liferay.portlet.asset.service.impl.AssetEntryServiceImpl">
+		<priority value="INFO" />
+	</category>
+
 	<category name="com.liferay.portlet.blogs.service.impl.BlogsEntryLocalServiceImpl">
 		<priority value="INFO" />
 	</category>
@@ -1304,6 +1316,10 @@
 
 	<category name="portal-web.docroot.errors.404.jsp">
 		<priority value="WARN" />
+	</category>
+
+	<category name="portal-web.docroot.html.portal.render_portlet.jsp">
+		<priority value="INFO" />
 	</category>
 
 	<root>

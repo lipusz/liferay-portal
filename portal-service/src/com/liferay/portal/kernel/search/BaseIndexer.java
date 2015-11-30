@@ -1224,6 +1224,8 @@ public abstract class BaseIndexer implements Indexer {
 		Map<String, Facet> facets = searchContext.getFacets();
 
 		for (Facet facet : facets.values()) {
+			long startTime = System.currentTimeMillis();
+
 			BooleanClause facetClause = facet.getFacetClause();
 
 			if (facetClause != null) {
@@ -1231,6 +1233,15 @@ public abstract class BaseIndexer implements Indexer {
 					facetClause.getQuery(),
 					facetClause.getBooleanClauseOccur());
 			}
+
+			long endTime = System.currentTimeMillis();
+
+			float searchTime = (float)(endTime - startTime) / Time.SECOND;
+
+			_log.debug(
+				"--- Processing " + facet.getClass().getName() +
+				" for field: " + facet.getFieldName() + " took " +
+				searchTime + " second(s)");
 		}
 
 		BooleanQuery fullQuery = BooleanQueryFactoryUtil.create(searchContext);

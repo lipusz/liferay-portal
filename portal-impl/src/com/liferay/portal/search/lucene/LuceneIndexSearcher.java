@@ -324,10 +324,10 @@ public class LuceneIndexSearcher extends BaseIndexSearcher {
 			}
 		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug(
+		if (_log.isInfoEnabled()) {
+			_log.info(
 				"Search found " + hits.getLength() + " results in " +
-					hits.getSearchTime() + "ms");
+					hits.getSearchTime() + " second(s)");
 		}
 
 		return hits;
@@ -422,8 +422,8 @@ public class LuceneIndexSearcher extends BaseIndexSearcher {
 			LuceneHelperUtil.cleanUp(indexSearcher);
 		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug(
+		if (_log.isInfoEnabled()) {
+			_log.info(
 				"Search found " + hits.getLength() + " results in " +
 					hits.getSearchTime() + "ms");
 		}

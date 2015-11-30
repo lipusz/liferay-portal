@@ -264,6 +264,8 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 			Query query, SearchContext searchContext)
 		throws Exception {
 
+		_log.debug("--- #doGetPermissionQuery - className: " + className + " ---");
+
 		Indexer indexer = IndexerRegistryUtil.getIndexer(className);
 
 		if (!indexer.isPermissionAware()) {
@@ -298,7 +300,11 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 		List<UserGroupRole> userGroupRoles = new UniqueList<UserGroupRole>();
 		Map<Long, List<Role>> groupIdsToRoles = new HashMap<Long, List<Role>>();
 
+		_log.debug("--- #doGetPermissionQuery - roles.addAll(permissionCheckerBag.getRoles()); - START ---");
+
 		roles.addAll(permissionCheckerBag.getRoles());
+
+		_log.debug("--- #doGetPermissionQuery - Collecting groups, userGroupRoles - START ---");
 
 		if (ArrayUtil.isEmpty(groupIds)) {
 			groups.addAll(GroupLocalServiceUtil.getUserGroups(userId, true));
@@ -327,6 +333,8 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 			}
 		}
 
+		_log.debug("--- #doGetPermissionQuery - Collecting groups, userGroupRoles - END ---");
+
 		if (advancedPermissionChecker.isSignedIn()) {
 			roles.add(
 				RoleLocalServiceUtil.getRole(companyId, RoleConstants.GUEST));
@@ -342,6 +350,8 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 
 			roles.addAll(groupRoles);
 		}
+
+		_log.debug("--- #doGetPermissionQuery - roles, userGroupRoles - END ---");
 
 		return doGetPermissionQuery_6(
 			companyId, groupIds, userId, className, query, searchContext,
@@ -369,10 +379,15 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 			searchContext);
 		BooleanQuery rolesQuery = BooleanQueryFactoryUtil.create(searchContext);
 
+		_log.debug("--- #doGetPermissionQuery_6 - Processing roles ---");
+
 		for (Role role : roles) {
 			String roleName = role.getName();
 
 			if (roleName.equals(RoleConstants.ADMINISTRATOR)) {
+
+				_log.debug("--- #doGetPermissionQuery_6 - Return query as role equals ADMIN ---");
+
 				return query;
 			}
 
@@ -380,6 +395,8 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 					companyId, className, ResourceConstants.SCOPE_COMPANY,
 					String.valueOf(companyId), role.getRoleId(),
 					ActionKeys.VIEW)) {
+
+				_log.debug("--- #doGetPermissionQuery_6 - Return query as role has VIEW on " + className + " ---");
 
 				return query;
 			}
@@ -391,8 +408,12 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 					String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
 					role.getRoleId(), ActionKeys.VIEW)) {
 
+				_log.debug("--- #doGetPermissionQuery_6 - Return query as regular role has VIEW on " + className + " ---");
+
 				return query;
 			}
+
+			_log.debug("--- #doGetPermissionQuery_6 - Inner processing groups - START ---");
 
 			for (Group group : groups) {
 				if (advancedPermissionChecker.isGroupAdmin(
@@ -431,6 +452,10 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 				}
 			}
 
+			_log.debug("--- #doGetPermissionQuery_6 - Inner processing groups - END ---");
+
+			_log.debug("--- #doGetPermissionQuery_6 - Inner processing groupIds - START ---");
+
 			if (!ArrayUtil.isEmpty(groupIds)) {
 				for (long groupId : groupIds) {
 					if (ResourcePermissionLocalServiceUtil.
@@ -446,11 +471,19 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 			}
 
 			rolesQuery.addTerm(Field.ROLE_ID, role.getRoleId());
+
+			_log.debug("--- #doGetPermissionQuery_6 - Inner processing groupIds - END ---");
 		}
+
+		_log.debug("--- #doGetPermissionQuery_6 - addRequiredMemberRole(group, rolesQuery) - START ---");
 
 		for (Group group : groups) {
 			addRequiredMemberRole(group, rolesQuery);
 		}
+
+		_log.debug("--- #doGetPermissionQuery_6 - addRequiredMemberRole(group, rolesQuery) - END ---");
+
+		_log.debug("--- #doGetPermissionQuery_6 - rolesQuery.addTerm(...) - START ---");
 
 		for (UserGroupRole userGroupRole : userGroupRoles) {
 			rolesQuery.addTerm(
@@ -458,6 +491,8 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 				userGroupRole.getGroupId() + StringPool.DASH +
 					userGroupRole.getRoleId());
 		}
+
+		_log.debug("--- #doGetPermissionQuery_6 - rolesQuery.addTerm(...) - END ---");
 
 		if (groupsQuery.hasClauses()) {
 			permissionQuery.add(groupsQuery, BooleanClauseOccur.SHOULD);
@@ -471,6 +506,8 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 
 		fullQuery.add(query, BooleanClauseOccur.MUST);
 		fullQuery.add(permissionQuery, BooleanClauseOccur.MUST);
+
+		_log.debug("--- #doGetPermissionQuery_6 - return fullQuery ---");
 
 		return fullQuery;
 	}

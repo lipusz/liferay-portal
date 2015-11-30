@@ -25,6 +25,12 @@ String portletId = portlet.getPortletId();
 String rootPortletId = portlet.getRootPortletId();
 String instanceId = portlet.getInstanceId();
 
+long startTime = System.currentTimeMillis();
+
+if (portlet.getRootPortletId().equals(PortletKeys.ASSET_PUBLISHER)) {
+	_log.info("--- Started rendering Asset Publisher ---");
+}
+
 String portletPrimaryKey = PortletPermissionUtil.getPrimaryKey(plid, portletId);
 
 String columnId = GetterUtil.getString(request.getAttribute(WebKeys.RENDER_PORTLET_COLUMN_ID));
@@ -1122,6 +1128,12 @@ SessionMessages.clear(renderRequestImpl);
 SessionErrors.clear(renderRequestImpl);
 
 renderRequestImpl.cleanUp();
+
+long endTime = System.currentTimeMillis();
+
+if (portlet.getRootPortletId().equals(PortletKeys.ASSET_PUBLISHER)) {
+	_log.info("--- Rendering Asset Publisher took " + ((float)(endTime - startTime) / Time.SECOND) + " second(s) ---");
+}
 %>
 
 <%!
