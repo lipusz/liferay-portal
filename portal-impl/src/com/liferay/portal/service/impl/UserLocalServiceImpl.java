@@ -585,6 +585,50 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 	}
 
+	@Override
+	public void addUserGroupUser(long userGroupId, long userId)
+		throws PortalException {
+
+		userGroupPersistence.addUser(userGroupId, userId);
+
+		reindex(userId);
+
+		PermissionCacheUtil.clearCache(userId);
+	}
+
+	@Override
+	public void addUserGroupUser(long userGroupId, User user)
+		throws PortalException {
+
+		userGroupPersistence.addUser(userGroupId, user);
+
+		reindex(user);
+
+		PermissionCacheUtil.clearCache(user.getUserId());
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public void addUserGroupUsers(long userGroupId, List<User> users)
+		throws PortalException {
+
+		userGroupPersistence.addUsers(userGroupId, users);
+
+		long[] userIds = new long[users.size()];
+
+		int i = 0;
+
+		for (User user : users) {
+			userIds[i] = user.getUserId();
+		}
+
+		reindex(users);
+
+		PermissionCacheUtil.clearCache(userIds);
+	}
+
 	/**
 	 * Adds the users to the user group.
 	 *
@@ -1863,6 +1907,47 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		reindex(userId);
 
 		PermissionCacheUtil.clearCache(userId);
+	}
+
+	/**
+	 * @throws PortalException
+	 */
+	public void deleteUserGroupUser(long userGroupId, User user)
+		throws PortalException {
+
+		userGroupPersistence.removeUser(userGroupId, user);
+
+		reindex(user);
+
+		PermissionCacheUtil.clearCache(user.getUserId());
+	}
+
+	public void deleteUserGroupUsers(long userGroupId, List<User> users)
+		throws PortalException {
+
+		userGroupPersistence.removeUsers(userGroupId, users);
+
+		long[] userIds = new long[users.size()];
+
+		int i = 0;
+
+		for (User user : users) {
+			userIds[i] = user.getUserId();
+		}
+
+		reindex(users);
+
+		PermissionCacheUtil.clearCache(userIds);
+	}
+
+	public void deleteUserGroupUsers(long userGroupId, long[] userIds)
+		throws PortalException {
+
+		userGroupPersistence.removeUsers(userGroupId, userIds);
+
+		reindex(userIds);
+
+		PermissionCacheUtil.clearCache(userIds);
 	}
 
 	/**
@@ -6001,6 +6086,13 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		subscriptionSender.addRuntimeSubscribers(toAddress, toName);
 
 		subscriptionSender.flushNotificationsAsync();
+	}
+
+	protected void reindex(List<User> users) throws SearchException {
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			User.class);
+
+		indexer.reindex(users);
 	}
 
 	protected void reindex(long userId) throws SearchException {

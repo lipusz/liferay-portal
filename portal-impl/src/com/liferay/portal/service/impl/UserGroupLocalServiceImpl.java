@@ -208,6 +208,50 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		return userGroup;
 	}
 
+	@Override
+	public void addUserUserGroup(long userId, long userGroupId)
+		throws PortalException {
+
+		userPersistence.addUserGroup(userId, userGroupId);
+
+		reindexUser(userId);
+
+		PermissionCacheUtil.clearCache(userId);
+	}
+
+	@Override
+	public void addUserUserGroup(long userId, UserGroup userGroup)
+		throws PortalException {
+
+		userPersistence.addUserGroup(userId, userGroup);
+
+		reindexUser(userId);
+
+		PermissionCacheUtil.clearCache(userId);
+	}
+
+	@Override
+	public void addUserUserGroups(long userId, List<UserGroup> userGroups)
+		throws PortalException {
+
+		userPersistence.addUserGroups(userId, userGroups);
+
+		reindexUser(userId);
+
+		PermissionCacheUtil.clearCache(userId);
+	}
+
+	@Override
+	public void addUserUserGroups(long userId, long[] userGroupIds)
+		throws PortalException {
+
+		userPersistence.addUserGroups(userId, userGroupIds);
+
+		reindexUser(userId);
+
+		PermissionCacheUtil.clearCache(userId);
+	}
+
 	/**
 	 * Clears all associations between the user and its user groups and clears
 	 * the permissions cache.
@@ -215,8 +259,10 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	 * @param userId the primary key of the user
 	 */
 	@Override
-	public void clearUserUserGroups(long userId) {
+	public void clearUserUserGroups(long userId) throws PortalException {
 		userPersistence.clearUserGroups(userId);
+
+		reindexUser(userId);
 
 		PermissionCacheUtil.clearCache(userId);
 	}
@@ -380,6 +426,50 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		for (UserGroup userGroup : userGroups) {
 			userGroupLocalService.deleteUserGroup(userGroup);
 		}
+	}
+
+	@Override
+	public void deleteUserUserGroup(long userId, long userGroupId)
+		throws PortalException {
+
+		userPersistence.removeUserGroup(userId, userGroupId);
+
+		reindexUser(userId);
+
+		PermissionCacheUtil.clearCache(userId);
+	}
+
+	@Override
+	public void deleteUserUserGroup(long userId, UserGroup userGroup)
+		throws PortalException {
+
+		userPersistence.removeUserGroup(userId, userGroup);
+
+		reindexUser(userId);
+
+		PermissionCacheUtil.clearCache(userId);
+	}
+
+	@Override
+	public void deleteUserUserGroups(long userId, List<UserGroup> userGroups)
+		throws PortalException {
+
+		userPersistence.removeUserGroups(userId, userGroups);
+
+		reindexUser(userId);
+
+		PermissionCacheUtil.clearCache(userId);
+	}
+
+	@Override
+	public void deleteUserUserGroups(long userId, long[] userGroupIds)
+		throws PortalException {
+
+		userPersistence.removeUserGroups(userId, userGroupIds);
+
+		reindexUser(userId);
+
+		PermissionCacheUtil.clearCache(userId);
 	}
 
 	@Override
@@ -818,12 +908,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		userPersistence.setUserGroups(userId, userGroupIds);
 
-		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-			User.class);
-
-		User user = userLocalService.fetchUser(userId);
-
-		indexer.reindex(user);
+		reindexUser(userId);
 
 		PermissionCacheUtil.clearCache(userId);
 	}
@@ -1131,6 +1216,15 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		}
 
 		return true;
+	}
+
+	protected void reindexUser(long userId) throws PortalException {
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			User.class);
+
+		User user = userLocalService.fetchUser(userId);
+
+		indexer.reindex(user);
 	}
 
 	protected void validate(long userGroupId, long companyId, String name)
