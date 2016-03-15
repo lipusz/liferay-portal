@@ -405,6 +405,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="ClassPK" return-type="Group">
+			<finder-column name="classPK" />
+		</finder>
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
