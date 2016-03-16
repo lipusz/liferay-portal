@@ -493,6 +493,60 @@ public class GroupUtil {
 	}
 
 	/**
+	* Returns the group where classPK = &#63; or throws a {@link NoSuchGroupException} if it could not be found.
+	*
+	* @param classPK the class p k
+	* @return the matching group
+	* @throws NoSuchGroupException if a matching group could not be found
+	*/
+	public static Group findByClassPK(long classPK)
+		throws com.liferay.portal.kernel.exception.NoSuchGroupException {
+		return getPersistence().findByClassPK(classPK);
+	}
+
+	/**
+	* Returns the group where classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param classPK the class p k
+	* @return the matching group, or <code>null</code> if a matching group could not be found
+	*/
+	public static Group fetchByClassPK(long classPK) {
+		return getPersistence().fetchByClassPK(classPK);
+	}
+
+	/**
+	* Returns the group where classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param classPK the class p k
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching group, or <code>null</code> if a matching group could not be found
+	*/
+	public static Group fetchByClassPK(long classPK, boolean retrieveFromCache) {
+		return getPersistence().fetchByClassPK(classPK, retrieveFromCache);
+	}
+
+	/**
+	* Removes the group where classPK = &#63; from the database.
+	*
+	* @param classPK the class p k
+	* @return the group that was removed
+	*/
+	public static Group removeByClassPK(long classPK)
+		throws com.liferay.portal.kernel.exception.NoSuchGroupException {
+		return getPersistence().removeByClassPK(classPK);
+	}
+
+	/**
+	* Returns the number of groups where classPK = &#63;.
+	*
+	* @param classPK the class p k
+	* @return the number of matching groups
+	*/
+	public static int countByClassPK(long classPK) {
+		return getPersistence().countByClassPK(classPK);
+	}
+
+	/**
 	* Returns all the groups where companyId = &#63;.
 	*
 	* @param companyId the company ID
