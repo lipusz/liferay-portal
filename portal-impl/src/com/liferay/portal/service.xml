@@ -408,6 +408,9 @@
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
+		<finder name="ClassPK" return-type="Group">
+			<finder-column name="classPK" />
+		</finder>
 		<finder name="LiveGroupId" return-type="Group">
 			<finder-column name="liveGroupId" />
 		</finder>

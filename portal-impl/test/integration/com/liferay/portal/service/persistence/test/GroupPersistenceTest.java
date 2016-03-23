@@ -228,6 +228,13 @@ public class GroupPersistenceTest {
 	}
 
 	@Test
+	public void testCountByClassPK() throws Exception {
+		_persistence.countByClassPK(RandomTestUtil.nextLong());
+
+		_persistence.countByClassPK(0L);
+	}
+
+	@Test
 	public void testCountByCompanyId() throws Exception {
 		_persistence.countByCompanyId(RandomTestUtil.nextLong());
 
@@ -606,6 +613,10 @@ public class GroupPersistenceTest {
 		Assert.assertEquals(Long.valueOf(existingGroup.getGroupId()),
 			ReflectionTestUtil.<Long>invoke(existingGroup,
 				"getOriginalGroupId", new Class<?>[0]));
+
+		Assert.assertEquals(Long.valueOf(existingGroup.getClassPK()),
+			ReflectionTestUtil.<Long>invoke(existingGroup,
+				"getOriginalClassPK", new Class<?>[0]));
 
 		Assert.assertEquals(Long.valueOf(existingGroup.getLiveGroupId()),
 			ReflectionTestUtil.<Long>invoke(existingGroup,

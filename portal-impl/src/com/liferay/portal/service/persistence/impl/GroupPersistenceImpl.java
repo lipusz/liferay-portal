@@ -1470,6 +1470,214 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "group_.uuid = ? AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(group_.uuid IS NULL OR group_.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "group_.companyId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_CLASSPK = new FinderPath(GroupModelImpl.ENTITY_CACHE_ENABLED,
+			GroupModelImpl.FINDER_CACHE_ENABLED, GroupImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByClassPK",
+			new String[] { Long.class.getName() },
+			GroupModelImpl.CLASSPK_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_CLASSPK = new FinderPath(GroupModelImpl.ENTITY_CACHE_ENABLED,
+			GroupModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByClassPK",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns the group where classPK = &#63; or throws a {@link NoSuchGroupException} if it could not be found.
+	 *
+	 * @param classPK the class p k
+	 * @return the matching group
+	 * @throws NoSuchGroupException if a matching group could not be found
+	 */
+	@Override
+	public Group findByClassPK(long classPK) throws NoSuchGroupException {
+		Group group = fetchByClassPK(classPK);
+
+		if (group == null) {
+			StringBundler msg = new StringBundler(4);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("classPK=");
+			msg.append(classPK);
+
+			msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+			if (_log.isWarnEnabled()) {
+				_log.warn(msg.toString());
+			}
+
+			throw new NoSuchGroupException(msg.toString());
+		}
+
+		return group;
+	}
+
+	/**
+	 * Returns the group where classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param classPK the class p k
+	 * @return the matching group, or <code>null</code> if a matching group could not be found
+	 */
+	@Override
+	public Group fetchByClassPK(long classPK) {
+		return fetchByClassPK(classPK, true);
+	}
+
+	/**
+	 * Returns the group where classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param classPK the class p k
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching group, or <code>null</code> if a matching group could not be found
+	 */
+	@Override
+	public Group fetchByClassPK(long classPK, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { classPK };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_CLASSPK,
+					finderArgs, this);
+		}
+
+		if (result instanceof Group) {
+			Group group = (Group)result;
+
+			if ((classPK != group.getClassPK())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_SELECT_GROUP__WHERE);
+
+			query.append(_FINDER_COLUMN_CLASSPK_CLASSPK_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(classPK);
+
+				List<Group> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_CLASSPK,
+						finderArgs, list);
+				}
+				else {
+					if ((list.size() > 1) && _log.isWarnEnabled()) {
+						_log.warn(
+							"GroupPersistenceImpl.fetchByClassPK(long, boolean) with parameters (" +
+							StringUtil.merge(finderArgs) +
+							") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+					}
+
+					Group group = list.get(0);
+
+					result = group;
+
+					cacheResult(group);
+
+					if ((group.getClassPK() != classPK)) {
+						finderCache.putResult(FINDER_PATH_FETCH_BY_CLASSPK,
+							finderArgs, group);
+					}
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_CLASSPK,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Group)result;
+		}
+	}
+
+	/**
+	 * Removes the group where classPK = &#63; from the database.
+	 *
+	 * @param classPK the class p k
+	 * @return the group that was removed
+	 */
+	@Override
+	public Group removeByClassPK(long classPK) throws NoSuchGroupException {
+		Group group = findByClassPK(classPK);
+
+		return remove(group);
+	}
+
+	/**
+	 * Returns the number of groups where classPK = &#63;.
+	 *
+	 * @param classPK the class p k
+	 * @return the number of matching groups
+	 */
+	@Override
+	public int countByClassPK(long classPK) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_CLASSPK;
+
+		Object[] finderArgs = new Object[] { classPK };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_GROUP__WHERE);
+
+			query.append(_FINDER_COLUMN_CLASSPK_CLASSPK_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(classPK);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_CLASSPK_CLASSPK_2 = "group_.classPK = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_COMPANYID =
 		new FinderPath(GroupModelImpl.ENTITY_CACHE_ENABLED,
 			GroupModelImpl.FINDER_CACHE_ENABLED, GroupImpl.class,
@@ -8867,6 +9075,9 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { group.getUuid(), group.getGroupId() }, group);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_CLASSPK,
+			new Object[] { group.getClassPK() }, group);
+
 		finderCache.putResult(FINDER_PATH_FETCH_BY_LIVEGROUPID,
 			new Object[] { group.getLiveGroupId() }, group);
 
@@ -8973,6 +9184,13 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 				groupModelImpl);
 
+			args = new Object[] { groupModelImpl.getClassPK() };
+
+			finderCache.putResult(FINDER_PATH_COUNT_BY_CLASSPK, args,
+				Long.valueOf(1));
+			finderCache.putResult(FINDER_PATH_FETCH_BY_CLASSPK, args,
+				groupModelImpl);
+
 			args = new Object[] { groupModelImpl.getLiveGroupId() };
 
 			finderCache.putResult(FINDER_PATH_COUNT_BY_LIVEGROUPID, args,
@@ -9041,6 +9259,16 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 					Long.valueOf(1));
 				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+					groupModelImpl);
+			}
+
+			if ((groupModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_CLASSPK.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] { groupModelImpl.getClassPK() };
+
+				finderCache.putResult(FINDER_PATH_COUNT_BY_CLASSPK, args,
+					Long.valueOf(1));
+				finderCache.putResult(FINDER_PATH_FETCH_BY_CLASSPK, args,
 					groupModelImpl);
 			}
 
@@ -9142,6 +9370,19 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		args = new Object[] { groupModelImpl.getClassPK() };
+
+		finderCache.removeResult(FINDER_PATH_COUNT_BY_CLASSPK, args);
+		finderCache.removeResult(FINDER_PATH_FETCH_BY_CLASSPK, args);
+
+		if ((groupModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_CLASSPK.getColumnBitmask()) != 0) {
+			args = new Object[] { groupModelImpl.getOriginalClassPK() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_CLASSPK, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_CLASSPK, args);
 		}
 
 		args = new Object[] { groupModelImpl.getLiveGroupId() };
