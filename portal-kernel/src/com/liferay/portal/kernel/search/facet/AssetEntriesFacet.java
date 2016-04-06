@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 
 /**
  * @author Raymond Augé
@@ -60,6 +61,8 @@ public class AssetEntriesFacet extends MultiValueFacet {
 
 	@Override
 	protected BooleanClause<Filter> doGetFacetFilterBooleanClause() {
+		long mainStartTime = System.currentTimeMillis();
+
 		SearchContext searchContext = getSearchContext();
 
 		String[] entryClassNames = searchContext.getEntryClassNames();
@@ -80,9 +83,20 @@ public class AssetEntriesFacet extends MultiValueFacet {
 			}
 
 			try {
+				long startTime = System.currentTimeMillis();
+
 				BooleanFilter indexerBooleanFilter =
 					indexer.getFacetBooleanFilter(
 						entryClassName, searchContext);
+
+				long endTime = System.currentTimeMillis();
+
+				float searchTime = (float)(endTime - startTime) / Time.SECOND;
+
+				_log.info(
+					"--- " + indexer.getClassName() +
+					".getFacetBooleanFilter( " + entryClassName +
+					", searchContext) took " + searchTime + " second(s)");
 
 				if ((indexerBooleanFilter == null) ||
 					!indexerBooleanFilter.hasClauses()) {
@@ -132,6 +146,13 @@ public class AssetEntriesFacet extends MultiValueFacet {
 				_log.error(e, e);
 			}
 		}
+
+		long mainEndTime = System.currentTimeMillis();
+
+		float mainSearchTime =
+			(float)(mainEndTime - mainStartTime) / Time.SECOND;
+
+		_log.info("--- Processing took " + mainSearchTime + " second(s)");
 
 		if (!facetFilter.hasClauses()) {
 			return null;

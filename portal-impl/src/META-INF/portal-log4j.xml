@@ -1244,6 +1244,18 @@
 		<priority value="WARN" />
 	</category>
 
+	<category name="com.liferay.portal.kernel.search.facet.AssetEntriesFacet">
+		<priority value="INFO" />
+	</category>
+
+	<category name="com.liferay.portlet.asset.service.impl.AssetEntryServiceImpl">
+		<priority value="INFO" />
+	</category>
+
+	<category name="portal-web.docroot.html.portal.render_portlet.jsp">
+		<priority value="INFO" />
+	</category>
+
 	<root>
 		<priority value="INFO" />
 		<appender-ref ref="CONSOLE" />

@@ -713,6 +713,8 @@ public class AssetPublisherUtil {
 			PortletPreferences portletPreferences)
 		throws Exception {
 
+		_log.debug("--- Start search");
+
 		AssetEntryQuery assetEntryQuery =
 			assetPublisherDisplayContext.getAssetEntryQuery();
 
@@ -1534,6 +1536,8 @@ public class AssetPublisherUtil {
 		if (!assetEntries.isEmpty() && (start < total)) {
 			assetEntryResults.add(new AssetEntryResult(assetEntries));
 		}
+
+		_log.debug("--- Returning results");
 
 		return assetEntryResults;
 	}

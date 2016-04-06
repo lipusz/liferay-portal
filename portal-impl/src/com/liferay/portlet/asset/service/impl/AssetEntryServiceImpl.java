@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.service.base.AssetEntryServiceBaseImpl;
 import com.liferay.portlet.asset.service.permission.AssetEntryPermission;
@@ -96,6 +97,8 @@ public class AssetEntryServiceImpl extends AssetEntryServiceBaseImpl {
 	public List<AssetEntry> getEntries(AssetEntryQuery entryQuery)
 		throws PortalException {
 
+		long startTime = System.currentTimeMillis();
+
 		AssetEntryQuery filteredEntryQuery = buildFilteredEntryQuery(
 			entryQuery);
 
@@ -105,7 +108,17 @@ public class AssetEntryServiceImpl extends AssetEntryServiceBaseImpl {
 
 		Object[] results = filterEntryQuery(filteredEntryQuery, false);
 
-		return (List<AssetEntry>)results[0];
+		List<AssetEntry> resultList = (List<AssetEntry>)results[0];
+
+		long endTime = System.currentTimeMillis();
+
+		 float searchTime = (float)(endTime - startTime) / Time.SECOND;
+
+		 _log.info(
+			"--- Search found " + resultList.size() + " results in " +
+			searchTime + " second(s");
+
+		 return resultList;
 	}
 
 	@Override

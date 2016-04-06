@@ -29,9 +29,11 @@ import com.liferay.asset.publisher.web.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.web.util.AssetPublisherUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.PortletConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -56,8 +58,11 @@ import com.liferay.portlet.asset.util.AssetUtil;
 import java.io.Serializable;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.portlet.PortletConfig;
@@ -172,7 +177,7 @@ public class AssetPublisherDisplayContext {
 		String portletName = getPortletName();
 
 		if (!portletName.equals(AssetPublisherPortletKeys.RELATED_ASSETS)) {
-			_assetEntryQuery.setGroupIds(getGroupIds());
+			_assetEntryQuery.setGroupIds(_addChildSites(getGroupIds()));
 		}
 
 		_assetEntryQuery.setClassTypeIds(getClassTypeIds());
@@ -1233,6 +1238,33 @@ public class AssetPublisherDisplayContext {
 			_ddmStructureFieldLabel = classTypeField.getLabel();
 		}
 	}
+
+ 	private static long[] _addChildSites(
+		long[] groupIds) throws PortalException {
+
+		Set<Long> siteGroupIds = new HashSet<Long>();
+
+		for (long groupId : groupIds) {
+			Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+			_addGroupAndChildren(group, siteGroupIds);
+		}
+
+		return ArrayUtil.toLongArray(siteGroupIds);
+	}
+
+	private static void _addGroupAndChildren(
+		Group group, Set<Long> siteGroupIds) throws PortalException {
+
+		siteGroupIds.add(group.getGroupId());
+
+		List<Group> childGroups = group.getChildren(true);
+
+		for(Group childGroup : childGroups) {
+			_addGroupAndChildren(childGroup, siteGroupIds);
+		}
+	}
+
 
 	private Integer _abstractLength;
 	private long[] _allAssetCategoryIds;

@@ -17,6 +17,8 @@
 <%@ include file="/html/portal/init.jsp" %>
 
 <%
+long startTime = System.currentTimeMillis();
+
 String cmd = ParamUtil.getString(request, Constants.CMD);
 
 Portlet portlet = (Portlet)request.getAttribute(WebKeys.RENDER_PORTLET);
@@ -1238,6 +1240,12 @@ SessionMessages.clear(renderRequestImpl);
 SessionErrors.clear(renderRequestImpl);
 
 renderRequestImpl.cleanUp();
+
+long endTime = System.currentTimeMillis();
+
+if (portletId.startsWith("com_liferay_search_web_portlet_SearchPortlet") || portletId.startsWith("com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet")) {
+	_log.info("--- Rendering " + portletId + " took " + ((float)(endTime - startTime) / Time.SECOND) + " second(s) ---");
+}
 %>
 
 <%!
