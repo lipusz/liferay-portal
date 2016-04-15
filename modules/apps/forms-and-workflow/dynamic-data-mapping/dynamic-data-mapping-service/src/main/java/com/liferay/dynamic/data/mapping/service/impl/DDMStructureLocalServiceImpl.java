@@ -37,6 +37,7 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.service.base.DDMStructureLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.service.permission.DDMStructurePermission;
 import com.liferay.dynamic.data.mapping.storage.StorageType;
+import com.liferay.dynamic.data.mapping.util.BackgroundTaskParams;
 import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.dynamic.data.mapping.util.DDMXML;
 import com.liferay.dynamic.data.mapping.util.impl.DDMFormTemplateSynchonizer;
@@ -1685,6 +1686,7 @@ public class DDMStructureLocalServiceImpl
 		Map<String, Serializable> taskContextMap = new HashMap<>();
 
 		taskContextMap.put("structureId", structure.getStructureId());
+		taskContextMap.put("params", new BackgroundTaskParams("testField"));
 
 		backgroundTaskmanager.addBackgroundTask(
 			structure.getUserId(), structure.getGroupId(), backgroundTaskName,
