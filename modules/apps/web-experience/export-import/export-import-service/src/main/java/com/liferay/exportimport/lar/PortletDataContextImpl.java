@@ -105,6 +105,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.ClassLoaderReference;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 import com.thoughtworks.xstream.security.NoTypePermission;
+import com.thoughtworks.xstream.security.PrimitiveTypePermission;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -2452,6 +2453,9 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 		_xStream.addPermission(NoTypePermission.NONE);
 
+		// Add permissions
+
+		_xStream.addPermission(PrimitiveTypePermission.PRIMITIVES);
 		_xStream.addPermission(
 			XStreamStagedModelTypeHierarchyPermission.STAGED_MODELS);
 
@@ -2460,12 +2464,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 		_xStream.allowTypeHierarchy(Timestamp.class);
 		_xStream.allowTypeHierarchy(Set.class);
 
-		Class[] types = new Class[] {
-			Boolean.class, Date.class, Integer.class, String.class,
-			Locale.class, Long.class
-		};
-
-		_xStream.allowTypes(types);
+		_xStream.allowTypes(_XSTREAM_DEFAULT_ALLOWED_TYPES);
 
 		_xStream.allowTypes(allowedTypeNames.toArray(new String[0]));
 
@@ -2504,6 +2503,13 @@ public class PortletDataContextImpl implements PortletDataContext {
 			element.addAttribute("attached-class-name", attachedClassName);
 		}
 	}
+
+	private static final Class<?>[] _XSTREAM_DEFAULT_ALLOWED_TYPES =
+		new Class[] {
+			Date.class, Locale.class, String.class, boolean[].class,
+			byte[].class, double[].class, float[].class, int[].class,
+			long[].class, String[].class
+		};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortletDataContextImpl.class);
