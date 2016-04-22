@@ -48,12 +48,6 @@ public class CreateAnonymousAccountMVCRenderCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		Company company = themeDisplay.getCompany();
-
-		if (!company.isStrangers()) {
-			return "/login.jsp";
-		}
-
 		PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(
 			JavaConstants.JAVAX_PORTLET_CONFIG);
 
