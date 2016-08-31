@@ -3907,7 +3907,7 @@ public class StringUtil {
 
 		s = s.trim();
 
-		return s.split("[\r\n]");
+		return s.split("(\r\n)|[\r\n]");
 	}
 
 	/**
