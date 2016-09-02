@@ -11,6 +11,7 @@
 >
 	<property name="test.properties" value="portal-test.properties" />
 
+
 	<import file="../build-common-java.xml" />
 
 	<property name="copy.jar" value="false" />
