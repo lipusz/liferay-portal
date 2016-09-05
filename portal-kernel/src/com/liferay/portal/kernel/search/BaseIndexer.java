@@ -1671,6 +1671,17 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		String fieldName = ExpandoBridgeIndexerUtil.encodeFieldName(
 			attributeName);
 
+		SearchEngine searchEngine = SearchEngineHelperUtil.getSearchEngine(
+				searchContext.getSearchEngineId());
+		
+		if (searchEngine.getVendor().equalsIgnoreCase("Solr") &&
+				fieldName.contains(StringPool.SPACE)) {
+			
+			fieldName = StringUtil.replace(
+				fieldName, StringPool.SPACE,
+				StringPool.BACK_SLASH + StringPool.SPACE);
+		}
+
 		if (expandoColumn.getType() ==
 				ExpandoColumnConstants.STRING_LOCALIZED) {
 
