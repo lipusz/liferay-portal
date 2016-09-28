@@ -35,10 +35,13 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.asset.service.permission.AssetVocabularyPermission;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -111,18 +114,40 @@ public class AssetVocabularyIndexer extends BaseIndexer<AssetVocabulary> {
 
 		Document document = getBaseModelDocument(CLASS_NAME, assetVocabulary);
 
+		Locale siteDefaultLocale = PortalUtil.getSiteDefaultLocale(
+			assetVocabulary.getGroupId());
+
 		document.addKeyword(
 			Field.ASSET_VOCABULARY_ID, assetVocabulary.getVocabularyId());
 		document.addLocalizedText(
-			Field.DESCRIPTION, assetVocabulary.getDescriptionMap());
+				Field.DESCRIPTION,
+				_copyMapAddingDefaultLocale(
+					assetVocabulary.getDescriptionMap(), siteDefaultLocale));
 		document.addText(Field.NAME, assetVocabulary.getName());
-		document.addLocalizedText(Field.TITLE, assetVocabulary.getTitleMap());
+		document.addLocalizedText(
+			Field.TITLE,
+			_copyMapAddingDefaultLocale(
+				assetVocabulary.getTitleMap(), siteDefaultLocale));
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Document " + assetVocabulary + " indexed successfully");
 		}
 
 		return document;
+	}
+
+	private Map<Locale, String> _copyMapAddingDefaultLocale(
+			Map<Locale, String> map, Locale siteDefaultLocale) {
+
+			Map<Locale, String> newMap = new HashMap<>();
+
+			if (map.containsKey(siteDefaultLocale)) {
+				newMap.put(Locale.ROOT, map.get(siteDefaultLocale));
+			}
+
+			map.forEach(newMap::put);
+
+			return newMap;
 	}
 
 	@Override

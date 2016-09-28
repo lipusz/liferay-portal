@@ -37,12 +37,15 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.asset.service.permission.AssetCategoryPermission;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -164,15 +167,24 @@ public class AssetCategoryIndexer extends BaseIndexer<AssetCategory> {
 		addSearchAssetCategoryTitles(
 			document, Field.ASSET_CATEGORY_TITLE, categories);
 
+		Locale siteDefaultLocale = PortalUtil.getSiteDefaultLocale(
+			assetCategory.getGroupId());
+
 		document.addKeyword(
 			Field.ASSET_PARENT_CATEGORY_ID,
 			assetCategory.getParentCategoryId());
 		document.addKeyword(
 			Field.ASSET_VOCABULARY_ID, assetCategory.getVocabularyId());
 		document.addLocalizedText(
-			Field.DESCRIPTION, assetCategory.getDescriptionMap());
+				Field.DESCRIPTION,
+				_copyMapAddingDefaultLocale(
+					assetCategory.getDescriptionMap(), siteDefaultLocale));
 		document.addText(Field.NAME, assetCategory.getName());
-		document.addLocalizedText(Field.TITLE, assetCategory.getTitleMap());
+
+		document.addLocalizedText(
+			Field.TITLE,
+			_copyMapAddingDefaultLocale(
+				assetCategory.getTitleMap(), siteDefaultLocale));
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Document " + assetCategory + " indexed successfully");
@@ -247,6 +259,20 @@ public class AssetCategoryIndexer extends BaseIndexer<AssetCategory> {
 		indexableActionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
 		indexableActionableDynamicQuery.performActions();
+	}
+
+	private Map<Locale, String> _copyMapAddingDefaultLocale(
+		Map<Locale, String> map, Locale siteDefaultLocale) {
+
+		Map<Locale, String> newMap = new HashMap<>();
+
+		if (map.containsKey(siteDefaultLocale)) {
+			newMap.put(Locale.ROOT, map.get(siteDefaultLocale));
+		}
+
+		map.forEach(newMap::put);
+
+		return newMap;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

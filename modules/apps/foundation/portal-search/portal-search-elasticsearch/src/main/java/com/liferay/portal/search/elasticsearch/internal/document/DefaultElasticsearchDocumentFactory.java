@@ -135,6 +135,11 @@ public class DefaultElasticsearchDocumentFactory
 
 				Locale locale = entry.getKey();
 
+				if (locale.equals(Locale.ROOT)) {
+					addField(xContentBuilder, field, name, value);
+					continue;
+				}
+
 				String languageId = LocaleUtil.toLanguageId(locale);
 
 				String defaultLanguageId = LocaleUtil.toLanguageId(
@@ -142,7 +147,9 @@ public class DefaultElasticsearchDocumentFactory
 
 				value = value.trim();
 
-				if (languageId.equals(defaultLanguageId)) {
+				if (languageId.equals(defaultLanguageId) &&
+					!localizedValues.containsKey(Locale.ROOT)) {
+
 					addField(xContentBuilder, field, name, value);
 				}
 
