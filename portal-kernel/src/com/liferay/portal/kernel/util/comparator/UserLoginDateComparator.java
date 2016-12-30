@@ -24,10 +24,12 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 public class UserLoginDateComparator extends OrderByComparator<User> {
 
 	public static final String ORDER_BY_ASC =
-		"loginDate ASC, lastName ASC, firstName ASC, middleName ASC";
+		"User_.loginDate ASC, User_.lastName ASC, User_.firstName ASC, " +
+			"User_.middleName ASC";
 
 	public static final String ORDER_BY_DESC =
-		"loginDate DESC, lastName DESC, firstName DESC, middleName DESC";
+		"User_.loginDate DESC, User_.lastName DESC, User_.firstName DESC, " +
+			"User_.middleName DESC";
 
 	public static final String[] ORDER_BY_FIELDS = {
 		"loginDate", "lastName", "firstName", "middleName"
