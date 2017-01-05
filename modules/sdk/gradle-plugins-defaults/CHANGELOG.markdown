@@ -871,6 +871,18 @@ portal tool by setting the project property `[portal tool name].ignore.local`.
 - [LPS-69719]: Exclude `**/archetype-resources/**.java` files from the
 `.classpath` file to avoid compilation errors in Eclipse.
 
+## 2.4.7 - 2017-01-04
+
+### Fixed
+- [LPS-61987] Fix snapshot timestamp version enforcement when `-Psnapshot` is
+used.
+
+## 2.4.8 - 2017-01-04
+
+### Changed
+- [LPS-69899]: Update the [Liferay Gradle Plugins Baseline] dependency to
+version 1.1.1.
+
 [Liferay CDN]: https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public
 [Liferay Gradle Plugins]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins
 [Liferay Gradle Plugins App Javadoc Builder]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins-app-javadoc-builder
@@ -952,6 +964,7 @@ portal tool by setting the project property `[portal tool name].ignore.local`.
 [LPS-69824]: https://issues.liferay.com/browse/LPS-69824
 [LPS-69838]: https://issues.liferay.com/browse/LPS-69838
 [LPS-69847]: https://issues.liferay.com/browse/LPS-69847
+[LPS-69899]: https://issues.liferay.com/browse/LPS-69899
 [LPS-69920]: https://issues.liferay.com/browse/LPS-69920
 [LRDOCS-2594]: https://issues.liferay.com/browse/LRDOCS-2594
 [LRDOCS-2841]: https://issues.liferay.com/browse/LRDOCS-2841
