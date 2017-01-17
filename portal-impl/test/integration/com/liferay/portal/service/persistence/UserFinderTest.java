@@ -32,9 +32,12 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.comparator.UserFirstNameComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
+import com.liferay.social.kernel.model.SocialRelationConstants;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -315,6 +318,21 @@ public class UserFinderTest {
 		Assert.assertTrue(users.contains(_userGroupUser));
 		Assert.assertTrue(users.contains(TestPropsValues.getUser()));
 		Assert.assertEquals(expectedUsers.size() + 2, users.size());
+	}
+
+	/**
+	 * Test which is supposed to fail on PostgreSQL if the fields are not
+	 * prefixed in the order-by clause.
+	 */
+	@Test
+	public void testFindBySocialUsers() throws Exception {
+		List<User> socialUsers = UserFinderUtil.findBySocialUsers(
+			TestPropsValues.getCompanyId(), _groupUser.getUserId(),
+			SocialRelationConstants.TYPE_BI_CONNECTION, StringPool.NOT_EQUAL,
+			WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			new UserFirstNameComparator(true));
+
+		Assert.assertTrue(socialUsers.isEmpty());
 	}
 
 	private static Group _group;
