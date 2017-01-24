@@ -70,6 +70,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashRenderer;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -1697,6 +1698,17 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 		String fieldName = ExpandoBridgeIndexerUtil.encodeFieldName(
 			attributeName, indexType);
+
+		SearchEngine searchEngine = SearchEngineHelperUtil.getSearchEngine(
+			searchContext.getSearchEngineId());
+
+		if (StringUtil.equalsIgnoreCase(searchEngine.getVendor(), "Solr") &&
+			fieldName.contains(StringPool.SPACE)) {
+
+			fieldName = StringUtil.replace(
+				fieldName, CharPool.SPACE,
+				StringPool.BACK_SLASH + StringPool.SPACE);
+		}
 
 		if (expandoColumn.getType() ==
 				ExpandoColumnConstants.STRING_LOCALIZED) {
