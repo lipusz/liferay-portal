@@ -103,10 +103,7 @@ public class SerializableBlobProxy implements InvocationHandler, Serializable {
 	 * @return The class loader appropriate for proxy construction.
 	 */
 	public static ClassLoader getProxyClassLoader() {
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		if ( cl == null ) {
-			cl = WrappedBlob.class.getClassLoader();
-		}
-		return cl;
+		return WrappedBlob.class.getClassLoader();
 	}
 }
+/* @generated */
