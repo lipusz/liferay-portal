@@ -342,6 +342,17 @@ public class UserFinderTest {
 		Assert.assertEquals(users.toString(), 1, users.size());
 	}
 
+	@Test
+	public void testFindBySocialUsers() throws Exception {
+		List<User> socialUsers = UserFinderUtil.findBySocialUsers(
+			TestPropsValues.getCompanyId(), _groupUser.getUserId(),
+			SocialRelationConstants.TYPE_BI_CONNECTION, StringPool.EQUAL,
+			WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, new UserFirstNameComparator(true));
+
+		Assert.assertEquals(1, socialUsers.size());
+	}
+
 	private static Group _group;
 	private static User _groupUser;
 	private static Organization _organization;
