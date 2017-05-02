@@ -372,6 +372,8 @@ com/liferay/portal/kernel/portletfilerepository/PortletFileRepositoryUtil.getPor
 com/liferay/portal/kernel/security/permission/ResourceActionsUtil.getModelResource(Ljava/util/Locale;Ljava/lang/String;)Ljava/lang/String;:0
 com/liferay/portal/kernel/security/permission/ResourceActionsUtil.getModelResource(Ljavax/servlet/http/HttpServletRequest;Ljava/lang/String;)Ljava/lang/String;:0
 
+com/liferay/portal/kernel/security/auth/AuthTokenUtil.getToken(Ljavax/servlet/http/HttpServletRequest;JLjava/lang/String;)Ljava/lang/String;:SAFE
+
 com/liferay/portal/kernel/util/LocaleUtil.getLongDisplayName(Ljava/util/Locale;Ljava/util/Set;)Ljava/lang/String;:0,1
 com/liferay/portal/kernel/util/LocaleUtil.getShortDisplayName(Ljava/util/Locale;Ljava/util/Set;)Ljava/lang/String;:0,1
 com/liferay/portal/kernel/util/LocaleUtil.toBCP47LanguageId(Ljava/util/Locale;)Ljava/lang/String;:0
