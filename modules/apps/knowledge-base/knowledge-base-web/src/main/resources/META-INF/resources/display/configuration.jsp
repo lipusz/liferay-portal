@@ -153,7 +153,7 @@ kbDisplayPortletInstanceConfiguration = ParameterMapUtil.setParameterMap(KBDispl
 							<portlet:param name="eventName" value="<%= liferayPortletResponse.getNamespace() + "selectKBObject" %>" />
 						</liferay-portlet:renderURL>
 
-						uri: '<%= selectKBObjectURL %>'
+						uri: '<%= HtmlUtil.escapeJS(selectKBObjectURL) %>'
 					},
 					function(event) {
 						document.<portlet:namespace />fm.<portlet:namespace />resourceClassNameId.value = event.resourceclassnameid;
