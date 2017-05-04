@@ -1,4 +1,8 @@
 -- taglibs
 com/liferay/taglib/aui/ATag.setTitle(Ljava/lang/String;)V:0
+com/liferay/taglib/aui/OptionTag.setLabel(Ljava/lang/String;)V:0
+com/liferay/taglib/aui/OptionTag.setValue(Ljava/lang/Object;)V:0
+com/liferay/taglib/aui/OptionTag.setCssClass(Ljava/lang/String;)V:0
+com/liferay/taglib/aui/OptionTag.setStyle(Ljava/lang/String;)V:0
 com/liferay/taglib/ui/MessageTag.setArguments(Ljava/lang/Object;)V:0
 com/liferay/taglib/ui/MessageTag.setKey(Ljava/lang/String;)V:0
