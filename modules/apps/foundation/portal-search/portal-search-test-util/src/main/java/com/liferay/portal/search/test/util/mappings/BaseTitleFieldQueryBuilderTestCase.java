@@ -14,12 +14,17 @@
 
 package com.liferay.portal.search.test.util.mappings;
 
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.generic.StringQuery;
 import com.liferay.portal.search.analysis.FieldQueryBuilder;
 import com.liferay.portal.search.internal.analysis.SimpleKeywordTokenizer;
 import com.liferay.portal.search.internal.analysis.TitleFieldQueryBuilder;
 
 import java.util.Arrays;
+
+import org.junit.Assert;
 
 /**
  * @author André de Oliveira
@@ -261,6 +266,26 @@ public abstract class BaseTitleFieldQueryBuilderTestCase
 
 		assertSearch("Names of tags", 2);
 		assertSearch("tags names", 2);
+	}
+
+	protected void testStringQuery() throws Exception {
+		addDocument("java");
+		addDocument("eclipse");
+		addDocument("liferay");
+
+		String query = "title:(java OR eclipse)";
+
+		StringQuery stringQuery = new StringQuery(query);
+
+		Hits hits = search(createSearchContext(), stringQuery);
+
+		Document[] docs = hits.getDocs();
+
+		if (docs.length == 0) {
+			return;
+		}
+
+		Assert.assertEquals(query, 2, docs.length);
 	}
 
 	protected void testWordPrefixes() throws Exception {
