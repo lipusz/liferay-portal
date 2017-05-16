@@ -25,28 +25,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Raymond Augé
  */
-@Component(immediate = true)
+//@Component(immediate = true)
 public class IndexerPostProcessorRegistry {
 
 	public List<IndexerPostProcessor> getPostProcessors(String className) {
 		return _indexerPostProcessors.get(className);
 	}
 
-	@Reference(
-		cardinality = ReferenceCardinality.MULTIPLE,
-		policy = ReferencePolicy.DYNAMIC,
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(indexer.class.name=*)", unbind = "removeIndexerPostProcessor"
-	)
 	protected void addIndexerPostProcessor(
 		IndexerPostProcessor indexerPostProcessor,
 		Map<String, Object> properties) {
