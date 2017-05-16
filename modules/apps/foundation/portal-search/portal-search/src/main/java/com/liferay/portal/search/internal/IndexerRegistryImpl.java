@@ -18,6 +18,7 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerPostProcessor;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.dummy.DummyIndexer;
 import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistry;
@@ -29,6 +30,7 @@ import com.liferay.portal.search.configuration.IndexerRegistryConfiguration;
 import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.portal.search.internal.buffer.BufferedIndexerInvocationHandler;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +105,23 @@ public class IndexerRegistryImpl implements IndexerRegistry {
 		_indexers.put(clazz.getName(), indexer);
 
 		_indexers.put(indexer.getClassName(), indexer);
+
+		List<IndexerPostProcessor> indexerPP =
+			_indexerPostProcessorRegistry.getPostProcessors(
+				indexer.getClassName());
+
+		if (!indexerPP.isEmpty()) {
+			Map<String, Object> properties = new HashMap<>();
+
+			properties.put("indexer.class.name", indexer.getClassName());
+
+			for (IndexerPostProcessor indexerPostProcessor : indexerPP) {
+				indexer.registerIndexerPostProcessor(indexerPostProcessor);
+
+				_indexerPostProcessorRegistry.removeIndexerPostProcessor(
+					indexerPostProcessor, properties);
+			}
+		}
 	}
 
 	@Override
@@ -232,6 +251,10 @@ public class IndexerRegistryImpl implements IndexerRegistry {
 		_defaultIndexerRequestBufferOverflowHandler;
 
 	private final Indexer<?> _dummyIndexer = new DummyIndexer();
+
+	@Reference
+	private IndexerPostProcessorRegistry _indexerPostProcessorRegistry;
+
 	private volatile IndexerRegistryConfiguration _indexerRegistryConfiguration;
 	private volatile IndexerRequestBufferOverflowHandler
 		_indexerRequestBufferOverflowHandler;

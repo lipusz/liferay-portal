@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.search.IndexerRegistry;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,6 +36,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  */
 @Component(immediate = true)
 public class IndexerPostProcessorRegistry {
+
+	public List<IndexerPostProcessor> getPostProcessors(String className) {
+		return _indexerPostProcessors.get(className);
+	}
 
 	@Reference(
 		cardinality = ReferenceCardinality.MULTIPLE,
@@ -53,7 +58,16 @@ public class IndexerPostProcessorRegistry {
 			Indexer<?> indexer = _indexerRegistry.getIndexer(indexerClassName);
 
 			if (indexer == null) {
-				_log.error("No indexer exists for " + indexerClassName);
+				List<IndexerPostProcessor> indexerPP =
+					_indexerPostProcessors.get(indexerClassName);
+
+				indexerPP.add(indexerPostProcessor);
+
+				_indexerPostProcessors.put(indexerClassName, indexerPP);
+
+				if (_log.isDebugEnabled()) {
+					_log.debug("No indexer exists for " + indexerClassName);
+				}
 
 				continue;
 			}
@@ -73,17 +87,24 @@ public class IndexerPostProcessorRegistry {
 			Indexer<?> indexer = _indexerRegistry.getIndexer(indexerClassName);
 
 			if (indexer == null) {
-				_log.error("No indexer exists for " + indexerClassName);
+				if (_log.isDebugEnabled()) {
+					_log.debug("No indexer exists for " + indexerClassName);
+				}
 
 				continue;
 			}
 
 			indexer.unregisterIndexerPostProcessor(indexerPostProcessor);
+
+			_indexerPostProcessors.remove(indexerClassName);
 		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		IndexerPostProcessorRegistry.class);
+
+	private final Map<String, List<IndexerPostProcessor>>
+		_indexerPostProcessors = new ConcurrentHashMap<>();
 
 	@Reference
 	private IndexerRegistry _indexerRegistry;
