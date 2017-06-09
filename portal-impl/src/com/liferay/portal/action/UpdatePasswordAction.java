@@ -110,7 +110,9 @@ public class UpdatePasswordAction implements Action {
 					SessionErrors.add(request, ule.getClass());
 				}
 
-				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED) {
+				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
+					PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
+
 					PortletURL portletURL = PortletURLFactoryUtil.create(
 						request, PortletKeys.LOGIN, themeDisplay.getPlid(),
 						PortletRequest.RENDER_PHASE);
@@ -138,7 +140,9 @@ public class UpdatePasswordAction implements Action {
 
 			String redirect;
 
-			if (PropsValues.USERS_REMINDER_QUERIES_ENABLED) {
+			if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
+				PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
+
 				redirect = PortalUtil.getHomeURL(request);
 			}
 			else {
