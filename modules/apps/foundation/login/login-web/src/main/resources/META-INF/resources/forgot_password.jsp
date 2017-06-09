@@ -103,7 +103,7 @@ if (reminderAttempts == null) {
 				</c:if>
 
 				<aui:button-row>
-					<aui:button cssClass="btn-lg" type="submit" value="request-a-new-password-reset-link"/>
+					<aui:button cssClass="btn-lg" type="submit" value="request-a-new-password-reset-link" />
 				</aui:button-row>
 			</c:when>
 			<c:when test="<%= (user2 != null) && Validator.isNotNull(user2.getEmailAddress()) %>">
@@ -138,7 +138,7 @@ if (reminderAttempts == null) {
 						</c:if>
 
 						<aui:button-row>
-							<aui:button cssClass="btn-lg" type="submit" value="next"/>
+							<aui:button cssClass="btn-lg" type="submit" value="next" />
 						</aui:button-row>
 					</c:otherwise>
 				</c:choose>
