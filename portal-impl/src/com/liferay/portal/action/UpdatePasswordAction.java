@@ -108,9 +108,9 @@ public class UpdatePasswordAction extends Action {
 						return null;
 					}
 				}
-
-				return actionMapping.findForward("portal.update_password");
 			}
+
+			return actionMapping.findForward("portal.update_password");
 		}
 
 		try {
