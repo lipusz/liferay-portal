@@ -45,7 +45,7 @@ import com.liferay.portal.util.PropsValues;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
-
+import javax.portlet.WindowState;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -100,14 +100,13 @@ public class UpdatePasswordAction extends Action {
 					PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
 
 					PortletURL portletURL = PortletURLFactoryUtil.create(
-						request, PortletKeys.LOGIN, themeDisplay.getPlid(),
-						PortletRequest.RENDER_PHASE);
+						request, PortletKeys.LOGIN, PortletRequest.RENDER_PHASE);
 
 					portletURL.setParameter(
-						"struts_action", "/login/forgot_password");
+						"mvcRenderCommandName", "/login/forgot_password");
 					portletURL.setParameter("ticketKey", ticket.getKey());
 					portletURL.setPortletMode(PortletMode.VIEW);
-					portletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+					portletURL.setWindowState(WindowState.MAXIMIZED);
 
 					response.sendRedirect(portletURL.toString());
 
