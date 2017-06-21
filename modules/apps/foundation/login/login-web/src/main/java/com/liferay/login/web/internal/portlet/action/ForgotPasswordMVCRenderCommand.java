@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -31,6 +31,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Peter Fellwock
@@ -66,7 +67,7 @@ public class ForgotPasswordMVCRenderCommand implements MVCRenderCommand {
 			try {
 				userId = ticket.getClassPK();
 
-				User user = UserLocalServiceUtil.getUser(userId);
+				User user = _userLocalService.getUser(userId);
 
 				PortletSession portletSession =
 					renderRequest.getPortletSession();
@@ -88,5 +89,12 @@ public class ForgotPasswordMVCRenderCommand implements MVCRenderCommand {
 
 		return "/forgot_password.jsp";
 	}
+
+	@Reference(unbind = "-")
+	protected void setUserLocalService(UserLocalService userLocalService) {
+		_userLocalService = userLocalService;
+	}
+
+	private UserLocalService _userLocalService;
 
 }
