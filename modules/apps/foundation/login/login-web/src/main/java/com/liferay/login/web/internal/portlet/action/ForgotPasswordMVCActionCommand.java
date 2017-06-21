@@ -42,7 +42,6 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -142,7 +141,7 @@ public class ForgotPasswordMVCActionCommand extends BaseMVCActionCommand {
 			portletSession.removeAttribute(
 				WebKeys.FORGOT_PASSWORD_REMINDER_USER_EMAIL_ADDRESS);
 
-			HttpServletRequest request = PortalUtil.getHttpServletRequest(
+			HttpServletRequest request = _portal.getHttpServletRequest(
 				actionRequest);
 
 			HttpSession session = request.getSession();
@@ -157,8 +156,8 @@ public class ForgotPasswordMVCActionCommand extends BaseMVCActionCommand {
 
 			StringBuilder sb = new StringBuilder();
 
-			sb.append(PortalUtil.getPortalURL(actionRequest));
-			sb.append(PortalUtil.getPathMain());
+			sb.append(_portal.getPortalURL(actionRequest));
+			sb.append(_portal.getPathMain());
 			sb.append("/portal/update_password?p_l_id=");
 			sb.append(themeDisplay.getPlid());
 			sb.append("&ticketKey=");

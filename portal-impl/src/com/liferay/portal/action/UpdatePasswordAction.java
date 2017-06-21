@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -46,6 +45,7 @@ import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.WindowState;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -100,7 +100,8 @@ public class UpdatePasswordAction extends Action {
 					PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
 
 					PortletURL portletURL = PortletURLFactoryUtil.create(
-						request, PortletKeys.LOGIN, PortletRequest.RENDER_PHASE);
+						request, PortletKeys.LOGIN,
+						PortletRequest.RENDER_PHASE);
 
 					portletURL.setParameter(
 						"mvcRenderCommandName", "/login/forgot_password");
