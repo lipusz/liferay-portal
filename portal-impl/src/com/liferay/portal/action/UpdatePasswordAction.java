@@ -99,6 +99,10 @@ public class UpdatePasswordAction extends Action {
 				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
 					PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
 
+					session.setAttribute(
+						"FORGOT_PASSWORD_CHECK_REMINDER_QUERY_COMPLETED",
+						Boolean.TRUE);
+
 					PortletURL portletURL = PortletURLFactoryUtil.create(
 						request, PortletKeys.LOGIN,
 						PortletRequest.RENDER_PHASE);
@@ -111,7 +115,8 @@ public class UpdatePasswordAction extends Action {
 
 					response.sendRedirect(portletURL.toString());
 
-					return null;
+					return actionMapping.findForward(
+						"portal.update_reminder_query");
 				}
 			}
 
