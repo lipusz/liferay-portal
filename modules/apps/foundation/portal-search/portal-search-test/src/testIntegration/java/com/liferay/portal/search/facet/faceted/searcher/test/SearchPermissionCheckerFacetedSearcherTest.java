@@ -38,7 +38,6 @@ import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
@@ -130,8 +129,7 @@ public class SearchPermissionCheckerFacetedSearcherTest
 
 		assertFrequencies(
 			facet.getFieldName(), searchContext,
-			Collections.singletonMap(
-				StringUtil.toLowerCase(user2.getFullName()), 1));
+			Collections.singletonMap(user2.getFullName(), 1));
 	}
 
 	protected void addJournalArticle(User user, Group group, String title)
