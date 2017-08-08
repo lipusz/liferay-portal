@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.search.facet.RangeFacet;
 import com.liferay.portal.kernel.search.facet.collector.FacetCollector;
 import com.liferay.portal.kernel.search.facet.config.FacetConfiguration;
 import com.liferay.portal.kernel.search.filter.FilterTranslator;
+import com.liferay.portal.kernel.search.generic.MatchAllQuery;
 import com.liferay.portal.kernel.search.highlight.HighlightUtil;
 import com.liferay.portal.kernel.search.query.QueryTranslator;
 import com.liferay.portal.kernel.search.suggest.QuerySuggester;
@@ -472,6 +473,13 @@ public class SolrIndexSearcher extends BaseIndexSearcher {
 		if (!filterQueries.isEmpty()) {
 			solrQuery.setFilterQueries(
 				filterQueries.toArray(new String[filterQueries.size()]));
+
+			if (Validator.isBlank(solrQuery.getQuery())) {
+				queryString = translateQuery(
+					new MatchAllQuery(), searchContext);
+
+				solrQuery.setQuery(queryString);
+			}
 		}
 
 		String solrQueryString = solrQuery.toString();
