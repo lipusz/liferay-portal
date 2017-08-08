@@ -16,10 +16,14 @@ package com.liferay.portal.search.test.util.indexing;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.IndexSearcher;
+import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
@@ -49,6 +53,32 @@ public abstract class BaseIndexSearcherTestCase extends BaseIndexingTestCase {
 					RandomTestUtil.randomString(
 						UniqueStringRandomizerBumper.INSTANCE)));
 		}
+	}
+
+	@Test
+	public void testCountWithEmptyMainQueryAndFilter() throws Exception {
+		BooleanFilter booleanFilter = new BooleanFilter();
+
+		booleanFilter.addRequiredTerm(Field.GROUP_ID, GROUP_ID);
+
+		Query booleanQuery = new BooleanQueryImpl();
+
+		booleanQuery.setPreBooleanFilter(booleanFilter);
+
+		IdempotentRetryAssert.retryAssert(
+			3, TimeUnit.SECONDS,
+			() -> {
+				IndexSearcher indexSearcher = getIndexSearcher();
+
+				SearchContext searchContext = createSearchContext();
+
+				long count = indexSearcher.searchCount(
+					searchContext, booleanQuery);
+
+				Assert.assertEquals(_TOTAL_DOCUMENTS, count);
+
+				return null;
+			});
 	}
 
 	@Test
