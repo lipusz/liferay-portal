@@ -434,8 +434,8 @@ public class JournalRSSUtil {
 
 			try {
 				value = processContent(
-					feed, article, languageId, themeDisplay, syndEntry,
-					syndContent);
+					resourceRequest, resourceResponse, feed, article,
+					languageId, themeDisplay, syndEntry, syndContent);
 			}
 			catch (Exception e) {
 				if (_log.isWarnEnabled()) {
@@ -563,6 +563,7 @@ public class JournalRSSUtil {
 	}
 
 	protected String processContent(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse,
 			JournalFeed feed, JournalArticle article, String languageId,
 			ThemeDisplay themeDisplay, SyndEntry syndEntry,
 			SyndContent syndContent)
@@ -582,14 +583,7 @@ public class JournalRSSUtil {
 			JournalArticleDisplay articleDisplay = _journalContent.getDisplay(
 				feed.getGroupId(), article.getArticleId(),
 				ddmRendererTemplateKey, null, languageId, 1,
-				new PortletRequestModel() {
-
-					@Override
-					public String toXML() {
-						return _XML_REQUUEST;
-					}
-
-				},
+				new PortletRequestModel(resourceRequest, resourceResponse),
 				themeDisplay);
 
 			if (articleDisplay != null) {
