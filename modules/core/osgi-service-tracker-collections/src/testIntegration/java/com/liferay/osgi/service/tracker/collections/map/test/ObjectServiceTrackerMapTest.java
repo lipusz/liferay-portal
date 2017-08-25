@@ -359,6 +359,24 @@ public class ObjectServiceTrackerMapTest {
 	}
 
 	@Test
+	public void testGetServiceWithNullClassAndFilter() {
+		ServiceTrackerMap<String, Object> serviceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				_bundleContext, null, "target");
+
+		registerService(new TrackedOne());
+
+		Assert.assertNotNull(serviceTrackerMap.getService("aTarget"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetServiceWithNullClassAndNullFilter() {
+		ServiceTrackerMapFactory.openSingleValueMap(
+			_bundleContext, null, null,
+			(ServiceReferenceMapper<? extends Object, ? super Object>)null);
+	}
+
+	@Test
 	public void testGetServiceWithServiceTrackerCustomizer() {
 		ServiceTrackerMap<String, TrackedTwo> serviceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
