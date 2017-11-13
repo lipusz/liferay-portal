@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -77,11 +76,8 @@ public class UpdatePasswordAction extends Action {
 		String cmd = ParamUtil.getString(request, Constants.CMD);
 
 		if (Validator.isNull(cmd)) {
-			HttpSession session = request.getSession();
-
-			boolean checkReminderQueryCompleted = GetterUtil.getBoolean(
-				session.getAttribute(
-					"FORGOT_PASSWORD_CHECK_REMINDER_QUERY_COMPLETED"));
+			boolean checkReminderQueryCompleted = ParamUtil.getBoolean(
+				request, "checkReminderQueryCompleted");
 
 			if ((ticket != null) && !checkReminderQueryCompleted) {
 				User user = UserLocalServiceUtil.getUser(ticket.getClassPK());
@@ -99,10 +95,6 @@ public class UpdatePasswordAction extends Action {
 				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
 					PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
 
-					session.setAttribute(
-						"FORGOT_PASSWORD_CHECK_REMINDER_QUERY_COMPLETED",
-						Boolean.TRUE);
-
 					PortletURL portletURL = PortletURLFactoryUtil.create(
 						request, PortletKeys.LOGIN,
 						PortletRequest.RENDER_PHASE);
@@ -119,9 +111,6 @@ public class UpdatePasswordAction extends Action {
 						"portal.update_reminder_query");
 				}
 			}
-
-			session.removeAttribute(
-				"FORGOT_PASSWORD_CHECK_REMINDER_QUERY_COMPLETED");
 
 			return actionMapping.findForward("portal.update_password");
 		}
