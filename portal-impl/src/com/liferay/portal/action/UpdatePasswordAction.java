@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -55,7 +56,6 @@ import java.util.Map;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
-import javax.portlet.WindowState;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -110,18 +110,16 @@ public class UpdatePasswordAction implements Action {
 					SessionErrors.add(request, ule.getClass());
 				}
 
-				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
-					PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
-
+				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED) {
 					PortletURL portletURL = PortletURLFactoryUtil.create(
-						request, PortletKeys.LOGIN,
+						request, PortletKeys.LOGIN, themeDisplay.getPlid(),
 						PortletRequest.RENDER_PHASE);
 
 					portletURL.setParameter(
-						"mvcRenderCommandName", "/login/forgot_password");
+						"struts_action", "/login/forgot_password");
 					portletURL.setParameter("ticketKey", ticket.getKey());
 					portletURL.setPortletMode(PortletMode.VIEW);
-					portletURL.setWindowState(WindowState.MAXIMIZED);
+					portletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
 					response.sendRedirect(portletURL.toString());
 
@@ -138,23 +136,14 @@ public class UpdatePasswordAction implements Action {
 		try {
 			updatePassword(request, response, themeDisplay, ticket);
 
-			String redirect;
+			String redirect = ParamUtil.getString(request, WebKeys.REFERER);
 
-			if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
-				PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
-
-				redirect = PortalUtil.getHomeURL(request);
+			if (Validator.isNotNull(redirect)) {
+				redirect = PortalUtil.escapeRedirect(redirect);
 			}
-			else {
-				redirect = ParamUtil.getString(request, WebKeys.REFERER);
 
-				if (Validator.isNotNull(redirect)) {
-					redirect = PortalUtil.escapeRedirect(redirect);
-				}
-
-				if (Validator.isNull(redirect)) {
-					redirect = themeDisplay.getPathMain();
-				}
+			if (Validator.isNull(redirect)) {
+				redirect = themeDisplay.getPathMain();
 			}
 
 			response.sendRedirect(redirect);
