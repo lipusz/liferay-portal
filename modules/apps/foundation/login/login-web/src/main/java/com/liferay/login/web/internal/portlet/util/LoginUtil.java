@@ -183,14 +183,6 @@ public class LoginUtil {
 	}
 
 	public static Ticket getTicket(PortletRequest portletRequest) {
-		PortletSession portletSession = portletRequest.getPortletSession();
-
-		Ticket ticket = (Ticket)portletSession.getAttribute(WebKeys.TICKET);
-
-		if (ticket != null) {
-			return ticket;
-		}
-
 		String ticketKey = ParamUtil.getString(portletRequest, "ticketKey");
 
 		if (Validator.isNull(ticketKey)) {
@@ -198,7 +190,7 @@ public class LoginUtil {
 		}
 
 		try {
-			ticket = TicketLocalServiceUtil.fetchTicket(ticketKey);
+			Ticket ticket = TicketLocalServiceUtil.fetchTicket(ticketKey);
 
 			if ((ticket == null) ||
 				(ticket.getType() != TicketConstants.TYPE_PASSWORD)) {
