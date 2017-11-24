@@ -14,7 +14,8 @@
  */
 --%>
 
-<%@page import="com.liferay.portal.kernel.util.WebKeys"%>
+<%@ page import="com.liferay.portal.kernel.util.WebKeys" %>
+
 <%@ include file="/init.jsp" %>
 
 <%
