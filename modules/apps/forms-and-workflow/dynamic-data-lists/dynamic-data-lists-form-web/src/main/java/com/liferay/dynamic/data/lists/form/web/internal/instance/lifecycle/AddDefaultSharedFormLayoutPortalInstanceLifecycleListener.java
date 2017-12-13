@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -89,8 +90,11 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 			group.getGroupId(), false, "/shared");
 
 		if (layout == null) {
-			addSharedLayout(company.getCompanyId(), group.getGroupId());
+			layout = addSharedLayout(
+				company.getCompanyId(), group.getGroupId());
 		}
+
+		verifyLayout(layout);
 	}
 
 	protected Group addFormsGroup(long companyId) throws PortalException {
@@ -108,7 +112,7 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 			GroupConstants.FORMS_FRIENDLY_URL, false, false, true, null);
 	}
 
-	protected void addSharedLayout(long companyId, long groupId)
+	protected Layout addSharedLayout(long companyId, long groupId)
 		throws PortalException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -125,7 +129,7 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 
 		serviceContext.setUserId(defaultUserId);
 
-		_layoutLocalService.addLayout(
+		return _layoutLocalService.addLayout(
 			defaultUserId, groupId, false,
 			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, "Shared",
 			StringPool.BLANK, StringPool.BLANK,
@@ -153,6 +157,19 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 	@Reference(unbind = "-")
 	protected void setUserLocalService(UserLocalService userLocalService) {
 		_userLocalService = userLocalService;
+	}
+
+	protected void verifyLayout(Layout layout) {
+		if (StringUtil.equals(
+				layout.getType(),
+				DDLFormPortletLayoutTypeConstants.LAYOUT_TYPE)) {
+
+			return;
+		}
+
+		layout.setType(DDLFormPortletLayoutTypeConstants.LAYOUT_TYPE);
+
+		_layoutLocalService.updateLayout(layout);
 	}
 
 	private GroupLocalService _groupLocalService;
