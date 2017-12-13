@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.HashMap;
@@ -50,6 +51,21 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 	extends BasePortalInstanceLifecycleListener {
+
+	public String getFormLayoutURL(
+		ThemeDisplay themeDisplay, boolean privateLayout) {
+
+		StringBundler sb = new StringBundler(3);
+
+		Group group = themeDisplay.getSiteGroup();
+
+		sb.append(themeDisplay.getPortalURL());
+		sb.append(group.getPathFriendlyURL(privateLayout, themeDisplay));
+
+		sb.append("/forms/shared/-/form/");
+
+		return sb.toString();
+	}
 
 	public boolean isSharedLayout(ThemeDisplay themeDisplay) {
 		Layout layout = themeDisplay.getLayout();
