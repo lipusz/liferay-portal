@@ -38,10 +38,10 @@ public class FullPageApplicationLayoutTypeAccessPolicy
 	protected boolean isAccessGrantedByPortletOnPage(
 		Layout layout, Portlet portlet) {
 
-		String ppid = layout.getTypeSettingsProperty(
+		String portletId = layout.getTypeSettingsProperty(
 			"fullPageApplicationPortlet");
 
-		if (StringUtil.equalsIgnoreCase(portlet.getPortletId(), ppid)) {
+		if (StringUtil.equalsIgnoreCase(portlet.getPortletId(), portletId)) {
 			return true;
 		}
 
