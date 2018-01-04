@@ -59,9 +59,10 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 
 		StringBundler sb = new StringBundler(3);
 
+		sb.append(themeDisplay.getPortalURL());
+
 		Group group = themeDisplay.getSiteGroup();
 
-		sb.append(themeDisplay.getPortalURL());
 		sb.append(group.getPathFriendlyURL(privateLayout, themeDisplay));
 
 		sb.append("/forms/shared/-/form/");
