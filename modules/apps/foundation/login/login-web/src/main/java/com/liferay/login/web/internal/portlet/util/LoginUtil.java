@@ -20,11 +20,14 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.Ticket;
+import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.TicketLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CookieKeys;
@@ -178,6 +181,34 @@ public class LoginUtil {
 		portletURL.setWindowState(WindowState.MAXIMIZED);
 
 		return portletURL;
+	}
+
+	public static Ticket getTicket(PortletRequest portletRequest) {
+		String ticketKey = ParamUtil.getString(portletRequest, "ticketKey");
+
+		if (Validator.isNull(ticketKey)) {
+			return null;
+		}
+
+		try {
+			Ticket ticket = TicketLocalServiceUtil.fetchTicket(ticketKey);
+
+			if ((ticket == null) ||
+				(ticket.getType() != TicketConstants.TYPE_PASSWORD)) {
+
+				return null;
+			}
+
+			if (!ticket.isExpired()) {
+				return ticket;
+			}
+
+			TicketLocalServiceUtil.deleteTicket(ticket);
+		}
+		catch (Exception e) {
+		}
+
+		return null;
 	}
 
 	/**
