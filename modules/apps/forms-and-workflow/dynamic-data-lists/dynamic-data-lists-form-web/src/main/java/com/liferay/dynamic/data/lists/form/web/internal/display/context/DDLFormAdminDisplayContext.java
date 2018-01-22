@@ -19,6 +19,7 @@ import com.liferay.dynamic.data.lists.constants.DDLWebKeys;
 import com.liferay.dynamic.data.lists.form.web.configuration.DDLFormWebConfiguration;
 import com.liferay.dynamic.data.lists.form.web.internal.constants.DDLFormPortletKeys;
 import com.liferay.dynamic.data.lists.form.web.internal.display.context.util.DDLFormAdminRequestHelper;
+import com.liferay.dynamic.data.lists.form.web.internal.instance.lifecycle.AddDefaultSharedFormLayoutPortalInstanceLifecycleListener;
 import com.liferay.dynamic.data.lists.form.web.internal.search.RecordSetSearch;
 import com.liferay.dynamic.data.lists.model.DDLFormRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
@@ -52,7 +53,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -88,6 +88,8 @@ public class DDLFormAdminDisplayContext {
 
 	public DDLFormAdminDisplayContext(
 		RenderRequest renderRequest, RenderResponse renderResponse,
+		AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
+			addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
 		DDLFormWebConfiguration ddlFormWebConfiguration,
 		DDLRecordLocalService ddlRecordLocalService,
 		DDLRecordSetService ddlRecordSetService,
@@ -106,6 +108,8 @@ public class DDLFormAdminDisplayContext {
 
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+		_addDefaultSharedFormLayoutPortalInstanceLifecycleListener =
+			addDefaultSharedFormLayoutPortalInstanceLifecycleListener;
 		_ddlFormWebConfiguration = ddlFormWebConfiguration;
 		_ddlRecordLocalService = ddlRecordLocalService;
 		_ddlRecordSetService = ddlRecordSetService;
@@ -240,22 +244,20 @@ public class DDLFormAdminDisplayContext {
 		return publishedFormURL.concat("/preview");
 	}
 
-	public String getPublishedFormURL() throws PortalException {
+	public String getPublishedFormURL() {
 		if (_recordSet == null) {
 			return StringPool.BLANK;
 		}
 
-		StringBundler sb = new StringBundler(4);
+		StringBundler sb = new StringBundler(2);
 
 		ThemeDisplay themeDisplay =
 			_ddlFormAdminRequestHelper.getThemeDisplay();
 
-		Group group = themeDisplay.getSiteGroup();
+		sb.append(
+			_addDefaultSharedFormLayoutPortalInstanceLifecycleListener.
+				getFormLayoutURL(themeDisplay, false));
 
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(group.getPathFriendlyURL(false, themeDisplay));
-
-		sb.append("/forms/shared/-/form/");
 		sb.append(_recordSet.getRecordSetId());
 
 		return sb.toString();
@@ -608,6 +610,8 @@ public class DDLFormAdminDisplayContext {
 
 	private static final String[] _DISPLAY_VIEWS = {"descriptive", "list"};
 
+	private final AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
+		_addDefaultSharedFormLayoutPortalInstanceLifecycleListener;
 	private final DDLFormAdminRequestHelper _ddlFormAdminRequestHelper;
 	private final DDLFormWebConfiguration _ddlFormWebConfiguration;
 	private final DDLRecordLocalService _ddlRecordLocalService;

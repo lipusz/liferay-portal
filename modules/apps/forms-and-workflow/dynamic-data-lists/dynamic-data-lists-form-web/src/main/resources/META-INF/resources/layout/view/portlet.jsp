@@ -1,3 +1,4 @@
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -11,16 +12,17 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+--%>
 
-package com.liferay.layout.type.controller.shared.portlet.internal.constants;
+<%@ include file="/layout/view/init.jsp" %>
 
-/**
- * @author Leonardo Barros
- * @deprecated As of 2.0.0, with no direct replacement
- */
-@Deprecated
-public class SharedPortletLayoutTypeControllerConstants {
+<%
+String ppid = ParamUtil.getString(request, "p_p_id");
 
-	public static final String LAYOUT_TYPE_SHARED_PORTLET = "shared_portlet";
+String velocityTemplateId = theme.getThemeId() + LayoutTemplateConstants.STANDARD_SEPARATOR + "pop_up";
+String velocityTemplateContent = LayoutTemplateLocalServiceUtil.getContent("pop_up", true, theme.getThemeId());
 
+if (Validator.isNotNull(velocityTemplateContent)) {
+	RuntimePageUtil.processTemplate(request, response, ppid, new StringTemplateResource(velocityTemplateId, velocityTemplateContent));
 }
+%>

@@ -1193,6 +1193,10 @@ public class LayoutImpl extends LayoutBaseImpl {
 		return false;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
 	public boolean isTypeSharedPortlet() {
 		if (Objects.equals(getType(), LayoutConstants.TYPE_SHARED_PORTLET)) {

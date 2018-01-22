@@ -1,3 +1,4 @@
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -11,16 +12,4 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-
-package com.liferay.layout.type.controller.shared.portlet.internal.constants;
-
-/**
- * @author Leonardo Barros
- * @deprecated As of 2.0.0, with no direct replacement
- */
-@Deprecated
-public class SharedPortletLayoutTypeControllerConstants {
-
-	public static final String LAYOUT_TYPE_SHARED_PORTLET = "shared_portlet";
-
-}
+--%>

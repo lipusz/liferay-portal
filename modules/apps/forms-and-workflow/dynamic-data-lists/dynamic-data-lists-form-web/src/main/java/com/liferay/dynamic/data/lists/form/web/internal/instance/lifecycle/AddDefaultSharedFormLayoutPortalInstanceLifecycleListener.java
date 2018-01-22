@@ -12,8 +12,9 @@
  * details.
  */
 
-package com.liferay.dynamic.data.lists.internal.instance.lifecycle;
+package com.liferay.dynamic.data.lists.form.web.internal.instance.lifecycle;
 
+import com.liferay.dynamic.data.lists.form.web.internal.layout.type.constants.DDLFormPortletLayoutTypeConstants;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -27,8 +28,11 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -40,9 +44,39 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Leonardo Barros
  */
-@Component(immediate = true, service = PortalInstanceLifecycleListener.class)
+@Component(
+	immediate = true,
+	service = {
+		AddDefaultSharedFormLayoutPortalInstanceLifecycleListener.class,
+		PortalInstanceLifecycleListener.class
+	}
+)
 public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 	extends BasePortalInstanceLifecycleListener {
+
+	public String getFormLayoutURL(
+		ThemeDisplay themeDisplay, boolean privateLayout) {
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(themeDisplay.getPortalURL());
+
+		Group group = themeDisplay.getSiteGroup();
+
+		sb.append(group.getPathFriendlyURL(privateLayout, themeDisplay));
+
+		sb.append("/forms/shared/-/form/");
+
+		return sb.toString();
+	}
+
+	public boolean isSharedLayout(ThemeDisplay themeDisplay) {
+		Layout layout = themeDisplay.getLayout();
+
+		String type = layout.getType();
+
+		return type.equals(DDLFormPortletLayoutTypeConstants.LAYOUT_TYPE);
+	}
 
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
@@ -57,8 +91,11 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 			group.getGroupId(), false, "/shared");
 
 		if (layout == null) {
-			addSharedLayout(company.getCompanyId(), group.getGroupId());
+			layout = addSharedLayout(
+				company.getCompanyId(), group.getGroupId());
 		}
+
+		verifyLayout(layout);
 	}
 
 	protected Group addFormsGroup(long companyId) throws PortalException {
@@ -76,7 +113,7 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 			GroupConstants.FORMS_FRIENDLY_URL, false, false, true, null);
 	}
 
-	protected void addSharedLayout(long companyId, long groupId)
+	protected Layout addSharedLayout(long companyId, long groupId)
 		throws PortalException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -93,11 +130,11 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 
 		serviceContext.setUserId(defaultUserId);
 
-		_layoutLocalService.addLayout(
+		return _layoutLocalService.addLayout(
 			defaultUserId, groupId, false,
 			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, "Shared",
 			StringPool.BLANK, StringPool.BLANK,
-			LayoutConstants.TYPE_SHARED_PORTLET, true, "/shared",
+			DDLFormPortletLayoutTypeConstants.LAYOUT_TYPE, true, "/shared",
 			serviceContext);
 	}
 
@@ -121,6 +158,19 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 	@Reference(unbind = "-")
 	protected void setUserLocalService(UserLocalService userLocalService) {
 		_userLocalService = userLocalService;
+	}
+
+	protected void verifyLayout(Layout layout) {
+		if (StringUtil.equals(
+				layout.getType(),
+				DDLFormPortletLayoutTypeConstants.LAYOUT_TYPE)) {
+
+			return;
+		}
+
+		layout.setType(DDLFormPortletLayoutTypeConstants.LAYOUT_TYPE);
+
+		_layoutLocalService.updateLayout(layout);
 	}
 
 	private GroupLocalService _groupLocalService;
