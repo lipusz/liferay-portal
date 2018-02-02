@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
@@ -33,10 +34,16 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.pwd.PwdToolkitUtilThreadLocal;
 import com.liferay.portal.util.PropsValues;
+
+import javax.portlet.PortletMode;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
+import javax.portlet.WindowState;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,7 +76,10 @@ public class UpdatePasswordAction extends Action {
 		String cmd = ParamUtil.getString(request, Constants.CMD);
 
 		if (Validator.isNull(cmd)) {
-			if (ticket != null) {
+			boolean checkReminderQueryCompleted = ParamUtil.getBoolean(
+				request, "checkReminderQueryCompleted");
+
+			if ((ticket != null) && !checkReminderQueryCompleted) {
 				User user = UserLocalServiceUtil.getUser(ticket.getClassPK());
 
 				try {
@@ -79,7 +89,25 @@ public class UpdatePasswordAction extends Action {
 						user.getUserId(), true);
 				}
 				catch (UserLockoutException ule) {
-					SessionErrors.add(request, ule.getClass(), ule);
+					SessionErrors.add(request, ule.getClass());
+				}
+
+				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
+					PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
+
+					PortletURL portletURL = PortletURLFactoryUtil.create(
+						request, PortletKeys.LOGIN,
+						PortletRequest.RENDER_PHASE);
+
+					portletURL.setParameter(
+						"mvcRenderCommandName", "/login/forgot_password");
+					portletURL.setParameter("ticketKey", ticket.getKey());
+					portletURL.setPortletMode(PortletMode.VIEW);
+					portletURL.setWindowState(WindowState.MAXIMIZED);
+
+					response.sendRedirect(portletURL.toString());
+
+					return null;
 				}
 			}
 
@@ -89,14 +117,23 @@ public class UpdatePasswordAction extends Action {
 		try {
 			updatePassword(request, response, themeDisplay, ticket);
 
-			String redirect = ParamUtil.getString(request, WebKeys.REFERER);
+			String redirect;
 
-			if (Validator.isNotNull(redirect)) {
-				redirect = PortalUtil.escapeRedirect(redirect);
+			if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
+				PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
+
+				redirect = PortalUtil.getHomeURL(request);
 			}
+			else {
+				redirect = ParamUtil.getString(request, WebKeys.REFERER);
 
-			if (Validator.isNull(redirect)) {
-				redirect = themeDisplay.getPathMain();
+				if (Validator.isNotNull(redirect)) {
+					redirect = PortalUtil.escapeRedirect(redirect);
+				}
+
+				if (Validator.isNull(redirect)) {
+					redirect = themeDisplay.getPathMain();
+				}
 			}
 
 			response.sendRedirect(redirect);
