@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -421,14 +422,14 @@ public class PortletConfigurationPermissionsDisplayContext {
 			teamGroupId = _group.getParentGroupId();
 		}
 
-		int count = RoleLocalServiceUtil.getGroupRolesAndTeamRolesCount(
+		int count = RoleServiceUtil.getGroupRolesAndTeamRolesCount(
 			themeDisplay.getCompanyId(), searchTerms.getKeywords(),
 			excludedRoleNames, getRoleTypes(), modelResourceRoleId,
 			teamGroupId);
 
 		roleSearchContainer.setTotal(count);
 
-		List<Role> roles = RoleLocalServiceUtil.getGroupRolesAndTeamRoles(
+		List<Role> roles = RoleServiceUtil.getGroupRolesAndTeamRoles(
 			themeDisplay.getCompanyId(), searchTerms.getKeywords(),
 			excludedRoleNames, getRoleTypes(), modelResourceRoleId, teamGroupId,
 			roleSearchContainer.getStart(), roleSearchContainer.getResultEnd());
