@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.pwd.PwdToolkitUtilThreadLocal;
@@ -56,7 +57,7 @@ import java.util.Map;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
-
+import javax.portlet.WindowState;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -91,13 +92,7 @@ public class UpdatePasswordAction implements Action {
 		String cmd = ParamUtil.getString(request, Constants.CMD);
 
 		if (Validator.isNull(cmd)) {
-			HttpSession session = request.getSession();
-
-			boolean checkReminderQueryCompleted = GetterUtil.getBoolean(
-				session.getAttribute(
-					"FORGOT_PASSWORD_CHECK_REMINDER_QUERY_COMPLETED"));
-
-			if ((ticket != null) && !checkReminderQueryCompleted) {
+			if (ticket != null) {
 				User user = UserLocalServiceUtil.getUser(ticket.getClassPK());
 
 				try {
@@ -110,25 +105,35 @@ public class UpdatePasswordAction implements Action {
 					SessionErrors.add(request, ule.getClass());
 				}
 
-				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED) {
-					PortletURL portletURL = PortletURLFactoryUtil.create(
-						request, PortletKeys.LOGIN, themeDisplay.getPlid(),
-						PortletRequest.RENDER_PHASE);
+				if (PropsValues.USERS_REMINDER_QUERIES_ENABLED &&
+					PropsValues.USERS_REMINDER_QUERIES_REQUIRED) {
 
-					portletURL.setParameter(
-						"struts_action", "/login/forgot_password");
-					portletURL.setParameter("ticketKey", ticket.getKey());
-					portletURL.setPortletMode(PortletMode.VIEW);
-					portletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+					UnicodeProperties extraInfoProperties =
+						new UnicodeProperties();
 
-					response.sendRedirect(portletURL.toString());
+					extraInfoProperties.fastLoad(ticket.getExtraInfo());
 
-					return null;
+					boolean checkReminderQueryCompleted = GetterUtil.getBoolean(
+						extraInfoProperties.getProperty(
+							"checkReminderQueryCompleted"));
+
+					if (!checkReminderQueryCompleted) {
+						PortletURL portletURL = PortletURLFactoryUtil.create(
+							request, PortletKeys.LOGIN,
+							PortletRequest.RENDER_PHASE);
+
+						portletURL.setParameter(
+							"mvcRenderCommandName", "/login/forgot_password");
+						portletURL.setParameter("ticketKey", ticket.getKey());
+						portletURL.setPortletMode(PortletMode.VIEW);
+						portletURL.setWindowState(WindowState.MAXIMIZED);
+
+						response.sendRedirect(portletURL.toString());
+
+						return null;
+					}
 				}
 			}
-
-			session.removeAttribute(
-				"FORGOT_PASSWORD_CHECK_REMINDER_QUERY_COMPLETED");
 
 			return actionMapping.getActionForward("portal.update_password");
 		}
