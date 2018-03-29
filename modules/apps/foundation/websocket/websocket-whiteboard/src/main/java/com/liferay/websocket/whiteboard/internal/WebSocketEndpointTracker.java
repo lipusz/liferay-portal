@@ -16,6 +16,8 @@ package com.liferay.websocket.whiteboard.internal;
 
 import com.liferay.portal.kernel.util.StringBundler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -59,14 +61,19 @@ public class WebSocketEndpointTracker
 			return null;
 		}
 
-		List<Class<? extends Decoder>> decoders =
-			(List<Class<? extends Decoder>>)serviceReference.getProperty(
-				"org.osgi.http.websocket.endpoint.decoders");
-		List<Class<? extends Encoder>> encoders =
-			(List<Class<? extends Encoder>>)serviceReference.getProperty(
-				"org.osgi.http.websocket.endpoint.encoders");
-		List<String> subprotocol = (List<String>)serviceReference.getProperty(
+		Object d = serviceReference.getProperty(
+			"org.osgi.http.websocket.endpoint.decoders");
+		Object e = serviceReference.getProperty(
+			"org.osgi.http.websocket.endpoint.encoders");
+		Object s = serviceReference.getProperty(
 			"org.osgi.http.websocket.endpoint.subprotocol");
+
+		List<Class<? extends Decoder>> decoders = _propToList(d, Decoder.class);
+		List<Class<? extends Encoder>> encoders = _propToList(e, Encoder.class);
+
+		String[] stringArray = _propToStringArray(s);
+		List<String> subprotocol = stringArray == null ? null : Arrays.asList(
+			stringArray);
 
 		final ServiceObjects<Endpoint> serviceObjects =
 			_bundleContext.getServiceObjects(serviceReference);
@@ -182,6 +189,47 @@ public class WebSocketEndpointTracker
 	@Deactivate
 	protected void deactivate() {
 		_serverEndpointConfigWrapperServiceTracker.close();
+	}
+
+	private <T> List<Class<? extends T>> _propToList(
+		Object prop, Class<? extends T> type) {
+
+		if (prop == null) {
+			return null;
+		}
+
+		String[] sa = _propToStringArray(prop);
+
+		List<Class<? extends T>> list = new ArrayList<>();
+
+		for (String s : sa) {
+			try {
+				@SuppressWarnings("unchecked")
+				Class<? extends T> c = (Class<? extends T>)Class.forName(s);
+				list.add(c);
+				_logService.log(
+					LogService.LOG_INFO, c.getCanonicalName() + " added...");
+			} catch (ClassNotFoundException e) {
+				_logService.log(LogService.LOG_WARNING, e.getMessage());
+			} catch (Exception e) {
+				_logService.log(LogService.LOG_WARNING, e.getMessage());
+			}
+		}
+
+		return list;
+	}
+
+	private String[] _propToStringArray(Object prop) {
+		String[] stringArray = null;
+
+		if (prop instanceof String) {
+			stringArray = new String[1];
+			stringArray[0] = (String)prop;
+		} else {
+			stringArray = (String[])prop;
+		}
+
+		return stringArray;
 	}
 
 	private BundleContext _bundleContext;
