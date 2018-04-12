@@ -3225,9 +3225,6 @@ public class PortalImpl implements Portal {
 
 		String layoutURL = getLayoutActualURL(layout);
 
-		layoutURL = addPreservedParameters(
-			themeDisplay, layout, layoutURL, doAsUser);
-
 		return layoutURL;
 	}
 
