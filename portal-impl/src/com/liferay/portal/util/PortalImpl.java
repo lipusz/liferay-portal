@@ -3223,9 +3223,7 @@ public class PortalImpl implements Portal {
 			}
 		}
 
-		String layoutURL = getLayoutActualURL(layout);
-
-		return layoutURL;
+		return getLayoutActualURL(layout);
 	}
 
 	@Override
