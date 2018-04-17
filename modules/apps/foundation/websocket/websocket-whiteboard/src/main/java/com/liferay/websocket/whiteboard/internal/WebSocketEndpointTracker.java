@@ -16,6 +16,7 @@ package com.liferay.websocket.whiteboard.internal;
 
 import com.liferay.portal.kernel.util.StringBundler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -59,14 +60,18 @@ public class WebSocketEndpointTracker
 			return null;
 		}
 
-		List<Class<? extends Decoder>> decoders =
-			(List<Class<? extends Decoder>>)serviceReference.getProperty(
-				"org.osgi.http.websocket.endpoint.decoders");
-		List<Class<? extends Encoder>> encoders =
-			(List<Class<? extends Encoder>>)serviceReference.getProperty(
-				"org.osgi.http.websocket.endpoint.encoders");
-		List<String> subprotocol = (List<String>)serviceReference.getProperty(
+		Object decodersObject = serviceReference.getProperty(
+			"org.osgi.http.websocket.endpoint.decoders");
+		Object encodersObject = serviceReference.getProperty(
+			"org.osgi.http.websocket.endpoint.encoders");
+		Object subprotocolObject = serviceReference.getProperty(
 			"org.osgi.http.websocket.endpoint.subprotocol");
+
+		List<Class<? extends Decoder>> decoders = _decodersObjectToList(
+			decodersObject);
+		List<Class<? extends Encoder>> encoders = _encodersObjectToList(
+			encodersObject);
+		List<String> subprotocol = _subprotocolObjectToList(subprotocolObject);
 
 		final ServiceObjects<Endpoint> serviceObjects =
 			_bundleContext.getServiceObjects(serviceReference);
@@ -182,6 +187,114 @@ public class WebSocketEndpointTracker
 	@Deactivate
 	protected void deactivate() {
 		_serverEndpointConfigWrapperServiceTracker.close();
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Class<? extends Decoder>> _decodersObjectToList(
+		Object decObject) {
+
+		if (decObject == null) {
+			return null;
+		}
+
+		if (decObject instanceof List) {
+			return (List<Class<? extends Decoder>>)decObject;
+		}
+
+		String[] stringArray = _propObjectToStringArray(decObject);
+
+		List<Class<? extends Decoder>> decoders = new ArrayList<>();
+
+		for (String className : stringArray) {
+			try {
+				Class<? extends Decoder> c =
+					(Class<? extends Decoder>)Class.forName(className);
+
+				decoders.add(c);
+				_logService.log(
+					LogService.LOG_INFO, c.getCanonicalName() + " added...");
+			}
+			catch (ClassNotFoundException cnfe) {
+				_logService.log(LogService.LOG_WARNING, cnfe.getMessage());
+			}
+			catch (Exception exc) {
+				_logService.log(LogService.LOG_WARNING, exc.getMessage());
+			}
+		}
+
+		return decoders;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Class<? extends Encoder>> _encodersObjectToList(
+		Object encObject) {
+
+		if (encObject == null) {
+			return null;
+		}
+
+		if (encObject instanceof List) {
+			return (List<Class<? extends Encoder>>)encObject;
+		}
+
+		String[] stringArray = _propObjectToStringArray(encObject);
+
+		List<Class<? extends Encoder>> encoders = new ArrayList<>();
+
+		for (String className : stringArray) {
+			try {
+				Class<? extends Encoder> c =
+					(Class<? extends Encoder>)Class.forName(className);
+
+				encoders.add(c);
+				_logService.log(
+					LogService.LOG_INFO, c.getCanonicalName() + " added...");
+			}
+			catch (ClassNotFoundException cnfe) {
+				_logService.log(LogService.LOG_WARNING, cnfe.getMessage());
+			}
+			catch (Exception exc) {
+				_logService.log(LogService.LOG_WARNING, exc.getMessage());
+			}
+		}
+
+		return encoders;
+	}
+
+	private String[] _propObjectToStringArray(Object prop) {
+		String[] stringArray = null;
+
+		if (prop instanceof String) {
+			stringArray = new String[1];
+
+			stringArray[0] = (String)prop;
+		}
+		else {
+			stringArray = (String[])prop;
+		}
+
+		return stringArray;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<String> _subprotocolObjectToList(Object spObject) {
+		if (spObject == null) {
+			return null;
+		}
+
+		if (spObject instanceof List) {
+			return (List<String>)spObject;
+		}
+
+		String[] stringArray = _propObjectToStringArray(spObject);
+
+		List<String> subprotocol = new ArrayList<>();
+
+		for (String s : stringArray) {
+			subprotocol.add(s);
+		}
+
+		return subprotocol;
 	}
 
 	private BundleContext _bundleContext;
