@@ -1114,8 +1114,23 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 		queries.put(field, query);
 
-		long groupId = Long.valueOf(
-			(String)searchContext.getAttribute("groupId"));
+		long groupId;
+
+		String searchGroupId = (String)searchContext.getAttribute("groupId");
+
+		if (searchGroupId == null) {
+			long[] groupIds = searchContext.getGroupIds();
+
+			if ((groupIds != null) && (groupIds.length == 1)) {
+				groupId = groupIds[0];
+			}
+			else {
+				groupId = 0;
+			}
+		}
+		else {
+			groupId = Long.valueOf(searchGroupId);
+		}
 
 		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
 			groupId);
