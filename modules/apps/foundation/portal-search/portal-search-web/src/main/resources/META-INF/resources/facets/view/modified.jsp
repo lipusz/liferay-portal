@@ -53,19 +53,13 @@ int index = 0;
 					<li class="default facet-value">
 
 						<%
-						String defaultRangeCssClass = "text-default";
-
-						if (fieldParamSelection.equals("0")) {
-							defaultRangeCssClass = "text-primary";
-						}
-
 						Map<String, Object> data = new HashMap<>();
 
 						data.put("selection", 0);
 						data.put("value", StringPool.BLANK);
 						%>
 
-						<aui:a cssClass="<%= defaultRangeCssClass %>" href="javascript:;">
+						<aui:a cssClass='<%= (Validator.isNull(fieldParamSelection) || fieldParamSelection.equals("0")) ? "text-primary" : "text-default" %>' href="javascript:;">
 							<liferay-ui:message key="<%= HtmlUtil.escape(facetConfiguration.getLabel()) %>" />
 						</aui:a>
 					</li>
