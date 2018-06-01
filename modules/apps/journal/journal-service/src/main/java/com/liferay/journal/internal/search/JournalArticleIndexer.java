@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
@@ -415,22 +416,40 @@ public class JournalArticleIndexer
 			return Collections.emptyMap();
 		}
 
-		String localizedField = DocumentImpl.getLocalizedName(
-			searchContext.getLocale(), field);
+		long groupId;
+
+		String searchGroupId = (String)searchContext.getAttribute("groupId");
+
+		if (searchGroupId == null) {
+			long[] groupIds = searchContext.getGroupIds();
+
+			if ((groupIds != null) && (groupIds.length == 1)) {
+				groupId = groupIds[0];
+			}
+			else {
+				groupId = 0;
+			}
+		}
+		else {
+			groupId = Long.valueOf(searchGroupId);
+		}
+
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
+			groupId);
 
 		Map<String, Query> queries = new HashMap<>();
 
 		if (Validator.isNull(searchContext.getKeywords())) {
 			BooleanQuery localizedQuery = new BooleanQueryImpl();
 
-			Query query = localizedQuery.addTerm(field, value, like);
+			for (Locale locale : availableLocales) {
+				String localizedField = Field.getLocalizedName(locale, field);
 
-			queries.put(field, query);
+				Query localizedFieldQuery = localizedQuery.addTerm(
+					localizedField, value, like);
 
-			Query localizedFieldQuery = localizedQuery.addTerm(
-				localizedField, value, like);
-
-			queries.put(field, localizedFieldQuery);
+				queries.put(localizedField, localizedFieldQuery);
+			}
 
 			BooleanClauseOccur booleanClauseOccur = BooleanClauseOccur.SHOULD;
 
@@ -441,9 +460,13 @@ public class JournalArticleIndexer
 			searchQuery.add(localizedQuery, booleanClauseOccur);
 		}
 		else {
-			Query query = searchQuery.addTerm(localizedField, value, like);
+			for (Locale locale : availableLocales) {
+				String localizedField = Field.getLocalizedName(locale, field);
 
-			queries.put(field, query);
+				Query query = searchQuery.addTerm(localizedField, value, like);
+
+				queries.put(field, query);
+			}
 		}
 
 		return queries;
@@ -506,6 +529,8 @@ public class JournalArticleIndexer
 		String articleDefaultLanguageId = LocalizationUtil.getDefaultLanguageId(
 			journalArticle.getDocument());
 
+		document.addText("defaultLanguageId", articleDefaultLanguageId);
+
 		String[] languageIds = LocalizationUtil.getAvailableLanguageIds(
 			journalArticle.getDocument());
 
@@ -515,12 +540,6 @@ public class JournalArticleIndexer
 			String description = journalArticle.getDescription(languageId);
 
 			String title = journalArticle.getTitle(languageId);
-
-			if (languageId.equals(articleDefaultLanguageId)) {
-				document.addText(Field.CONTENT, content);
-				document.addText(Field.DESCRIPTION, description);
-				document.addText("defaultLanguageId", languageId);
-			}
 
 			document.addText(
 				LocalizationUtil.getLocalizedName(Field.CONTENT, languageId),
