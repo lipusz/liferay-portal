@@ -42,22 +42,6 @@
 			<then>
 				<property name="war.file.dest" value="${app.server.portal.dir}" />
 			</then>
-			<else>
-				<if>
-					<or>
-						<equals arg1="${app.server.type}" arg2="glassfish" />
-						<equals arg1="${app.server.type}" arg2="jboss" />
-						<equals arg1="${app.server.type}" arg2="jonas" />
-						<equals arg1="${app.server.type}" arg2="wildfly" />
-					</or>
-					<then>
-						<property name="war.file.dest" value="${app.server.deploy.dir}/${war.file}.war" />
-					</then>
-					<else>
-						<property name="war.file.dest" value="${app.server.deploy.dir}/${war.file}" />
-					</else>
-				</if>
-			</else>
 		</if>
 
 		<if>
