@@ -57,7 +57,7 @@
 		<delete includeemptydirs="true">
 			<fileset
 				dir="."
-				includes="*.csv,*.sql,benchmarks-actual.properties,output/**,temp/**"
+				includes="*.csv,*.sql,benchmarks-actual.properties,output/**, temp/**"
 			/>
 		</delete>
 	</target>
