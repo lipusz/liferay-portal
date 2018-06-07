@@ -208,6 +208,19 @@ public class HtmlImpl implements Html {
 			return StringPool.BLANK;
 		}
 
+		char c = text.charAt(0);
+
+		c = Character.toLowerCase(c);
+
+		if ((c == CharPool.LOWER_CASE_D) || (c == CharPool.LOWER_CASE_J)) {
+			int index = text.indexOf(StringPool.COLON);
+
+			if (index > -1) {
+				text = StringUtil.replaceFirst(
+					text, StringPool.COLON, "%3a", index);
+			}
+		}
+
 		String prefix = StringPool.BLANK;
 		String postfix = StringPool.BLANK;
 
@@ -233,7 +246,7 @@ public class HtmlImpl implements Html {
 		int lastReplacementIndex = 0;
 
 		for (int i = 0; i < text.length(); i++) {
-			char c = text.charAt(i);
+			c = text.charAt(i);
 
 			if (c < _VALID_CHARS.length) {
 				if (!_VALID_CHARS[c]) {
@@ -380,27 +393,6 @@ public class HtmlImpl implements Html {
 
 		if (href.length() == 0) {
 			return StringPool.BLANK;
-		}
-
-		char c = href.charAt(0);
-
-		if ((c == CharPool.BACK_SLASH) || (c == CharPool.SLASH)) {
-			return escapeAttribute(href);
-		}
-
-		c = Character.toLowerCase(c);
-
-		if ((c >= CharPool.LOWER_CASE_A) && (c <= CharPool.LOWER_CASE_Z) &&
-			(c != CharPool.LOWER_CASE_D) && (c != CharPool.LOWER_CASE_J)) {
-
-			return escapeAttribute(href);
-		}
-
-		int index = href.indexOf(StringPool.COLON);
-
-		if (index > -1) {
-			href = StringUtil.replaceFirst(
-				href, StringPool.COLON, "%3a", index);
 		}
 
 		return escapeAttribute(href);
