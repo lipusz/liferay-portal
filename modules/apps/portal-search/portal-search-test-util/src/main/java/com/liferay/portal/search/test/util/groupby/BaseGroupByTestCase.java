@@ -152,8 +152,7 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 
 		QueryConfig queryConfig = searchContext.getQueryConfig();
 
-		queryConfig.addSelectedFieldNames(
-			Field.COMPANY_ID, Field.ENTRY_CLASS_NAME);
+		queryConfig.addSelectedFieldNames(Field.COMPANY_ID, Field.UID);
 
 		IdempotentRetryAssert.retryAssert(
 			3, TimeUnit.SECONDS,
@@ -169,13 +168,12 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 
 					assertGroup(
 						"sixteen", 16, groupedHitsMap, Field.COMPANY_ID,
-						Field.ENTRY_CLASS_NAME);
+						Field.UID);
 					assertGroup(
 						"three", 3, groupedHitsMap, Field.COMPANY_ID,
-						Field.ENTRY_CLASS_NAME);
+						Field.UID);
 					assertGroup(
-						"two", 2, groupedHitsMap, Field.COMPANY_ID,
-						Field.ENTRY_CLASS_NAME);
+						"two", 2, groupedHitsMap, Field.COMPANY_ID, Field.UID);
 
 					return null;
 				}
