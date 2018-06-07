@@ -18,7 +18,9 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.GroupBy;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.search.test.util.indexing.BaseIndexingTestCase;
 import com.liferay.portal.search.test.util.indexing.DocumentCreationHelpers;
@@ -27,11 +29,14 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 
 /**
  * @author Miguel Angelo Caldas Gallindo
+ * @author André de Oliveira
+ * @author Tibor Lipusz
  */
 public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 
@@ -45,7 +50,7 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 
 	protected void assertGroup(
 		String key, int hitsCount, int docsCount,
-		Map<String, Hits> groupedHitsMap) {
+		Map<String, Hits> groupedHitsMap, String... selectedFieldNames) {
 
 		Hits hits = groupedHitsMap.get(key);
 
@@ -55,12 +60,42 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 		Document[] docs = hits.getDocs();
 
 		Assert.assertEquals(Arrays.toString(docs), docsCount, docs.length);
+
+		assertGroupedHitsFields(docs, selectedFieldNames);
 	}
 
 	protected void assertGroup(
-		String key, int count, Map<String, Hits> groupedHitsMap) {
+		String key, int count, Map<String, Hits> groupedHitsMap,
+		String... selectedFieldNames) {
 
-		assertGroup(key, count, count, groupedHitsMap);
+		assertGroup(key, count, count, groupedHitsMap, selectedFieldNames);
+	}
+
+	protected void assertGroupedHitsFields(
+		Document[] documents, String... selectedFieldNames) {
+
+		Stream<Document> documentsStream = Arrays.stream(documents);
+
+		documentsStream.forEach(
+			document -> assertSelectedFields(
+				document.getFields(), selectedFieldNames));
+	}
+
+	protected void assertSelectedFields(
+		Map<String, Field> fields, String... selectedFieldNames) {
+
+		Assert.assertFalse(fields.isEmpty());
+
+		if (!ArrayUtil.isEmpty(selectedFieldNames)) {
+			Assert.assertEquals(
+				String.valueOf(fields.size()), selectedFieldNames.length,
+				fields.size());
+
+			Stream<String> fieldNamesStream = Arrays.stream(selectedFieldNames);
+
+			fieldNamesStream.forEach(
+				fieldName -> Assert.assertTrue(fields.containsKey(fieldName)));
+		}
 	}
 
 	protected Map<String, Hits> searchGroups(SearchContext searchContext)
@@ -99,6 +134,48 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 					assertGroup("sixteen", 16, groupedHitsMap);
 					assertGroup("three", 3, groupedHitsMap);
 					assertGroup("two", 2, groupedHitsMap);
+
+					return null;
+				}
+
+			});
+	}
+
+	protected void testGroupByWithSelectedFields() throws Exception {
+		addDocuments("sixteen", 16);
+		addDocuments("three", 3);
+		addDocuments("two", 2);
+
+		final SearchContext searchContext = createSearchContext();
+
+		searchContext.setGroupBy(new GroupBy(GROUP_FIELD));
+
+		QueryConfig queryConfig = searchContext.getQueryConfig();
+
+		queryConfig.addSelectedFieldNames(
+			Field.COMPANY_ID, Field.ENTRY_CLASS_NAME);
+
+		IdempotentRetryAssert.retryAssert(
+			3, TimeUnit.SECONDS,
+			new Callable<Void>() {
+
+				@Override
+				public Void call() throws Exception {
+					Map<String, Hits> groupedHitsMap = searchGroups(
+						searchContext);
+
+					Assert.assertEquals(
+						groupedHitsMap.toString(), 3, groupedHitsMap.size());
+
+					assertGroup(
+						"sixteen", 16, groupedHitsMap, Field.COMPANY_ID,
+						Field.ENTRY_CLASS_NAME);
+					assertGroup(
+						"three", 3, groupedHitsMap, Field.COMPANY_ID,
+						Field.ENTRY_CLASS_NAME);
+					assertGroup(
+						"two", 2, groupedHitsMap, Field.COMPANY_ID,
+						Field.ENTRY_CLASS_NAME);
 
 					return null;
 				}
