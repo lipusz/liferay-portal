@@ -22,6 +22,7 @@ import org.junit.Test;
 
 /**
  * @author Miguel Angelo Caldas Gallindo
+ * @author Tibor Lipusz
  */
 public class GroupByTest extends BaseGroupByTestCase {
 
@@ -29,6 +30,12 @@ public class GroupByTest extends BaseGroupByTestCase {
 	@Test
 	public void testGroupBy() throws Exception {
 		super.testGroupBy();
+	}
+
+	@Override
+	@Test
+	public void testGroupByWithSelectedFields() throws Exception {
+		super.testGroupByWithSelectedFields();
 	}
 
 	@Override
