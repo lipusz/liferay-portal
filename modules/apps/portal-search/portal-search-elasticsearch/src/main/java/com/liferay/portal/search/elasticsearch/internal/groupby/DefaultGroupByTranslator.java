@@ -14,6 +14,7 @@
 
 package com.liferay.portal.search.elasticsearch.internal.groupby;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.GeoDistanceSort;
 import com.liferay.portal.kernel.search.GroupBy;
@@ -24,9 +25,11 @@ import com.liferay.portal.kernel.search.geolocation.GeoLocationPoint;
 import com.liferay.portal.kernel.search.highlight.HighlightUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.common.geo.GeoDistance;
@@ -43,6 +46,7 @@ import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Michael C. Han
+ * @author Tibor Lipusz
  */
 @Component(immediate = true, service = GroupByTranslator.class)
 public class DefaultGroupByTranslator implements GroupByTranslator {
@@ -100,6 +104,24 @@ public class DefaultGroupByTranslator implements GroupByTranslator {
 		topHitsBuilder.setHighlighterPreTags(HighlightUtil.HIGHLIGHT_TAG_OPEN);
 		topHitsBuilder.setHighlighterRequireFieldMatch(
 			queryConfig.isHighlightRequireFieldMatch());
+	}
+
+	protected void addSelectedFields(
+		TopHitsBuilder topHitsBuilder, QueryConfig queryConfig) {
+
+		String[] selectedFieldNames = queryConfig.getSelectedFieldNames();
+
+		if (ArrayUtil.isEmpty(selectedFieldNames)) {
+			topHitsBuilder.addField(StringPool.STAR);
+		}
+		else {
+			Stream<String> selectedFieldNamesStream = Arrays.stream(
+				selectedFieldNames);
+
+			selectedFieldNamesStream.forEach(
+				selectedFieldName -> topHitsBuilder.addField(
+					selectedFieldName));
+		}
 	}
 
 	protected void addSorts(TopHitsBuilder topHitsBuilder, Sort[] sorts) {
@@ -196,6 +218,7 @@ public class DefaultGroupByTranslator implements GroupByTranslator {
 		topHitsBuilder.setSize(groupBySize);
 
 		addHighlights(topHitsBuilder, searchContext.getQueryConfig());
+		addSelectedFields(topHitsBuilder, searchContext.getQueryConfig());
 		addSorts(topHitsBuilder, searchContext.getSorts());
 
 		return topHitsBuilder;
