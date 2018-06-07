@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.search.GroupBy;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.search.test.util.indexing.BaseIndexingTestCase;
 import com.liferay.portal.search.test.util.indexing.DocumentCreationHelpers;
@@ -50,7 +49,7 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 
 	protected void assertGroup(
 		String key, int hitsCount, int docsCount,
-		Map<String, Hits> groupedHitsMap, String... selectedFieldNames) {
+		Map<String, Hits> groupedHitsMap, SearchContext searchContext) {
 
 		Hits hits = groupedHitsMap.get(key);
 
@@ -61,32 +60,37 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 
 		Assert.assertEquals(Arrays.toString(docs), docsCount, docs.length);
 
-		assertGroupedHitsFields(docs, selectedFieldNames);
+		assertGroupedHitsFields(docs, searchContext);
 	}
 
 	protected void assertGroup(
 		String key, int count, Map<String, Hits> groupedHitsMap,
-		String... selectedFieldNames) {
+		SearchContext searchContext) {
 
-		assertGroup(key, count, count, groupedHitsMap, selectedFieldNames);
+		assertGroup(key, count, count, groupedHitsMap, searchContext);
 	}
 
 	protected void assertGroupedHitsFields(
-		Document[] documents, String... selectedFieldNames) {
+		Document[] documents, SearchContext searchContext) {
 
 		Stream<Document> documentsStream = Arrays.stream(documents);
 
 		documentsStream.forEach(
 			document -> assertSelectedFields(
-				document.getFields(), selectedFieldNames));
+				document.getFields(), searchContext));
 	}
 
 	protected void assertSelectedFields(
-		Map<String, Field> fields, String... selectedFieldNames) {
+		Map<String, Field> fields, SearchContext searchContext) {
 
-		Assert.assertFalse(fields.isEmpty());
+		QueryConfig queryConfig = searchContext.getQueryConfig();
 
-		if (!ArrayUtil.isEmpty(selectedFieldNames)) {
+		if (queryConfig.isAllFieldsSelected()) {
+			Assert.assertFalse(fields.isEmpty());
+		}
+		else {
+			String[] selectedFieldNames = queryConfig.getSelectedFieldNames();
+
 			Assert.assertEquals(
 				String.valueOf(fields.size()), selectedFieldNames.length,
 				fields.size());
@@ -131,9 +135,9 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 					Assert.assertEquals(
 						groupedHitsMap.toString(), 3, groupedHitsMap.size());
 
-					assertGroup("sixteen", 16, groupedHitsMap);
-					assertGroup("three", 3, groupedHitsMap);
-					assertGroup("two", 2, groupedHitsMap);
+					assertGroup("sixteen", 16, groupedHitsMap, searchContext);
+					assertGroup("three", 3, groupedHitsMap, searchContext);
+					assertGroup("two", 2, groupedHitsMap, searchContext);
 
 					return null;
 				}
@@ -166,14 +170,9 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 					Assert.assertEquals(
 						groupedHitsMap.toString(), 3, groupedHitsMap.size());
 
-					assertGroup(
-						"sixteen", 16, groupedHitsMap, Field.COMPANY_ID,
-						Field.UID);
-					assertGroup(
-						"three", 3, groupedHitsMap, Field.COMPANY_ID,
-						Field.UID);
-					assertGroup(
-						"two", 2, groupedHitsMap, Field.COMPANY_ID, Field.UID);
+					assertGroup("sixteen", 16, groupedHitsMap, searchContext);
+					assertGroup("three", 3, groupedHitsMap, searchContext);
+					assertGroup("two", 2, groupedHitsMap, searchContext);
 
 					return null;
 				}
@@ -199,7 +198,8 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 					Map<String, Hits> groupedHitsMap = searchGroups(
 						searchContext);
 
-					assertGroup("sixteen", 16, 6, groupedHitsMap);
+					assertGroup(
+						"sixteen", 16, 6, groupedHitsMap, searchContext);
 
 					return null;
 				}
@@ -228,7 +228,8 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 					Map<String, Hits> groupedHitsMap = searchGroups(
 						searchContext);
 
-					assertGroup("sixteen", 16, 3, groupedHitsMap);
+					assertGroup(
+						"sixteen", 16, 3, groupedHitsMap, searchContext);
 
 					return null;
 				}
