@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.GroupBy;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.search.test.util.indexing.BaseIndexingTestCase;
@@ -27,11 +28,14 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 
 /**
  * @author Miguel Angelo Caldas Gallindo
+ * @author André de Oliveira
+ * @author Tibor Lipusz
  */
 public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 
@@ -45,7 +49,7 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 
 	protected void assertGroup(
 		String key, int hitsCount, int docsCount,
-		Map<String, Hits> groupedHitsMap) {
+		Map<String, Hits> groupedHitsMap, SearchContext searchContext) {
 
 		Hits hits = groupedHitsMap.get(key);
 
@@ -55,12 +59,47 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 		Document[] docs = hits.getDocs();
 
 		Assert.assertEquals(Arrays.toString(docs), docsCount, docs.length);
+
+		assertGroupedHitsFields(docs, searchContext);
 	}
 
 	protected void assertGroup(
-		String key, int count, Map<String, Hits> groupedHitsMap) {
+		String key, int count, Map<String, Hits> groupedHitsMap,
+		SearchContext searchContext) {
 
-		assertGroup(key, count, count, groupedHitsMap);
+		assertGroup(key, count, count, groupedHitsMap, searchContext);
+	}
+
+	protected void assertGroupedHitsFields(
+		Document[] documents, SearchContext searchContext) {
+
+		Stream<Document> documentsStream = Arrays.stream(documents);
+
+		documentsStream.forEach(
+			document -> assertSelectedFields(
+				document.getFields(), searchContext));
+	}
+
+	protected void assertSelectedFields(
+		Map<String, Field> fields, SearchContext searchContext) {
+
+		QueryConfig queryConfig = searchContext.getQueryConfig();
+
+		if (queryConfig.isAllFieldsSelected()) {
+			Assert.assertFalse(fields.isEmpty());
+		}
+		else {
+			String[] selectedFieldNames = queryConfig.getSelectedFieldNames();
+
+			Assert.assertEquals(
+				String.valueOf(fields.size()), selectedFieldNames.length,
+				fields.size());
+
+			Stream<String> fieldNamesStream = Arrays.stream(selectedFieldNames);
+
+			fieldNamesStream.forEach(
+				fieldName -> Assert.assertTrue(fields.containsKey(fieldName)));
+		}
 	}
 
 	protected Map<String, Hits> searchGroups(SearchContext searchContext)
@@ -96,9 +135,44 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 					Assert.assertEquals(
 						groupedHitsMap.toString(), 3, groupedHitsMap.size());
 
-					assertGroup("sixteen", 16, groupedHitsMap);
-					assertGroup("three", 3, groupedHitsMap);
-					assertGroup("two", 2, groupedHitsMap);
+					assertGroup("sixteen", 16, groupedHitsMap, searchContext);
+					assertGroup("three", 3, groupedHitsMap, searchContext);
+					assertGroup("two", 2, groupedHitsMap, searchContext);
+
+					return null;
+				}
+
+			});
+	}
+
+	protected void testGroupByWithSelectedFields() throws Exception {
+		addDocuments("sixteen", 16);
+		addDocuments("three", 3);
+		addDocuments("two", 2);
+
+		final SearchContext searchContext = createSearchContext();
+
+		searchContext.setGroupBy(new GroupBy(GROUP_FIELD));
+
+		QueryConfig queryConfig = searchContext.getQueryConfig();
+
+		queryConfig.addSelectedFieldNames(Field.COMPANY_ID, Field.UID);
+
+		IdempotentRetryAssert.retryAssert(
+			3, TimeUnit.SECONDS,
+			new Callable<Void>() {
+
+				@Override
+				public Void call() throws Exception {
+					Map<String, Hits> groupedHitsMap = searchGroups(
+						searchContext);
+
+					Assert.assertEquals(
+						groupedHitsMap.toString(), 3, groupedHitsMap.size());
+
+					assertGroup("sixteen", 16, groupedHitsMap, searchContext);
+					assertGroup("three", 3, groupedHitsMap, searchContext);
+					assertGroup("two", 2, groupedHitsMap, searchContext);
 
 					return null;
 				}
@@ -124,7 +198,8 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 					Map<String, Hits> groupedHitsMap = searchGroups(
 						searchContext);
 
-					assertGroup("sixteen", 16, 6, groupedHitsMap);
+					assertGroup(
+						"sixteen", 16, 6, groupedHitsMap, searchContext);
 
 					return null;
 				}
@@ -153,7 +228,8 @@ public abstract class BaseGroupByTestCase extends BaseIndexingTestCase {
 					Map<String, Hits> groupedHitsMap = searchGroups(
 						searchContext);
 
-					assertGroup("sixteen", 16, 3, groupedHitsMap);
+					assertGroup(
+						"sixteen", 16, 3, groupedHitsMap, searchContext);
 
 					return null;
 				}
