@@ -298,7 +298,8 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		if (portletName.equals(LoginPortletKeys.LOGIN) &&
-				(actionRequest.getWindowState() != WindowState.NORMAL)) {
+			(actionRequest.getWindowState() != WindowState.NORMAL)) {
+
 			portletURL.setWindowState(WindowState.MAXIMIZED);
 		}
 		else {
