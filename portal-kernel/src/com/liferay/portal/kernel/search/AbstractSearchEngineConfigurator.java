@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.messaging.DestinationFactoryUtil;
 import com.liferay.portal.kernel.messaging.InvokerMessageListener;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.messaging.MessageListener;
+import com.liferay.portal.kernel.messaging.config.DefaultMessagingConfigurator;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.search.messaging.BaseSearchEngineMessageListener;
 import com.liferay.portal.kernel.search.messaging.SearchReaderMessageListener;
@@ -43,6 +44,7 @@ import com.liferay.registry.dependency.ServiceDependencyListener;
 import com.liferay.registry.dependency.ServiceDependencyManager;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -329,6 +331,18 @@ public abstract class AbstractSearchEngineConfigurator
 
 		searchEngineRegistration.setSearchWriterDestinationName(
 			searchWriterDestination.getName());
+
+		DefaultMessagingConfigurator messagingConfigurator =
+			new DefaultMessagingConfigurator();
+
+		List<Destination> destinations = new LinkedList<>();
+
+		destinations.add(searchReaderDestination);
+		destinations.add(searchWriterDestination);
+
+		messagingConfigurator.setDestinations(destinations);
+
+		messagingConfigurator.afterPropertiesSet();
 
 		SearchEngineHelper searchEngineHelper = getSearchEngineHelper();
 
