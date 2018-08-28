@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -410,17 +411,40 @@ public class PortletConfigurationPermissionsDisplayContext {
 			teamGroupId = _group.getParentGroupId();
 		}
 
-		int count = RoleLocalServiceUtil.getGroupRolesAndTeamRolesCount(
-			themeDisplay.getCompanyId(), searchTerms.getKeywords(),
-			excludedRoleNames, getRoleTypes(), modelResourceRoleId,
-			teamGroupId);
+		boolean permissionCheckRolesEnabled =
+			PropsValues.PERMISSIONS_CHECK_ROLES_ENABLED;
+
+		int count = 0;
+		
+		if (permissionCheckRolesEnabled) {
+			count = RoleServiceUtil.getGroupRolesAndTeamRolesCount(
+				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+				excludedRoleNames, getRoleTypes(), modelResourceRoleId,
+				teamGroupId);
+		}
+		else {
+			count = RoleLocalServiceUtil.getGroupRolesAndTeamRolesCount(
+				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+				excludedRoleNames, getRoleTypes(), modelResourceRoleId,
+				teamGroupId);
+		}
 
 		roleSearchContainer.setTotal(count);
 
-		List<Role> roles = RoleLocalServiceUtil.getGroupRolesAndTeamRoles(
-			themeDisplay.getCompanyId(), searchTerms.getKeywords(),
-			excludedRoleNames, getRoleTypes(), modelResourceRoleId, teamGroupId,
-			roleSearchContainer.getStart(), roleSearchContainer.getResultEnd());
+		List<Role> roles = null;
+
+		if (permissionCheckRolesEnabled) {
+			roles = RoleServiceUtil.getGroupRolesAndTeamRoles(
+				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+				excludedRoleNames, getRoleTypes(), modelResourceRoleId, teamGroupId,
+				roleSearchContainer.getStart(), roleSearchContainer.getResultEnd());
+		}
+		else {
+			roles = RoleLocalServiceUtil.getGroupRolesAndTeamRoles(
+				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+				excludedRoleNames, getRoleTypes(), modelResourceRoleId, teamGroupId,
+				roleSearchContainer.getStart(), roleSearchContainer.getResultEnd());
+		}
 
 		roleSearchContainer.setResults(roles);
 
