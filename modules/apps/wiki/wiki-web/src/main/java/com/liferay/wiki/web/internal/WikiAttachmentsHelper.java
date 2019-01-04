@@ -104,6 +104,9 @@ public class WikiAttachmentsHelper {
 							uniqueFileName, tempFileEntry.getContentStream());
 
 					inputStreamOVPs.add(inputStreamOVP);
+
+					TempFileEntryUtil.deleteTempFileEntry(
+						tempFileEntry.getFileEntryId());
 				}
 			}
 
