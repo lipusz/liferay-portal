@@ -15,3 +15,4 @@ Import-Package:\
 	!org.opensaml.*,\
 	\
 	*
+Liferay-Require-SchemaVersion: 1.0.0
