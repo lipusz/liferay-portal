@@ -51,8 +51,10 @@ public class BaseRelatedEntryIndexer implements RelatedEntryIndexer {
 
 			BooleanFilter relatedBooleanFilter = new BooleanFilter();
 
-			indexer.postProcessContextBooleanFilter(
-				relatedBooleanFilter, searchContext);
+			if (indexer instanceof BaseIndexer) {
+				indexer.postProcessContextBooleanFilter(
+					relatedBooleanFilter, searchContext);
+			}
 
 			for (IndexerPostProcessor indexerPostProcessor :
 					indexer.getIndexerPostProcessors()) {
