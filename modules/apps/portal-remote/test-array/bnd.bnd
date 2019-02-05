@@ -1,0 +1,9 @@
+Bundle-Name: upp-liferay-integration-service
+Bundle-SymbolicName: de.unioninvestment.upp.integration.liferay.service
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+Import-Package: \
+    com.liferay.*,\
+    org.osgi.*,\
+    javax.*,\
+    org.apache.cxf.jaxrs.ext
