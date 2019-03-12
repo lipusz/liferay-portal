@@ -101,6 +101,8 @@ gradle.beforeProject {
 
 		task printProjectPath
 
+		eclipse.project.name += "-" + properties["git.working.branch.name"]
+
 		afterEvaluate {
 			String forcedUpdateFilesVersion = GradleUtil.getProperty(project, "forced.update.files.version", (String)null)
 
