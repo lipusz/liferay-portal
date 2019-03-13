@@ -17,6 +17,7 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ page import="com.liferay.portal.kernel.model.PersistedModel" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchEntry" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.ResultRow" %>
+<%@ page import="com.liferay.docs.guestbook.display.GuestbookSearchDisplayContext"%>
 <%@ page import="com.liferay.docs.guestbook.model.Guestbook" %>
 <%@ page import="com.liferay.docs.guestbook.service.EntryLocalServiceUtil" %>
 <%@ page import="com.liferay.docs.guestbook.service.GuestbookLocalServiceUtil" %>
@@ -51,3 +52,7 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <liferay-theme:defineObjects />
 
 <portlet:defineObjects />
+
+<%
+GuestbookSearchDisplayContext guestbookSearchDisplayContext = new GuestbookSearchDisplayContext(renderRequest, renderResponse);
+%>
