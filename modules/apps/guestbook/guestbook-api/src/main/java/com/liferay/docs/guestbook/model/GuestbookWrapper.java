@@ -17,9 +17,7 @@ package com.liferay.docs.guestbook.model;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
-
 import com.liferay.exportimport.kernel.lar.StagedModelType;
-
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -41,6 +39,7 @@ import java.util.Objects;
  */
 @ProviderType
 public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
+
 	public GuestbookWrapper(Guestbook guestbook) {
 		_guestbook = guestbook;
 	}
@@ -168,20 +167,20 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Returns the company ID of this guestbook.
-	*
-	* @return the company ID of this guestbook
-	*/
+	 * Returns the company ID of this guestbook.
+	 *
+	 * @return the company ID of this guestbook
+	 */
 	@Override
 	public long getCompanyId() {
 		return _guestbook.getCompanyId();
 	}
 
 	/**
-	* Returns the create date of this guestbook.
-	*
-	* @return the create date of this guestbook
-	*/
+	 * Returns the create date of this guestbook.
+	 *
+	 * @return the create date of this guestbook
+	 */
 	@Override
 	public Date getCreateDate() {
 		return _guestbook.getCreateDate();
@@ -193,50 +192,50 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Returns the group ID of this guestbook.
-	*
-	* @return the group ID of this guestbook
-	*/
+	 * Returns the group ID of this guestbook.
+	 *
+	 * @return the group ID of this guestbook
+	 */
 	@Override
 	public long getGroupId() {
 		return _guestbook.getGroupId();
 	}
 
 	/**
-	* Returns the guestbook ID of this guestbook.
-	*
-	* @return the guestbook ID of this guestbook
-	*/
+	 * Returns the guestbook ID of this guestbook.
+	 *
+	 * @return the guestbook ID of this guestbook
+	 */
 	@Override
 	public long getGuestbookId() {
 		return _guestbook.getGuestbookId();
 	}
 
 	/**
-	* Returns the modified date of this guestbook.
-	*
-	* @return the modified date of this guestbook
-	*/
+	 * Returns the modified date of this guestbook.
+	 *
+	 * @return the modified date of this guestbook
+	 */
 	@Override
 	public Date getModifiedDate() {
 		return _guestbook.getModifiedDate();
 	}
 
 	/**
-	* Returns the name of this guestbook.
-	*
-	* @return the name of this guestbook
-	*/
+	 * Returns the name of this guestbook.
+	 *
+	 * @return the name of this guestbook
+	 */
 	@Override
 	public String getName() {
 		return _guestbook.getName();
 	}
 
 	/**
-	* Returns the primary key of this guestbook.
-	*
-	* @return the primary key of this guestbook
-	*/
+	 * Returns the primary key of this guestbook.
+	 *
+	 * @return the primary key of this guestbook
+	 */
 	@Override
 	public long getPrimaryKey() {
 		return _guestbook.getPrimaryKey();
@@ -248,90 +247,90 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Returns the status of this guestbook.
-	*
-	* @return the status of this guestbook
-	*/
+	 * Returns the status of this guestbook.
+	 *
+	 * @return the status of this guestbook
+	 */
 	@Override
 	public int getStatus() {
 		return _guestbook.getStatus();
 	}
 
 	/**
-	* Returns the status by user ID of this guestbook.
-	*
-	* @return the status by user ID of this guestbook
-	*/
+	 * Returns the status by user ID of this guestbook.
+	 *
+	 * @return the status by user ID of this guestbook
+	 */
 	@Override
 	public long getStatusByUserId() {
 		return _guestbook.getStatusByUserId();
 	}
 
 	/**
-	* Returns the status by user name of this guestbook.
-	*
-	* @return the status by user name of this guestbook
-	*/
+	 * Returns the status by user name of this guestbook.
+	 *
+	 * @return the status by user name of this guestbook
+	 */
 	@Override
 	public String getStatusByUserName() {
 		return _guestbook.getStatusByUserName();
 	}
 
 	/**
-	* Returns the status by user uuid of this guestbook.
-	*
-	* @return the status by user uuid of this guestbook
-	*/
+	 * Returns the status by user uuid of this guestbook.
+	 *
+	 * @return the status by user uuid of this guestbook
+	 */
 	@Override
 	public String getStatusByUserUuid() {
 		return _guestbook.getStatusByUserUuid();
 	}
 
 	/**
-	* Returns the status date of this guestbook.
-	*
-	* @return the status date of this guestbook
-	*/
+	 * Returns the status date of this guestbook.
+	 *
+	 * @return the status date of this guestbook
+	 */
 	@Override
 	public Date getStatusDate() {
 		return _guestbook.getStatusDate();
 	}
 
 	/**
-	* Returns the user ID of this guestbook.
-	*
-	* @return the user ID of this guestbook
-	*/
+	 * Returns the user ID of this guestbook.
+	 *
+	 * @return the user ID of this guestbook
+	 */
 	@Override
 	public long getUserId() {
 		return _guestbook.getUserId();
 	}
 
 	/**
-	* Returns the user name of this guestbook.
-	*
-	* @return the user name of this guestbook
-	*/
+	 * Returns the user name of this guestbook.
+	 *
+	 * @return the user name of this guestbook
+	 */
 	@Override
 	public String getUserName() {
 		return _guestbook.getUserName();
 	}
 
 	/**
-	* Returns the user uuid of this guestbook.
-	*
-	* @return the user uuid of this guestbook
-	*/
+	 * Returns the user uuid of this guestbook.
+	 *
+	 * @return the user uuid of this guestbook
+	 */
 	@Override
 	public String getUserUuid() {
 		return _guestbook.getUserUuid();
 	}
 
 	/**
-	* Returns the uuid of this guestbook.
-	*
-	* @return the uuid of this guestbook
-	*/
+	 * Returns the uuid of this guestbook.
+	 *
+	 * @return the uuid of this guestbook
+	 */
 	@Override
 	public String getUuid() {
 		return _guestbook.getUuid();
@@ -343,10 +342,10 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Returns <code>true</code> if this guestbook is approved.
-	*
-	* @return <code>true</code> if this guestbook is approved; <code>false</code> otherwise
-	*/
+	 * Returns <code>true</code> if this guestbook is approved.
+	 *
+	 * @return <code>true</code> if this guestbook is approved; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isApproved() {
 		return _guestbook.isApproved();
@@ -358,20 +357,20 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Returns <code>true</code> if this guestbook is denied.
-	*
-	* @return <code>true</code> if this guestbook is denied; <code>false</code> otherwise
-	*/
+	 * Returns <code>true</code> if this guestbook is denied.
+	 *
+	 * @return <code>true</code> if this guestbook is denied; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isDenied() {
 		return _guestbook.isDenied();
 	}
 
 	/**
-	* Returns <code>true</code> if this guestbook is a draft.
-	*
-	* @return <code>true</code> if this guestbook is a draft; <code>false</code> otherwise
-	*/
+	 * Returns <code>true</code> if this guestbook is a draft.
+	 *
+	 * @return <code>true</code> if this guestbook is a draft; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isDraft() {
 		return _guestbook.isDraft();
@@ -383,30 +382,30 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Returns <code>true</code> if this guestbook is expired.
-	*
-	* @return <code>true</code> if this guestbook is expired; <code>false</code> otherwise
-	*/
+	 * Returns <code>true</code> if this guestbook is expired.
+	 *
+	 * @return <code>true</code> if this guestbook is expired; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isExpired() {
 		return _guestbook.isExpired();
 	}
 
 	/**
-	* Returns <code>true</code> if this guestbook is inactive.
-	*
-	* @return <code>true</code> if this guestbook is inactive; <code>false</code> otherwise
-	*/
+	 * Returns <code>true</code> if this guestbook is inactive.
+	 *
+	 * @return <code>true</code> if this guestbook is inactive; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isInactive() {
 		return _guestbook.isInactive();
 	}
 
 	/**
-	* Returns <code>true</code> if this guestbook is incomplete.
-	*
-	* @return <code>true</code> if this guestbook is incomplete; <code>false</code> otherwise
-	*/
+	 * Returns <code>true</code> if this guestbook is incomplete.
+	 *
+	 * @return <code>true</code> if this guestbook is incomplete; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isIncomplete() {
 		return _guestbook.isIncomplete();
@@ -418,20 +417,20 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Returns <code>true</code> if this guestbook is pending.
-	*
-	* @return <code>true</code> if this guestbook is pending; <code>false</code> otherwise
-	*/
+	 * Returns <code>true</code> if this guestbook is pending.
+	 *
+	 * @return <code>true</code> if this guestbook is pending; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isPending() {
 		return _guestbook.isPending();
 	}
 
 	/**
-	* Returns <code>true</code> if this guestbook is scheduled.
-	*
-	* @return <code>true</code> if this guestbook is scheduled; <code>false</code> otherwise
-	*/
+	 * Returns <code>true</code> if this guestbook is scheduled.
+	 *
+	 * @return <code>true</code> if this guestbook is scheduled; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isScheduled() {
 		return _guestbook.isScheduled();
@@ -448,20 +447,20 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Sets the company ID of this guestbook.
-	*
-	* @param companyId the company ID of this guestbook
-	*/
+	 * Sets the company ID of this guestbook.
+	 *
+	 * @param companyId the company ID of this guestbook
+	 */
 	@Override
 	public void setCompanyId(long companyId) {
 		_guestbook.setCompanyId(companyId);
 	}
 
 	/**
-	* Sets the create date of this guestbook.
-	*
-	* @param createDate the create date of this guestbook
-	*/
+	 * Sets the create date of this guestbook.
+	 *
+	 * @param createDate the create date of this guestbook
+	 */
 	@Override
 	public void setCreateDate(Date createDate) {
 		_guestbook.setCreateDate(createDate);
@@ -470,6 +469,7 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
+
 		_guestbook.setExpandoBridgeAttributes(baseModel);
 	}
 
@@ -484,40 +484,40 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Sets the group ID of this guestbook.
-	*
-	* @param groupId the group ID of this guestbook
-	*/
+	 * Sets the group ID of this guestbook.
+	 *
+	 * @param groupId the group ID of this guestbook
+	 */
 	@Override
 	public void setGroupId(long groupId) {
 		_guestbook.setGroupId(groupId);
 	}
 
 	/**
-	* Sets the guestbook ID of this guestbook.
-	*
-	* @param guestbookId the guestbook ID of this guestbook
-	*/
+	 * Sets the guestbook ID of this guestbook.
+	 *
+	 * @param guestbookId the guestbook ID of this guestbook
+	 */
 	@Override
 	public void setGuestbookId(long guestbookId) {
 		_guestbook.setGuestbookId(guestbookId);
 	}
 
 	/**
-	* Sets the modified date of this guestbook.
-	*
-	* @param modifiedDate the modified date of this guestbook
-	*/
+	 * Sets the modified date of this guestbook.
+	 *
+	 * @param modifiedDate the modified date of this guestbook
+	 */
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_guestbook.setModifiedDate(modifiedDate);
 	}
 
 	/**
-	* Sets the name of this guestbook.
-	*
-	* @param name the name of this guestbook
-	*/
+	 * Sets the name of this guestbook.
+	 *
+	 * @param name the name of this guestbook
+	 */
 	@Override
 	public void setName(String name) {
 		_guestbook.setName(name);
@@ -529,10 +529,10 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Sets the primary key of this guestbook.
-	*
-	* @param primaryKey the primary key of this guestbook
-	*/
+	 * Sets the primary key of this guestbook.
+	 *
+	 * @param primaryKey the primary key of this guestbook
+	 */
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		_guestbook.setPrimaryKey(primaryKey);
@@ -544,97 +544,99 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	/**
-	* Sets the status of this guestbook.
-	*
-	* @param status the status of this guestbook
-	*/
+	 * Sets the status of this guestbook.
+	 *
+	 * @param status the status of this guestbook
+	 */
 	@Override
 	public void setStatus(int status) {
 		_guestbook.setStatus(status);
 	}
 
 	/**
-	* Sets the status by user ID of this guestbook.
-	*
-	* @param statusByUserId the status by user ID of this guestbook
-	*/
+	 * Sets the status by user ID of this guestbook.
+	 *
+	 * @param statusByUserId the status by user ID of this guestbook
+	 */
 	@Override
 	public void setStatusByUserId(long statusByUserId) {
 		_guestbook.setStatusByUserId(statusByUserId);
 	}
 
 	/**
-	* Sets the status by user name of this guestbook.
-	*
-	* @param statusByUserName the status by user name of this guestbook
-	*/
+	 * Sets the status by user name of this guestbook.
+	 *
+	 * @param statusByUserName the status by user name of this guestbook
+	 */
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
 		_guestbook.setStatusByUserName(statusByUserName);
 	}
 
 	/**
-	* Sets the status by user uuid of this guestbook.
-	*
-	* @param statusByUserUuid the status by user uuid of this guestbook
-	*/
+	 * Sets the status by user uuid of this guestbook.
+	 *
+	 * @param statusByUserUuid the status by user uuid of this guestbook
+	 */
 	@Override
 	public void setStatusByUserUuid(String statusByUserUuid) {
 		_guestbook.setStatusByUserUuid(statusByUserUuid);
 	}
 
 	/**
-	* Sets the status date of this guestbook.
-	*
-	* @param statusDate the status date of this guestbook
-	*/
+	 * Sets the status date of this guestbook.
+	 *
+	 * @param statusDate the status date of this guestbook
+	 */
 	@Override
 	public void setStatusDate(Date statusDate) {
 		_guestbook.setStatusDate(statusDate);
 	}
 
 	/**
-	* Sets the user ID of this guestbook.
-	*
-	* @param userId the user ID of this guestbook
-	*/
+	 * Sets the user ID of this guestbook.
+	 *
+	 * @param userId the user ID of this guestbook
+	 */
 	@Override
 	public void setUserId(long userId) {
 		_guestbook.setUserId(userId);
 	}
 
 	/**
-	* Sets the user name of this guestbook.
-	*
-	* @param userName the user name of this guestbook
-	*/
+	 * Sets the user name of this guestbook.
+	 *
+	 * @param userName the user name of this guestbook
+	 */
 	@Override
 	public void setUserName(String userName) {
 		_guestbook.setUserName(userName);
 	}
 
 	/**
-	* Sets the user uuid of this guestbook.
-	*
-	* @param userUuid the user uuid of this guestbook
-	*/
+	 * Sets the user uuid of this guestbook.
+	 *
+	 * @param userUuid the user uuid of this guestbook
+	 */
 	@Override
 	public void setUserUuid(String userUuid) {
 		_guestbook.setUserUuid(userUuid);
 	}
 
 	/**
-	* Sets the uuid of this guestbook.
-	*
-	* @param uuid the uuid of this guestbook
-	*/
+	 * Sets the uuid of this guestbook.
+	 *
+	 * @param uuid the uuid of this guestbook
+	 */
 	@Override
 	public void setUuid(String uuid) {
 		_guestbook.setUuid(uuid);
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.CacheModel<Guestbook> toCacheModel() {
+	public com.liferay.portal.kernel.model.CacheModel<Guestbook>
+		toCacheModel() {
+
 		return _guestbook.toCacheModel();
 	}
 
@@ -703,4 +705,5 @@ public class GuestbookWrapper implements Guestbook, ModelWrapper<Guestbook> {
 	}
 
 	private final Guestbook _guestbook;
+
 }

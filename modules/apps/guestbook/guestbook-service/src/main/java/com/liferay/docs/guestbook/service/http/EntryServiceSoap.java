@@ -16,21 +16,28 @@ package com.liferay.docs.guestbook.service.http;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.docs.guestbook.service.EntryServiceUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
+import java.rmi.RemoteException;
+
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.docs.guestbook.service.EntryServiceUtil} service utility. The
- * static methods of this class calls the same methods of the service utility.
- * However, the signatures are different because it is difficult for SOAP to
- * support certain types.
+ * <code>EntryServiceUtil</code> service
+ * utility. The static methods of this class call the same methods of the
+ * service utility. However, the signatures are different because it is
+ * difficult for SOAP to support certain types.
  *
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
- * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link com.liferay.docs.guestbook.model.EntrySoap}.
- * If the method in the service utility returns a
- * {@link com.liferay.docs.guestbook.model.Entry}, that is translated to a
- * {@link com.liferay.docs.guestbook.model.EntrySoap}. Methods that SOAP cannot
- * safely wire are skipped.
+ * if the method in the service utility returns a <code>java.util.List</code>,
+ * that is translated to an array of
+ * <code>com.liferay.docs.guestbook.model.EntrySoap</code>. If the method in the
+ * service utility returns a
+ * <code>com.liferay.docs.guestbook.model.Entry</code>, that is translated to a
+ * <code>com.liferay.docs.guestbook.model.EntrySoap</code>. Methods that SOAP
+ * cannot safely wire are skipped.
  * </p>
  *
  * <p>
@@ -52,10 +59,29 @@ import aQute.bnd.annotation.ProviderType;
  *
  * @author liferay
  * @see EntryServiceHttp
- * @see com.liferay.docs.guestbook.model.EntrySoap
- * @see com.liferay.docs.guestbook.service.EntryServiceUtil
  * @generated
  */
 @ProviderType
 public class EntryServiceSoap {
+
+	public static com.liferay.docs.guestbook.model.EntrySoap[] search(
+			long companyId)
+		throws RemoteException {
+
+		try {
+			java.util.List<com.liferay.docs.guestbook.model.Entry> returnValue =
+				EntryServiceUtil.search(companyId);
+
+			return com.liferay.docs.guestbook.model.EntrySoap.toSoapModels(
+				returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	private static Log _log = LogFactoryUtil.getLog(EntryServiceSoap.class);
+
 }

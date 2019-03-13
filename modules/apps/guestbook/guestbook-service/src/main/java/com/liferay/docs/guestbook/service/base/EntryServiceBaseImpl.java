@@ -18,7 +18,6 @@ import com.liferay.docs.guestbook.model.Entry;
 import com.liferay.docs.guestbook.service.EntryService;
 import com.liferay.docs.guestbook.service.persistence.EntryPersistence;
 import com.liferay.docs.guestbook.service.persistence.GuestbookPersistence;
-
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -43,15 +42,15 @@ import javax.sql.DataSource;
  *
  * @author liferay
  * @see com.liferay.docs.guestbook.service.impl.EntryServiceImpl
- * @see com.liferay.docs.guestbook.service.EntryServiceUtil
  * @generated
  */
-public abstract class EntryServiceBaseImpl extends BaseServiceImpl
-	implements EntryService, IdentifiableOSGiService {
+public abstract class EntryServiceBaseImpl
+	extends BaseServiceImpl implements EntryService, IdentifiableOSGiService {
+
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link com.liferay.docs.guestbook.service.EntryServiceUtil} to access the entry remote service.
+	 * Never modify or reference this class directly. Use <code>EntryService</code> via injection or a <code>org.osgi.util.tracker.ServiceTracker</code> or use <code>com.liferay.docs.guestbook.service.EntryServiceUtil</code>.
 	 */
 
 	/**
@@ -59,7 +58,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the entry local service
 	 */
-	public com.liferay.docs.guestbook.service.EntryLocalService getEntryLocalService() {
+	public com.liferay.docs.guestbook.service.EntryLocalService
+		getEntryLocalService() {
+
 		return entryLocalService;
 	}
 
@@ -69,7 +70,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 * @param entryLocalService the entry local service
 	 */
 	public void setEntryLocalService(
-		com.liferay.docs.guestbook.service.EntryLocalService entryLocalService) {
+		com.liferay.docs.guestbook.service.EntryLocalService
+			entryLocalService) {
+
 		this.entryLocalService = entryLocalService;
 	}
 
@@ -114,7 +117,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the guestbook local service
 	 */
-	public com.liferay.docs.guestbook.service.GuestbookLocalService getGuestbookLocalService() {
+	public com.liferay.docs.guestbook.service.GuestbookLocalService
+		getGuestbookLocalService() {
+
 		return guestbookLocalService;
 	}
 
@@ -124,7 +129,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 * @param guestbookLocalService the guestbook local service
 	 */
 	public void setGuestbookLocalService(
-		com.liferay.docs.guestbook.service.GuestbookLocalService guestbookLocalService) {
+		com.liferay.docs.guestbook.service.GuestbookLocalService
+			guestbookLocalService) {
+
 		this.guestbookLocalService = guestbookLocalService;
 	}
 
@@ -133,7 +140,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the guestbook remote service
 	 */
-	public com.liferay.docs.guestbook.service.GuestbookService getGuestbookService() {
+	public com.liferay.docs.guestbook.service.GuestbookService
+		getGuestbookService() {
+
 		return guestbookService;
 	}
 
@@ -144,6 +153,7 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 */
 	public void setGuestbookService(
 		com.liferay.docs.guestbook.service.GuestbookService guestbookService) {
+
 		this.guestbookService = guestbookService;
 	}
 
@@ -163,6 +173,7 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 */
 	public void setGuestbookPersistence(
 		GuestbookPersistence guestbookPersistence) {
+
 		this.guestbookPersistence = guestbookPersistence;
 	}
 
@@ -171,7 +182,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the counter local service
 	 */
-	public com.liferay.counter.kernel.service.CounterLocalService getCounterLocalService() {
+	public com.liferay.counter.kernel.service.CounterLocalService
+		getCounterLocalService() {
+
 		return counterLocalService;
 	}
 
@@ -181,7 +194,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 * @param counterLocalService the counter local service
 	 */
 	public void setCounterLocalService(
-		com.liferay.counter.kernel.service.CounterLocalService counterLocalService) {
+		com.liferay.counter.kernel.service.CounterLocalService
+			counterLocalService) {
+
 		this.counterLocalService = counterLocalService;
 	}
 
@@ -190,7 +205,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the class name local service
 	 */
-	public com.liferay.portal.kernel.service.ClassNameLocalService getClassNameLocalService() {
+	public com.liferay.portal.kernel.service.ClassNameLocalService
+		getClassNameLocalService() {
+
 		return classNameLocalService;
 	}
 
@@ -200,7 +217,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 * @param classNameLocalService the class name local service
 	 */
 	public void setClassNameLocalService(
-		com.liferay.portal.kernel.service.ClassNameLocalService classNameLocalService) {
+		com.liferay.portal.kernel.service.ClassNameLocalService
+			classNameLocalService) {
+
 		this.classNameLocalService = classNameLocalService;
 	}
 
@@ -209,7 +228,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the class name remote service
 	 */
-	public com.liferay.portal.kernel.service.ClassNameService getClassNameService() {
+	public com.liferay.portal.kernel.service.ClassNameService
+		getClassNameService() {
+
 		return classNameService;
 	}
 
@@ -220,6 +241,7 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 */
 	public void setClassNameService(
 		com.liferay.portal.kernel.service.ClassNameService classNameService) {
+
 		this.classNameService = classNameService;
 	}
 
@@ -239,6 +261,7 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 */
 	public void setClassNamePersistence(
 		ClassNamePersistence classNamePersistence) {
+
 		this.classNamePersistence = classNamePersistence;
 	}
 
@@ -247,7 +270,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the resource local service
 	 */
-	public com.liferay.portal.kernel.service.ResourceLocalService getResourceLocalService() {
+	public com.liferay.portal.kernel.service.ResourceLocalService
+		getResourceLocalService() {
+
 		return resourceLocalService;
 	}
 
@@ -257,7 +282,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 * @param resourceLocalService the resource local service
 	 */
 	public void setResourceLocalService(
-		com.liferay.portal.kernel.service.ResourceLocalService resourceLocalService) {
+		com.liferay.portal.kernel.service.ResourceLocalService
+			resourceLocalService) {
+
 		this.resourceLocalService = resourceLocalService;
 	}
 
@@ -266,7 +293,9 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 *
 	 * @return the user local service
 	 */
-	public com.liferay.portal.kernel.service.UserLocalService getUserLocalService() {
+	public com.liferay.portal.kernel.service.UserLocalService
+		getUserLocalService() {
+
 		return userLocalService;
 	}
 
@@ -277,6 +306,7 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 */
 	public void setUserLocalService(
 		com.liferay.portal.kernel.service.UserLocalService userLocalService) {
+
 		this.userLocalService = userLocalService;
 	}
 
@@ -296,6 +326,7 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 	 */
 	public void setUserService(
 		com.liferay.portal.kernel.service.UserService userService) {
+
 		this.userService = userService;
 	}
 
@@ -355,8 +386,8 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 			sql = db.buildSQL(sql);
 			sql = PortalUtil.transformSQL(sql);
 
-			SqlUpdate sqlUpdate = SqlUpdateFactoryUtil.getSqlUpdate(dataSource,
-					sql);
+			SqlUpdate sqlUpdate = SqlUpdateFactoryUtil.getSqlUpdate(
+				dataSource, sql);
 
 			sqlUpdate.update();
 		}
@@ -365,32 +396,72 @@ public abstract class EntryServiceBaseImpl extends BaseServiceImpl
 		}
 	}
 
-	@BeanReference(type = com.liferay.docs.guestbook.service.EntryLocalService.class)
-	protected com.liferay.docs.guestbook.service.EntryLocalService entryLocalService;
+	@BeanReference(
+		type = com.liferay.docs.guestbook.service.EntryLocalService.class
+	)
+	protected com.liferay.docs.guestbook.service.EntryLocalService
+		entryLocalService;
+
 	@BeanReference(type = EntryService.class)
 	protected EntryService entryService;
+
 	@BeanReference(type = EntryPersistence.class)
 	protected EntryPersistence entryPersistence;
-	@BeanReference(type = com.liferay.docs.guestbook.service.GuestbookLocalService.class)
-	protected com.liferay.docs.guestbook.service.GuestbookLocalService guestbookLocalService;
-	@BeanReference(type = com.liferay.docs.guestbook.service.GuestbookService.class)
-	protected com.liferay.docs.guestbook.service.GuestbookService guestbookService;
+
+	@BeanReference(
+		type = com.liferay.docs.guestbook.service.GuestbookLocalService.class
+	)
+	protected com.liferay.docs.guestbook.service.GuestbookLocalService
+		guestbookLocalService;
+
+	@BeanReference(
+		type = com.liferay.docs.guestbook.service.GuestbookService.class
+	)
+	protected com.liferay.docs.guestbook.service.GuestbookService
+		guestbookService;
+
 	@BeanReference(type = GuestbookPersistence.class)
 	protected GuestbookPersistence guestbookPersistence;
-	@ServiceReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
-	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
-	@ServiceReference(type = com.liferay.portal.kernel.service.ClassNameLocalService.class)
-	protected com.liferay.portal.kernel.service.ClassNameLocalService classNameLocalService;
-	@ServiceReference(type = com.liferay.portal.kernel.service.ClassNameService.class)
-	protected com.liferay.portal.kernel.service.ClassNameService classNameService;
+
+	@ServiceReference(
+		type = com.liferay.counter.kernel.service.CounterLocalService.class
+	)
+	protected com.liferay.counter.kernel.service.CounterLocalService
+		counterLocalService;
+
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.ClassNameLocalService.class
+	)
+	protected com.liferay.portal.kernel.service.ClassNameLocalService
+		classNameLocalService;
+
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.ClassNameService.class
+	)
+	protected com.liferay.portal.kernel.service.ClassNameService
+		classNameService;
+
 	@ServiceReference(type = ClassNamePersistence.class)
 	protected ClassNamePersistence classNamePersistence;
-	@ServiceReference(type = com.liferay.portal.kernel.service.ResourceLocalService.class)
-	protected com.liferay.portal.kernel.service.ResourceLocalService resourceLocalService;
-	@ServiceReference(type = com.liferay.portal.kernel.service.UserLocalService.class)
-	protected com.liferay.portal.kernel.service.UserLocalService userLocalService;
-	@ServiceReference(type = com.liferay.portal.kernel.service.UserService.class)
+
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.ResourceLocalService.class
+	)
+	protected com.liferay.portal.kernel.service.ResourceLocalService
+		resourceLocalService;
+
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.UserLocalService.class
+	)
+	protected com.liferay.portal.kernel.service.UserLocalService
+		userLocalService;
+
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.UserService.class
+	)
 	protected com.liferay.portal.kernel.service.UserService userService;
+
 	@ServiceReference(type = UserPersistence.class)
 	protected UserPersistence userPersistence;
+
 }

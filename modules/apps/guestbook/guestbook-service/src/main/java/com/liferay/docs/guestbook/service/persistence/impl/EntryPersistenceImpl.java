@@ -21,7 +21,6 @@ import com.liferay.docs.guestbook.model.Entry;
 import com.liferay.docs.guestbook.model.impl.EntryImpl;
 import com.liferay.docs.guestbook.model.impl.EntryModelImpl;
 import com.liferay.docs.guestbook.service.persistence.EntryPersistence;
-
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
@@ -69,50 +68,32 @@ import java.util.Set;
  * </p>
  *
  * @author liferay
- * @see EntryPersistence
- * @see com.liferay.docs.guestbook.service.persistence.EntryUtil
  * @generated
  */
 @ProviderType
-public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
-	implements EntryPersistence {
+public class EntryPersistenceImpl
+	extends BasePersistenceImpl<Entry> implements EntryPersistence {
+
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link EntryUtil} to access the entry persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
+	 * Never modify or reference this class directly. Always use <code>EntryUtil</code> to access the entry persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static final String FINDER_CLASS_NAME_ENTITY = EntryImpl.class.getName();
-	public static final String FINDER_CLASS_NAME_LIST_WITH_PAGINATION = FINDER_CLASS_NAME_ENTITY +
-		".List1";
-	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION = FINDER_CLASS_NAME_ENTITY +
-		".List2";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_ALL = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0]);
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll", new String[0]);
-	public static final FinderPath FINDER_PATH_COUNT_ALL = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll", new String[0]);
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
-			new String[] {
-				String.class.getName(),
-				
-			Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
-			new String[] { String.class.getName() },
-			EntryModelImpl.UUID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-			new String[] { String.class.getName() });
+	public static final String FINDER_CLASS_NAME_ENTITY =
+		EntryImpl.class.getName();
+
+	public static final String FINDER_CLASS_NAME_LIST_WITH_PAGINATION =
+		FINDER_CLASS_NAME_ENTITY + ".List1";
+
+	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
+		FINDER_CLASS_NAME_ENTITY + ".List2";
+
+	private FinderPath _finderPathWithPaginationFindAll;
+	private FinderPath _finderPathWithoutPaginationFindAll;
+	private FinderPath _finderPathCountAll;
+	private FinderPath _finderPathWithPaginationFindByUuid;
+	private FinderPath _finderPathWithoutPaginationFindByUuid;
+	private FinderPath _finderPathCountByUuid;
 
 	/**
 	 * Returns all the entries where uuid = &#63;.
@@ -129,7 +110,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns a range of all the entries where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -146,7 +127,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns an ordered range of all the entries where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -156,8 +137,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 */
 	@Override
-	public List<Entry> findByUuid(String uuid, int start, int end,
+	public List<Entry> findByUuid(
+		String uuid, int start, int end,
 		OrderByComparator<Entry> orderByComparator) {
+
 		return findByUuid(uuid, start, end, orderByComparator, true);
 	}
 
@@ -165,7 +148,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns an ordered range of all the entries where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -176,32 +159,37 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 */
 	@Override
-	public List<Entry> findByUuid(String uuid, int start, int end,
+	public List<Entry> findByUuid(
+		String uuid, int start, int end,
 		OrderByComparator<Entry> orderByComparator, boolean retrieveFromCache) {
+
+		uuid = Objects.toString(uuid, "");
+
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
+			(orderByComparator == null)) {
+
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID;
-			finderArgs = new Object[] { uuid };
+			finderPath = _finderPathWithoutPaginationFindByUuid;
+			finderArgs = new Object[] {uuid};
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID;
-			finderArgs = new Object[] { uuid, start, end, orderByComparator };
+			finderPath = _finderPathWithPaginationFindByUuid;
+			finderArgs = new Object[] {uuid, start, end, orderByComparator};
 		}
 
 		List<Entry> list = null;
 
 		if (retrieveFromCache) {
-			list = (List<Entry>)finderCache.getResult(finderPath, finderArgs,
-					this);
+			list = (List<Entry>)finderCache.getResult(
+				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Entry entry : list) {
-					if (!Objects.equals(uuid, entry.getUuid())) {
+					if (!uuid.equals(entry.getUuid())) {
 						list = null;
 
 						break;
@@ -214,8 +202,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(
+					3 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -225,10 +213,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			boolean bindUuid = false;
 
-			if (uuid == null) {
-				query.append(_FINDER_COLUMN_UUID_UUID_1);
-			}
-			else if (uuid.equals("")) {
+			if (uuid.isEmpty()) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -238,11 +223,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
 			}
-			else
-			 if (pagination) {
+			else if (pagination) {
 				query.append(EntryModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -262,16 +246,16 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 				}
 
 				if (!pagination) {
-					list = (List<Entry>)QueryUtil.list(q, getDialect(), start,
-							end, false);
+					list = (List<Entry>)QueryUtil.list(
+						q, getDialect(), start, end, false);
 
 					Collections.sort(list);
 
 					list = Collections.unmodifiableList(list);
 				}
 				else {
-					list = (List<Entry>)QueryUtil.list(q, getDialect(), start,
-							end);
+					list = (List<Entry>)QueryUtil.list(
+						q, getDialect(), start, end);
 				}
 
 				cacheResult(list);
@@ -300,8 +284,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a matching entry could not be found
 	 */
 	@Override
-	public Entry findByUuid_First(String uuid,
-		OrderByComparator<Entry> orderByComparator) throws NoSuchEntryException {
+	public Entry findByUuid_First(
+			String uuid, OrderByComparator<Entry> orderByComparator)
+		throws NoSuchEntryException {
+
 		Entry entry = fetchByUuid_First(uuid, orderByComparator);
 
 		if (entry != null) {
@@ -328,8 +314,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 */
 	@Override
-	public Entry fetchByUuid_First(String uuid,
-		OrderByComparator<Entry> orderByComparator) {
+	public Entry fetchByUuid_First(
+		String uuid, OrderByComparator<Entry> orderByComparator) {
+
 		List<Entry> list = findByUuid(uuid, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -348,8 +335,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a matching entry could not be found
 	 */
 	@Override
-	public Entry findByUuid_Last(String uuid,
-		OrderByComparator<Entry> orderByComparator) throws NoSuchEntryException {
+	public Entry findByUuid_Last(
+			String uuid, OrderByComparator<Entry> orderByComparator)
+		throws NoSuchEntryException {
+
 		Entry entry = fetchByUuid_Last(uuid, orderByComparator);
 
 		if (entry != null) {
@@ -376,15 +365,17 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 */
 	@Override
-	public Entry fetchByUuid_Last(String uuid,
-		OrderByComparator<Entry> orderByComparator) {
+	public Entry fetchByUuid_Last(
+		String uuid, OrderByComparator<Entry> orderByComparator) {
+
 		int count = countByUuid(uuid);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Entry> list = findByUuid(uuid, count - 1, count, orderByComparator);
+		List<Entry> list = findByUuid(
+			uuid, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -403,8 +394,13 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a entry with the primary key could not be found
 	 */
 	@Override
-	public Entry[] findByUuid_PrevAndNext(long entryId, String uuid,
-		OrderByComparator<Entry> orderByComparator) throws NoSuchEntryException {
+	public Entry[] findByUuid_PrevAndNext(
+			long entryId, String uuid,
+			OrderByComparator<Entry> orderByComparator)
+		throws NoSuchEntryException {
+
+		uuid = Objects.toString(uuid, "");
+
 		Entry entry = findByPrimaryKey(entryId);
 
 		Session session = null;
@@ -414,13 +410,13 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			Entry[] array = new EntryImpl[3];
 
-			array[0] = getByUuid_PrevAndNext(session, entry, uuid,
-					orderByComparator, true);
+			array[0] = getByUuid_PrevAndNext(
+				session, entry, uuid, orderByComparator, true);
 
 			array[1] = entry;
 
-			array[2] = getByUuid_PrevAndNext(session, entry, uuid,
-					orderByComparator, false);
+			array[2] = getByUuid_PrevAndNext(
+				session, entry, uuid, orderByComparator, false);
 
 			return array;
 		}
@@ -432,14 +428,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 	}
 
-	protected Entry getByUuid_PrevAndNext(Session session, Entry entry,
-		String uuid, OrderByComparator<Entry> orderByComparator,
-		boolean previous) {
+	protected Entry getByUuid_PrevAndNext(
+		Session session, Entry entry, String uuid,
+		OrderByComparator<Entry> orderByComparator, boolean previous) {
+
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(4 +
-					(orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(
+				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -450,10 +447,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 		boolean bindUuid = false;
 
-		if (uuid == null) {
-			query.append(_FINDER_COLUMN_UUID_UUID_1);
-		}
-		else if (uuid.equals("")) {
+		if (uuid.isEmpty()) {
 			query.append(_FINDER_COLUMN_UUID_UUID_3);
 		}
 		else {
@@ -463,7 +457,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -535,10 +530,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(entry);
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(entry)) {
 
-			for (Object value : values) {
-				qPos.add(value);
+				qPos.add(orderByConditionValue);
 			}
 		}
 
@@ -559,8 +554,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
-		for (Entry entry : findByUuid(uuid, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null)) {
+		for (Entry entry :
+				findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
 			remove(entry);
 		}
 	}
@@ -573,9 +569,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public int countByUuid(String uuid) {
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
+		uuid = Objects.toString(uuid, "");
 
-		Object[] finderArgs = new Object[] { uuid };
+		FinderPath finderPath = _finderPathCountByUuid;
+
+		Object[] finderArgs = new Object[] {uuid};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -586,10 +584,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			boolean bindUuid = false;
 
-			if (uuid == null) {
-				query.append(_FINDER_COLUMN_UUID_UUID_1);
-			}
-			else if (uuid.equals("")) {
+			if (uuid.isEmpty()) {
 				query.append(_FINDER_COLUMN_UUID_UUID_3);
 			}
 			else {
@@ -630,22 +625,16 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UUID_UUID_1 = "entry.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "entry.uuid = ?";
-	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(entry.uuid IS NULL OR entry.uuid = '')";
-	public static final FinderPath FINDER_PATH_FETCH_BY_UUID_G = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_ENTITY, "fetchByUUID_G",
-			new String[] { String.class.getName(), Long.class.getName() },
-			EntryModelImpl.UUID_COLUMN_BITMASK |
-			EntryModelImpl.GROUPID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_G = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUUID_G",
-			new String[] { String.class.getName(), Long.class.getName() });
+
+	private static final String _FINDER_COLUMN_UUID_UUID_3 =
+		"(entry.uuid IS NULL OR entry.uuid = '')";
+
+	private FinderPath _finderPathFetchByUUID_G;
+	private FinderPath _finderPathCountByUUID_G;
 
 	/**
-	 * Returns the entry where uuid = &#63; and groupId = &#63; or throws a {@link NoSuchEntryException} if it could not be found.
+	 * Returns the entry where uuid = &#63; and groupId = &#63; or throws a <code>NoSuchEntryException</code> if it could not be found.
 	 *
 	 * @param uuid the uuid
 	 * @param groupId the group ID
@@ -655,6 +644,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	@Override
 	public Entry findByUUID_G(String uuid, long groupId)
 		throws NoSuchEntryException {
+
 		Entry entry = fetchByUUID_G(uuid, groupId);
 
 		if (entry == null) {
@@ -701,22 +691,26 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the matching entry, or <code>null</code> if a matching entry could not be found
 	 */
 	@Override
-	public Entry fetchByUUID_G(String uuid, long groupId,
-		boolean retrieveFromCache) {
-		Object[] finderArgs = new Object[] { uuid, groupId };
+	public Entry fetchByUUID_G(
+		String uuid, long groupId, boolean retrieveFromCache) {
+
+		uuid = Objects.toString(uuid, "");
+
+		Object[] finderArgs = new Object[] {uuid, groupId};
 
 		Object result = null;
 
 		if (retrieveFromCache) {
-			result = finderCache.getResult(FINDER_PATH_FETCH_BY_UUID_G,
-					finderArgs, this);
+			result = finderCache.getResult(
+				_finderPathFetchByUUID_G, finderArgs, this);
 		}
 
 		if (result instanceof Entry) {
 			Entry entry = (Entry)result;
 
 			if (!Objects.equals(uuid, entry.getUuid()) ||
-					(groupId != entry.getGroupId())) {
+				(groupId != entry.getGroupId())) {
+
 				result = null;
 			}
 		}
@@ -728,10 +722,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			boolean bindUuid = false;
 
-			if (uuid == null) {
-				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
-			}
-			else if (uuid.equals("")) {
+			if (uuid.isEmpty()) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -762,8 +753,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 				List<Entry> list = q.list();
 
 				if (list.isEmpty()) {
-					finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-						finderArgs, list);
+					finderCache.putResult(
+						_finderPathFetchByUUID_G, finderArgs, list);
 				}
 				else {
 					Entry entry = list.get(0);
@@ -774,7 +765,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 				}
 			}
 			catch (Exception e) {
-				finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, finderArgs);
+				finderCache.removeResult(_finderPathFetchByUUID_G, finderArgs);
 
 				throw processException(e);
 			}
@@ -801,6 +792,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	@Override
 	public Entry removeByUUID_G(String uuid, long groupId)
 		throws NoSuchEntryException {
+
 		Entry entry = findByUUID_G(uuid, groupId);
 
 		return remove(entry);
@@ -815,9 +807,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public int countByUUID_G(String uuid, long groupId) {
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
+		uuid = Objects.toString(uuid, "");
 
-		Object[] finderArgs = new Object[] { uuid, groupId };
+		FinderPath finderPath = _finderPathCountByUUID_G;
+
+		Object[] finderArgs = new Object[] {uuid, groupId};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -828,10 +822,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			boolean bindUuid = false;
 
-			if (uuid == null) {
-				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
-			}
-			else if (uuid.equals("")) {
+			if (uuid.isEmpty()) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
 			}
 			else {
@@ -876,30 +867,18 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UUID_G_UUID_1 = "entry.uuid IS NULL AND ";
-	private static final String _FINDER_COLUMN_UUID_G_UUID_2 = "entry.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_G_UUID_3 = "(entry.uuid IS NULL OR entry.uuid = '') AND ";
-	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 = "entry.groupId = ?";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
-			new String[] {
-				String.class.getName(), Long.class.getName(),
-				
-			Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C =
-		new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
-			new String[] { String.class.getName(), Long.class.getName() },
-			EntryModelImpl.UUID_COLUMN_BITMASK |
-			EntryModelImpl.COMPANYID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_C = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-			new String[] { String.class.getName(), Long.class.getName() });
+	private static final String _FINDER_COLUMN_UUID_G_UUID_2 =
+		"entry.uuid = ? AND ";
+
+	private static final String _FINDER_COLUMN_UUID_G_UUID_3 =
+		"(entry.uuid IS NULL OR entry.uuid = '') AND ";
+
+	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 =
+		"entry.groupId = ?";
+
+	private FinderPath _finderPathWithPaginationFindByUuid_C;
+	private FinderPath _finderPathWithoutPaginationFindByUuid_C;
+	private FinderPath _finderPathCountByUuid_C;
 
 	/**
 	 * Returns all the entries where uuid = &#63; and companyId = &#63;.
@@ -910,15 +889,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public List<Entry> findByUuid_C(String uuid, long companyId) {
-		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
+		return findByUuid_C(
+			uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the entries where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -928,8 +907,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 */
 	@Override
-	public List<Entry> findByUuid_C(String uuid, long companyId, int start,
-		int end) {
+	public List<Entry> findByUuid_C(
+		String uuid, long companyId, int start, int end) {
+
 		return findByUuid_C(uuid, companyId, start, end, null);
 	}
 
@@ -937,7 +917,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns an ordered range of all the entries where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -948,16 +928,19 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 */
 	@Override
-	public List<Entry> findByUuid_C(String uuid, long companyId, int start,
-		int end, OrderByComparator<Entry> orderByComparator) {
-		return findByUuid_C(uuid, companyId, start, end, orderByComparator, true);
+	public List<Entry> findByUuid_C(
+		String uuid, long companyId, int start, int end,
+		OrderByComparator<Entry> orderByComparator) {
+
+		return findByUuid_C(
+			uuid, companyId, start, end, orderByComparator, true);
 	}
 
 	/**
 	 * Returns an ordered range of all the entries where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -969,38 +952,41 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 */
 	@Override
-	public List<Entry> findByUuid_C(String uuid, long companyId, int start,
-		int end, OrderByComparator<Entry> orderByComparator,
-		boolean retrieveFromCache) {
+	public List<Entry> findByUuid_C(
+		String uuid, long companyId, int start, int end,
+		OrderByComparator<Entry> orderByComparator, boolean retrieveFromCache) {
+
+		uuid = Objects.toString(uuid, "");
+
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
+			(orderByComparator == null)) {
+
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C;
-			finderArgs = new Object[] { uuid, companyId };
+			finderPath = _finderPathWithoutPaginationFindByUuid_C;
+			finderArgs = new Object[] {uuid, companyId};
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C;
+			finderPath = _finderPathWithPaginationFindByUuid_C;
 			finderArgs = new Object[] {
-					uuid, companyId,
-					
-					start, end, orderByComparator
-				};
+				uuid, companyId, start, end, orderByComparator
+			};
 		}
 
 		List<Entry> list = null;
 
 		if (retrieveFromCache) {
-			list = (List<Entry>)finderCache.getResult(finderPath, finderArgs,
-					this);
+			list = (List<Entry>)finderCache.getResult(
+				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Entry entry : list) {
-					if (!Objects.equals(uuid, entry.getUuid()) ||
-							(companyId != entry.getCompanyId())) {
+					if (!uuid.equals(entry.getUuid()) ||
+						(companyId != entry.getCompanyId())) {
+
 						list = null;
 
 						break;
@@ -1013,8 +999,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(
+					4 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -1024,10 +1010,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			boolean bindUuid = false;
 
-			if (uuid == null) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
-			}
-			else if (uuid.equals("")) {
+			if (uuid.isEmpty()) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1039,11 +1022,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
 			}
-			else
-			 if (pagination) {
+			else if (pagination) {
 				query.append(EntryModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -1065,16 +1047,16 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 				qPos.add(companyId);
 
 				if (!pagination) {
-					list = (List<Entry>)QueryUtil.list(q, getDialect(), start,
-							end, false);
+					list = (List<Entry>)QueryUtil.list(
+						q, getDialect(), start, end, false);
 
 					Collections.sort(list);
 
 					list = Collections.unmodifiableList(list);
 				}
 				else {
-					list = (List<Entry>)QueryUtil.list(q, getDialect(), start,
-							end);
+					list = (List<Entry>)QueryUtil.list(
+						q, getDialect(), start, end);
 				}
 
 				cacheResult(list);
@@ -1104,8 +1086,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a matching entry could not be found
 	 */
 	@Override
-	public Entry findByUuid_C_First(String uuid, long companyId,
-		OrderByComparator<Entry> orderByComparator) throws NoSuchEntryException {
+	public Entry findByUuid_C_First(
+			String uuid, long companyId,
+			OrderByComparator<Entry> orderByComparator)
+		throws NoSuchEntryException {
+
 		Entry entry = fetchByUuid_C_First(uuid, companyId, orderByComparator);
 
 		if (entry != null) {
@@ -1136,9 +1121,12 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 */
 	@Override
-	public Entry fetchByUuid_C_First(String uuid, long companyId,
+	public Entry fetchByUuid_C_First(
+		String uuid, long companyId,
 		OrderByComparator<Entry> orderByComparator) {
-		List<Entry> list = findByUuid_C(uuid, companyId, 0, 1, orderByComparator);
+
+		List<Entry> list = findByUuid_C(
+			uuid, companyId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1157,8 +1145,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a matching entry could not be found
 	 */
 	@Override
-	public Entry findByUuid_C_Last(String uuid, long companyId,
-		OrderByComparator<Entry> orderByComparator) throws NoSuchEntryException {
+	public Entry findByUuid_C_Last(
+			String uuid, long companyId,
+			OrderByComparator<Entry> orderByComparator)
+		throws NoSuchEntryException {
+
 		Entry entry = fetchByUuid_C_Last(uuid, companyId, orderByComparator);
 
 		if (entry != null) {
@@ -1189,16 +1180,18 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 */
 	@Override
-	public Entry fetchByUuid_C_Last(String uuid, long companyId,
+	public Entry fetchByUuid_C_Last(
+		String uuid, long companyId,
 		OrderByComparator<Entry> orderByComparator) {
+
 		int count = countByUuid_C(uuid, companyId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Entry> list = findByUuid_C(uuid, companyId, count - 1, count,
-				orderByComparator);
+		List<Entry> list = findByUuid_C(
+			uuid, companyId, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1218,9 +1211,13 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a entry with the primary key could not be found
 	 */
 	@Override
-	public Entry[] findByUuid_C_PrevAndNext(long entryId, String uuid,
-		long companyId, OrderByComparator<Entry> orderByComparator)
+	public Entry[] findByUuid_C_PrevAndNext(
+			long entryId, String uuid, long companyId,
+			OrderByComparator<Entry> orderByComparator)
 		throws NoSuchEntryException {
+
+		uuid = Objects.toString(uuid, "");
+
 		Entry entry = findByPrimaryKey(entryId);
 
 		Session session = null;
@@ -1230,13 +1227,13 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			Entry[] array = new EntryImpl[3];
 
-			array[0] = getByUuid_C_PrevAndNext(session, entry, uuid, companyId,
-					orderByComparator, true);
+			array[0] = getByUuid_C_PrevAndNext(
+				session, entry, uuid, companyId, orderByComparator, true);
 
 			array[1] = entry;
 
-			array[2] = getByUuid_C_PrevAndNext(session, entry, uuid, companyId,
-					orderByComparator, false);
+			array[2] = getByUuid_C_PrevAndNext(
+				session, entry, uuid, companyId, orderByComparator, false);
 
 			return array;
 		}
@@ -1248,14 +1245,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 	}
 
-	protected Entry getByUuid_C_PrevAndNext(Session session, Entry entry,
-		String uuid, long companyId,
+	protected Entry getByUuid_C_PrevAndNext(
+		Session session, Entry entry, String uuid, long companyId,
 		OrderByComparator<Entry> orderByComparator, boolean previous) {
+
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(5 +
-					(orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -1266,10 +1264,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 		boolean bindUuid = false;
 
-		if (uuid == null) {
-			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
-		}
-		else if (uuid.equals("")) {
+		if (uuid.isEmpty()) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 		}
 		else {
@@ -1281,7 +1276,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -1355,10 +1351,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		qPos.add(companyId);
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(entry);
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(entry)) {
 
-			for (Object value : values) {
-				qPos.add(value);
+				qPos.add(orderByConditionValue);
 			}
 		}
 
@@ -1380,8 +1376,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
-		for (Entry entry : findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null)) {
+		for (Entry entry :
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
 			remove(entry);
 		}
 	}
@@ -1395,9 +1394,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public int countByUuid_C(String uuid, long companyId) {
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
+		uuid = Objects.toString(uuid, "");
 
-		Object[] finderArgs = new Object[] { uuid, companyId };
+		FinderPath finderPath = _finderPathCountByUuid_C;
+
+		Object[] finderArgs = new Object[] {uuid, companyId};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -1408,10 +1409,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			boolean bindUuid = false;
 
-			if (uuid == null) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
-			}
-			else if (uuid.equals("")) {
+			if (uuid.isEmpty()) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
 			}
 			else {
@@ -1456,29 +1454,18 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UUID_C_UUID_1 = "entry.uuid IS NULL AND ";
-	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "entry.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(entry.uuid IS NULL OR entry.uuid = '') AND ";
-	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "entry.companyId = ?";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_G = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_G",
-			new String[] {
-				Long.class.getName(), Long.class.getName(),
-				
-			Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_G = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_G",
-			new String[] { Long.class.getName(), Long.class.getName() },
-			EntryModelImpl.GROUPID_COLUMN_BITMASK |
-			EntryModelImpl.GUESTBOOKID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_G_G = new FinderPath(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_G",
-			new String[] { Long.class.getName(), Long.class.getName() });
+	private static final String _FINDER_COLUMN_UUID_C_UUID_2 =
+		"entry.uuid = ? AND ";
+
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3 =
+		"(entry.uuid IS NULL OR entry.uuid = '') AND ";
+
+	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 =
+		"entry.companyId = ?";
+
+	private FinderPath _finderPathWithPaginationFindByG_G;
+	private FinderPath _finderPathWithoutPaginationFindByG_G;
+	private FinderPath _finderPathCountByG_G;
 
 	/**
 	 * Returns all the entries where groupId = &#63; and guestbookId = &#63;.
@@ -1489,15 +1476,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public List<Entry> findByG_G(long groupId, long guestbookId) {
-		return findByG_G(groupId, guestbookId, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
+		return findByG_G(
+			groupId, guestbookId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the entries where groupId = &#63; and guestbookId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1507,8 +1494,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries
 	 */
 	@Override
-	public List<Entry> findByG_G(long groupId, long guestbookId, int start,
-		int end) {
+	public List<Entry> findByG_G(
+		long groupId, long guestbookId, int start, int end) {
+
 		return findByG_G(groupId, guestbookId, start, end, null);
 	}
 
@@ -1516,7 +1504,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns an ordered range of all the entries where groupId = &#63; and guestbookId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1527,17 +1515,19 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 */
 	@Override
-	public List<Entry> findByG_G(long groupId, long guestbookId, int start,
-		int end, OrderByComparator<Entry> orderByComparator) {
-		return findByG_G(groupId, guestbookId, start, end, orderByComparator,
-			true);
+	public List<Entry> findByG_G(
+		long groupId, long guestbookId, int start, int end,
+		OrderByComparator<Entry> orderByComparator) {
+
+		return findByG_G(
+			groupId, guestbookId, start, end, orderByComparator, true);
 	}
 
 	/**
 	 * Returns an ordered range of all the entries where groupId = &#63; and guestbookId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1549,38 +1539,39 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries
 	 */
 	@Override
-	public List<Entry> findByG_G(long groupId, long guestbookId, int start,
-		int end, OrderByComparator<Entry> orderByComparator,
-		boolean retrieveFromCache) {
+	public List<Entry> findByG_G(
+		long groupId, long guestbookId, int start, int end,
+		OrderByComparator<Entry> orderByComparator, boolean retrieveFromCache) {
+
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
+			(orderByComparator == null)) {
+
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_G;
-			finderArgs = new Object[] { groupId, guestbookId };
+			finderPath = _finderPathWithoutPaginationFindByG_G;
+			finderArgs = new Object[] {groupId, guestbookId};
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_G;
+			finderPath = _finderPathWithPaginationFindByG_G;
 			finderArgs = new Object[] {
-					groupId, guestbookId,
-					
-					start, end, orderByComparator
-				};
+				groupId, guestbookId, start, end, orderByComparator
+			};
 		}
 
 		List<Entry> list = null;
 
 		if (retrieveFromCache) {
-			list = (List<Entry>)finderCache.getResult(finderPath, finderArgs,
-					this);
+			list = (List<Entry>)finderCache.getResult(
+				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Entry entry : list) {
 					if ((groupId != entry.getGroupId()) ||
-							(guestbookId != entry.getGuestbookId())) {
+						(guestbookId != entry.getGuestbookId())) {
+
 						list = null;
 
 						break;
@@ -1593,8 +1584,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(
+					4 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -1607,11 +1598,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			query.append(_FINDER_COLUMN_G_G_GUESTBOOKID_2);
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
 			}
-			else
-			 if (pagination) {
+			else if (pagination) {
 				query.append(EntryModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -1631,16 +1621,16 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 				qPos.add(guestbookId);
 
 				if (!pagination) {
-					list = (List<Entry>)QueryUtil.list(q, getDialect(), start,
-							end, false);
+					list = (List<Entry>)QueryUtil.list(
+						q, getDialect(), start, end, false);
 
 					Collections.sort(list);
 
 					list = Collections.unmodifiableList(list);
 				}
 				else {
-					list = (List<Entry>)QueryUtil.list(q, getDialect(), start,
-							end);
+					list = (List<Entry>)QueryUtil.list(
+						q, getDialect(), start, end);
 				}
 
 				cacheResult(list);
@@ -1670,8 +1660,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a matching entry could not be found
 	 */
 	@Override
-	public Entry findByG_G_First(long groupId, long guestbookId,
-		OrderByComparator<Entry> orderByComparator) throws NoSuchEntryException {
+	public Entry findByG_G_First(
+			long groupId, long guestbookId,
+			OrderByComparator<Entry> orderByComparator)
+		throws NoSuchEntryException {
+
 		Entry entry = fetchByG_G_First(groupId, guestbookId, orderByComparator);
 
 		if (entry != null) {
@@ -1702,10 +1695,12 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the first matching entry, or <code>null</code> if a matching entry could not be found
 	 */
 	@Override
-	public Entry fetchByG_G_First(long groupId, long guestbookId,
+	public Entry fetchByG_G_First(
+		long groupId, long guestbookId,
 		OrderByComparator<Entry> orderByComparator) {
-		List<Entry> list = findByG_G(groupId, guestbookId, 0, 1,
-				orderByComparator);
+
+		List<Entry> list = findByG_G(
+			groupId, guestbookId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1724,8 +1719,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a matching entry could not be found
 	 */
 	@Override
-	public Entry findByG_G_Last(long groupId, long guestbookId,
-		OrderByComparator<Entry> orderByComparator) throws NoSuchEntryException {
+	public Entry findByG_G_Last(
+			long groupId, long guestbookId,
+			OrderByComparator<Entry> orderByComparator)
+		throws NoSuchEntryException {
+
 		Entry entry = fetchByG_G_Last(groupId, guestbookId, orderByComparator);
 
 		if (entry != null) {
@@ -1756,16 +1754,18 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the last matching entry, or <code>null</code> if a matching entry could not be found
 	 */
 	@Override
-	public Entry fetchByG_G_Last(long groupId, long guestbookId,
+	public Entry fetchByG_G_Last(
+		long groupId, long guestbookId,
 		OrderByComparator<Entry> orderByComparator) {
+
 		int count = countByG_G(groupId, guestbookId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Entry> list = findByG_G(groupId, guestbookId, count - 1, count,
-				orderByComparator);
+		List<Entry> list = findByG_G(
+			groupId, guestbookId, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1785,9 +1785,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a entry with the primary key could not be found
 	 */
 	@Override
-	public Entry[] findByG_G_PrevAndNext(long entryId, long groupId,
-		long guestbookId, OrderByComparator<Entry> orderByComparator)
+	public Entry[] findByG_G_PrevAndNext(
+			long entryId, long groupId, long guestbookId,
+			OrderByComparator<Entry> orderByComparator)
 		throws NoSuchEntryException {
+
 		Entry entry = findByPrimaryKey(entryId);
 
 		Session session = null;
@@ -1797,13 +1799,13 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			Entry[] array = new EntryImpl[3];
 
-			array[0] = getByG_G_PrevAndNext(session, entry, groupId,
-					guestbookId, orderByComparator, true);
+			array[0] = getByG_G_PrevAndNext(
+				session, entry, groupId, guestbookId, orderByComparator, true);
 
 			array[1] = entry;
 
-			array[2] = getByG_G_PrevAndNext(session, entry, groupId,
-					guestbookId, orderByComparator, false);
+			array[2] = getByG_G_PrevAndNext(
+				session, entry, groupId, guestbookId, orderByComparator, false);
 
 			return array;
 		}
@@ -1815,14 +1817,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 	}
 
-	protected Entry getByG_G_PrevAndNext(Session session, Entry entry,
-		long groupId, long guestbookId,
+	protected Entry getByG_G_PrevAndNext(
+		Session session, Entry entry, long groupId, long guestbookId,
 		OrderByComparator<Entry> orderByComparator, boolean previous) {
+
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(5 +
-					(orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -1836,7 +1839,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		query.append(_FINDER_COLUMN_G_G_GUESTBOOKID_2);
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -1908,10 +1912,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		qPos.add(guestbookId);
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(entry);
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(entry)) {
 
-			for (Object value : values) {
-				qPos.add(value);
+				qPos.add(orderByConditionValue);
 			}
 		}
 
@@ -1934,15 +1938,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public List<Entry> filterFindByG_G(long groupId, long guestbookId) {
-		return filterFindByG_G(groupId, guestbookId, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
+		return filterFindByG_G(
+			groupId, guestbookId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the entries that the user has permission to view where groupId = &#63; and guestbookId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1952,8 +1956,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the range of matching entries that the user has permission to view
 	 */
 	@Override
-	public List<Entry> filterFindByG_G(long groupId, long guestbookId,
-		int start, int end) {
+	public List<Entry> filterFindByG_G(
+		long groupId, long guestbookId, int start, int end) {
+
 		return filterFindByG_G(groupId, guestbookId, start, end, null);
 	}
 
@@ -1961,7 +1966,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns an ordered range of all the entries that the user has permissions to view where groupId = &#63; and guestbookId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1972,17 +1977,20 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of matching entries that the user has permission to view
 	 */
 	@Override
-	public List<Entry> filterFindByG_G(long groupId, long guestbookId,
-		int start, int end, OrderByComparator<Entry> orderByComparator) {
+	public List<Entry> filterFindByG_G(
+		long groupId, long guestbookId, int start, int end,
+		OrderByComparator<Entry> orderByComparator) {
+
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_G(groupId, guestbookId, start, end, orderByComparator);
+			return findByG_G(
+				groupId, guestbookId, start, end, orderByComparator);
 		}
 
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(4 +
-					(orderByComparator.getOrderByFields().length * 2));
+			query = new StringBundler(
+				4 + (orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
 			query = new StringBundler(5);
@@ -2005,12 +2013,12 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator, true);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
 			}
 			else {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_TABLE,
-					orderByComparator, true);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
 			}
 		}
 		else {
@@ -2022,9 +2030,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			}
 		}
 
-		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Entry.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				groupId);
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			query.toString(), Entry.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -2067,12 +2075,14 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @throws NoSuchEntryException if a entry with the primary key could not be found
 	 */
 	@Override
-	public Entry[] filterFindByG_G_PrevAndNext(long entryId, long groupId,
-		long guestbookId, OrderByComparator<Entry> orderByComparator)
+	public Entry[] filterFindByG_G_PrevAndNext(
+			long entryId, long groupId, long guestbookId,
+			OrderByComparator<Entry> orderByComparator)
 		throws NoSuchEntryException {
+
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
-			return findByG_G_PrevAndNext(entryId, groupId, guestbookId,
-				orderByComparator);
+			return findByG_G_PrevAndNext(
+				entryId, groupId, guestbookId, orderByComparator);
 		}
 
 		Entry entry = findByPrimaryKey(entryId);
@@ -2084,13 +2094,13 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			Entry[] array = new EntryImpl[3];
 
-			array[0] = filterGetByG_G_PrevAndNext(session, entry, groupId,
-					guestbookId, orderByComparator, true);
+			array[0] = filterGetByG_G_PrevAndNext(
+				session, entry, groupId, guestbookId, orderByComparator, true);
 
 			array[1] = entry;
 
-			array[2] = filterGetByG_G_PrevAndNext(session, entry, groupId,
-					guestbookId, orderByComparator, false);
+			array[2] = filterGetByG_G_PrevAndNext(
+				session, entry, groupId, guestbookId, orderByComparator, false);
 
 			return array;
 		}
@@ -2102,14 +2112,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 	}
 
-	protected Entry filterGetByG_G_PrevAndNext(Session session, Entry entry,
-		long groupId, long guestbookId,
+	protected Entry filterGetByG_G_PrevAndNext(
+		Session session, Entry entry, long groupId, long guestbookId,
 		OrderByComparator<Entry> orderByComparator, boolean previous) {
+
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -2132,7 +2143,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -2140,13 +2152,17 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			for (int i = 0; i < orderByConditionFields.length; i++) {
 				if (getDB().isSupportsInlineDistinct()) {
-					query.append(_ORDER_BY_ENTITY_ALIAS);
+					query.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
 				}
 				else {
-					query.append(_ORDER_BY_ENTITY_TABLE);
+					query.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
 				}
-
-				query.append(orderByConditionFields[i]);
 
 				if ((i + 1) < orderByConditionFields.length) {
 					if (orderByComparator.isAscending() ^ previous) {
@@ -2172,13 +2188,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			for (int i = 0; i < orderByFields.length; i++) {
 				if (getDB().isSupportsInlineDistinct()) {
-					query.append(_ORDER_BY_ENTITY_ALIAS);
+					query.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
 				}
 				else {
-					query.append(_ORDER_BY_ENTITY_TABLE);
+					query.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
 				}
-
-				query.append(orderByFields[i]);
 
 				if ((i + 1) < orderByFields.length) {
 					if (orderByComparator.isAscending() ^ previous) {
@@ -2207,9 +2225,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			}
 		}
 
-		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Entry.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				groupId);
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			query.toString(), Entry.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2230,10 +2248,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		qPos.add(guestbookId);
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(entry);
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(entry)) {
 
-			for (Object value : values) {
-				qPos.add(value);
+				qPos.add(orderByConditionValue);
 			}
 		}
 
@@ -2255,8 +2273,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public void removeByG_G(long groupId, long guestbookId) {
-		for (Entry entry : findByG_G(groupId, guestbookId, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null)) {
+		for (Entry entry :
+				findByG_G(
+					groupId, guestbookId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
 			remove(entry);
 		}
 	}
@@ -2270,9 +2291,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public int countByG_G(long groupId, long guestbookId) {
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_G;
+		FinderPath finderPath = _finderPathCountByG_G;
 
-		Object[] finderArgs = new Object[] { groupId, guestbookId };
+		Object[] finderArgs = new Object[] {groupId, guestbookId};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -2338,9 +2359,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 		query.append(_FINDER_COLUMN_G_G_GUESTBOOKID_2);
 
-		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Entry.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				groupId);
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			query.toString(), Entry.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -2349,8 +2370,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
-			q.addScalar(COUNT_COLUMN_NAME,
-				com.liferay.portal.kernel.dao.orm.Type.LONG);
+			q.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
@@ -2370,15 +2391,18 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 	}
 
-	private static final String _FINDER_COLUMN_G_G_GROUPID_2 = "entry.groupId = ? AND ";
-	private static final String _FINDER_COLUMN_G_G_GUESTBOOKID_2 = "entry.guestbookId = ?";
+	private static final String _FINDER_COLUMN_G_G_GROUPID_2 =
+		"entry.groupId = ? AND ";
+
+	private static final String _FINDER_COLUMN_G_G_GUESTBOOKID_2 =
+		"entry.guestbookId = ?";
 
 	public EntryPersistenceImpl() {
 		setModelClass(Entry.class);
 
 		try {
 			Field field = BasePersistenceImpl.class.getDeclaredField(
-					"_dbColumnNames");
+				"_dbColumnNames");
 
 			field.setAccessible(true);
 
@@ -2402,11 +2426,13 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public void cacheResult(Entry entry) {
-		entityCache.putResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryImpl.class, entry.getPrimaryKey(), entry);
+		entityCache.putResult(
+			EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+			entry.getPrimaryKey(), entry);
 
-		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-			new Object[] { entry.getUuid(), entry.getGroupId() }, entry);
+		finderCache.putResult(
+			_finderPathFetchByUUID_G,
+			new Object[] {entry.getUuid(), entry.getGroupId()}, entry);
 
 		entry.resetOriginalValues();
 	}
@@ -2419,8 +2445,10 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	@Override
 	public void cacheResult(List<Entry> entries) {
 		for (Entry entry : entries) {
-			if (entityCache.getResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-						EntryImpl.class, entry.getPrimaryKey()) == null) {
+			if (entityCache.getResult(
+					EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+					entry.getPrimaryKey()) == null) {
+
 				cacheResult(entry);
 			}
 			else {
@@ -2433,7 +2461,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Clears the cache for all entries.
 	 *
 	 * <p>
-	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
+	 * The <code>EntityCache</code> and <code>FinderCache</code> are both cleared by this method.
 	 * </p>
 	 */
 	@Override
@@ -2449,13 +2477,14 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Clears the cache for the entry.
 	 *
 	 * <p>
-	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
+	 * The <code>EntityCache</code> and <code>FinderCache</code> are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache(Entry entry) {
-		entityCache.removeResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryImpl.class, entry.getPrimaryKey());
+		entityCache.removeResult(
+			EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+			entry.getPrimaryKey());
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
@@ -2469,8 +2498,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		for (Entry entry : entries) {
-			entityCache.removeResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-				EntryImpl.class, entry.getPrimaryKey());
+			entityCache.removeResult(
+				EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+				entry.getPrimaryKey());
 
 			clearUniqueFindersCache((EntryModelImpl)entry, true);
 		}
@@ -2478,35 +2508,37 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 	protected void cacheUniqueFindersCache(EntryModelImpl entryModelImpl) {
 		Object[] args = new Object[] {
+			entryModelImpl.getUuid(), entryModelImpl.getGroupId()
+		};
+
+		finderCache.putResult(
+			_finderPathCountByUUID_G, args, Long.valueOf(1), false);
+		finderCache.putResult(
+			_finderPathFetchByUUID_G, args, entryModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		EntryModelImpl entryModelImpl, boolean clearCurrent) {
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
 				entryModelImpl.getUuid(), entryModelImpl.getGroupId()
 			};
 
-		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-			Long.valueOf(1), false);
-		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-			entryModelImpl, false);
-	}
-
-	protected void clearUniqueFindersCache(EntryModelImpl entryModelImpl,
-		boolean clearCurrent) {
-		if (clearCurrent) {
-			Object[] args = new Object[] {
-					entryModelImpl.getUuid(), entryModelImpl.getGroupId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+			finderCache.removeResult(_finderPathCountByUUID_G, args);
+			finderCache.removeResult(_finderPathFetchByUUID_G, args);
 		}
 
 		if ((entryModelImpl.getColumnBitmask() &
-				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			Object[] args = new Object[] {
-					entryModelImpl.getOriginalUuid(),
-					entryModelImpl.getOriginalGroupId()
-				};
+			 _finderPathFetchByUUID_G.getColumnBitmask()) != 0) {
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+			Object[] args = new Object[] {
+				entryModelImpl.getOriginalUuid(),
+				entryModelImpl.getOriginalGroupId()
+			};
+
+			finderCache.removeResult(_finderPathCountByUUID_G, args);
+			finderCache.removeResult(_finderPathFetchByUUID_G, args);
 		}
 	}
 
@@ -2565,8 +2597,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
 
-				throw new NoSuchEntryException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-					primaryKey);
+				throw new NoSuchEntryException(
+					_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
 			return remove(entry);
@@ -2590,8 +2622,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			session = openSession();
 
 			if (!session.contains(entry)) {
-				entry = (Entry)session.get(EntryImpl.class,
-						entry.getPrimaryKeyObj());
+				entry = (Entry)session.get(
+					EntryImpl.class, entry.getPrimaryKeyObj());
 			}
 
 			if (entry != null) {
@@ -2624,12 +2656,12 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 				throw new IllegalArgumentException(
 					"Implement ModelWrapper in entry proxy " +
-					invocationHandler.getClass());
+						invocationHandler.getClass());
 			}
 
 			throw new IllegalArgumentException(
 				"Implement ModelWrapper in custom Entry implementation " +
-				entry.getClass());
+					entry.getClass());
 		}
 
 		EntryModelImpl entryModelImpl = (EntryModelImpl)entry;
@@ -2640,7 +2672,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			entry.setUuid(uuid);
 		}
 
-		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
 
 		Date now = new Date();
 
@@ -2688,95 +2721,99 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		if (!EntryModelImpl.COLUMN_BITMASK_ENABLED) {
 			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 		}
-		else
-		 if (isNew) {
-			Object[] args = new Object[] { entryModelImpl.getUuid() };
+		else if (isNew) {
+			Object[] args = new Object[] {entryModelImpl.getUuid()};
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
-				args);
+			finderCache.removeResult(_finderPathCountByUuid, args);
+			finderCache.removeResult(
+				_finderPathWithoutPaginationFindByUuid, args);
 
 			args = new Object[] {
+				entryModelImpl.getUuid(), entryModelImpl.getCompanyId()
+			};
+
+			finderCache.removeResult(_finderPathCountByUuid_C, args);
+			finderCache.removeResult(
+				_finderPathWithoutPaginationFindByUuid_C, args);
+
+			args = new Object[] {
+				entryModelImpl.getGroupId(), entryModelImpl.getGuestbookId()
+			};
+
+			finderCache.removeResult(_finderPathCountByG_G, args);
+			finderCache.removeResult(
+				_finderPathWithoutPaginationFindByG_G, args);
+
+			finderCache.removeResult(_finderPathCountAll, FINDER_ARGS_EMPTY);
+			finderCache.removeResult(
+				_finderPathWithoutPaginationFindAll, FINDER_ARGS_EMPTY);
+		}
+		else {
+			if ((entryModelImpl.getColumnBitmask() &
+				 _finderPathWithoutPaginationFindByUuid.getColumnBitmask()) !=
+					 0) {
+
+				Object[] args = new Object[] {entryModelImpl.getOriginalUuid()};
+
+				finderCache.removeResult(_finderPathCountByUuid, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByUuid, args);
+
+				args = new Object[] {entryModelImpl.getUuid()};
+
+				finderCache.removeResult(_finderPathCountByUuid, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByUuid, args);
+			}
+
+			if ((entryModelImpl.getColumnBitmask() &
+				 _finderPathWithoutPaginationFindByUuid_C.getColumnBitmask()) !=
+					 0) {
+
+				Object[] args = new Object[] {
+					entryModelImpl.getOriginalUuid(),
+					entryModelImpl.getOriginalCompanyId()
+				};
+
+				finderCache.removeResult(_finderPathCountByUuid_C, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByUuid_C, args);
+
+				args = new Object[] {
 					entryModelImpl.getUuid(), entryModelImpl.getCompanyId()
 				};
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
-				args);
+				finderCache.removeResult(_finderPathCountByUuid_C, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByUuid_C, args);
+			}
 
-			args = new Object[] {
+			if ((entryModelImpl.getColumnBitmask() &
+				 _finderPathWithoutPaginationFindByG_G.getColumnBitmask()) !=
+					 0) {
+
+				Object[] args = new Object[] {
+					entryModelImpl.getOriginalGroupId(),
+					entryModelImpl.getOriginalGuestbookId()
+				};
+
+				finderCache.removeResult(_finderPathCountByG_G, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByG_G, args);
+
+				args = new Object[] {
 					entryModelImpl.getGroupId(), entryModelImpl.getGuestbookId()
 				};
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_G, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_G,
-				args);
-
-			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
-				FINDER_ARGS_EMPTY);
-		}
-
-		else {
-			if ((entryModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] { entryModelImpl.getOriginalUuid() };
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
-					args);
-
-				args = new Object[] { entryModelImpl.getUuid() };
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
-					args);
-			}
-
-			if ((entryModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						entryModelImpl.getOriginalUuid(),
-						entryModelImpl.getOriginalCompanyId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
-					args);
-
-				args = new Object[] {
-						entryModelImpl.getUuid(), entryModelImpl.getCompanyId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
-					args);
-			}
-
-			if ((entryModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						entryModelImpl.getOriginalGroupId(),
-						entryModelImpl.getOriginalGuestbookId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_G, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_G,
-					args);
-
-				args = new Object[] {
-						entryModelImpl.getGroupId(),
-						entryModelImpl.getGuestbookId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_G, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_G,
-					args);
+				finderCache.removeResult(_finderPathCountByG_G, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByG_G, args);
 			}
 		}
 
-		entityCache.putResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-			EntryImpl.class, entry.getPrimaryKey(), entry, false);
+		entityCache.putResult(
+			EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+			entry.getPrimaryKey(), entry, false);
 
 		clearUniqueFindersCache(entryModelImpl, false);
 		cacheUniqueFindersCache(entryModelImpl);
@@ -2787,7 +2824,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	}
 
 	/**
-	 * Returns the entry with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
+	 * Returns the entry with the primary key or throws a <code>com.liferay.portal.kernel.exception.NoSuchModelException</code> if it could not be found.
 	 *
 	 * @param primaryKey the primary key of the entry
 	 * @return the entry
@@ -2796,6 +2833,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	@Override
 	public Entry findByPrimaryKey(Serializable primaryKey)
 		throws NoSuchEntryException {
+
 		Entry entry = fetchByPrimaryKey(primaryKey);
 
 		if (entry == null) {
@@ -2803,15 +2841,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
-			throw new NoSuchEntryException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				primaryKey);
+			throw new NoSuchEntryException(
+				_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 		}
 
 		return entry;
 	}
 
 	/**
-	 * Returns the entry with the primary key or throws a {@link NoSuchEntryException} if it could not be found.
+	 * Returns the entry with the primary key or throws a <code>NoSuchEntryException</code> if it could not be found.
 	 *
 	 * @param entryId the primary key of the entry
 	 * @return the entry
@@ -2830,8 +2868,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public Entry fetchByPrimaryKey(Serializable primaryKey) {
-		Serializable serializable = entityCache.getResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-				EntryImpl.class, primaryKey);
+		Serializable serializable = entityCache.getResult(
+			EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class, primaryKey);
 
 		if (serializable == nullModel) {
 			return null;
@@ -2851,13 +2889,15 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 					cacheResult(entry);
 				}
 				else {
-					entityCache.putResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-						EntryImpl.class, primaryKey, nullModel);
+					entityCache.putResult(
+						EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+						primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
-				entityCache.removeResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-					EntryImpl.class, primaryKey);
+				entityCache.removeResult(
+					EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+					primaryKey);
 
 				throw processException(e);
 			}
@@ -2883,6 +2923,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	@Override
 	public Map<Serializable, Entry> fetchByPrimaryKeys(
 		Set<Serializable> primaryKeys) {
+
 		if (primaryKeys.isEmpty()) {
 			return Collections.emptyMap();
 		}
@@ -2906,8 +2947,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			Serializable serializable = entityCache.getResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-					EntryImpl.class, primaryKey);
+			Serializable serializable = entityCache.getResult(
+				EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+				primaryKey);
 
 			if (serializable != nullModel) {
 				if (serializable == null) {
@@ -2927,8 +2969,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			return map;
 		}
 
-		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
-				1);
+		StringBundler query = new StringBundler(
+			uncachedPrimaryKeys.size() * 2 + 1);
 
 		query.append(_SQL_SELECT_ENTRY_WHERE_PKS_IN);
 
@@ -2960,8 +3002,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			}
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
-				entityCache.putResult(EntryModelImpl.ENTITY_CACHE_ENABLED,
-					EntryImpl.class, primaryKey, nullModel);
+				entityCache.putResult(
+					EntryModelImpl.ENTITY_CACHE_ENABLED, EntryImpl.class,
+					primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2988,7 +3031,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns a range of all the entries.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of entries
@@ -3004,7 +3047,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns an ordered range of all the entries.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of entries
@@ -3013,8 +3056,9 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of entries
 	 */
 	@Override
-	public List<Entry> findAll(int start, int end,
-		OrderByComparator<Entry> orderByComparator) {
+	public List<Entry> findAll(
+		int start, int end, OrderByComparator<Entry> orderByComparator) {
+
 		return findAll(start, end, orderByComparator, true);
 	}
 
@@ -3022,7 +3066,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Returns an ordered range of all the entries.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>EntryModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of entries
@@ -3032,28 +3076,31 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * @return the ordered range of entries
 	 */
 	@Override
-	public List<Entry> findAll(int start, int end,
-		OrderByComparator<Entry> orderByComparator, boolean retrieveFromCache) {
+	public List<Entry> findAll(
+		int start, int end, OrderByComparator<Entry> orderByComparator,
+		boolean retrieveFromCache) {
+
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
+			(orderByComparator == null)) {
+
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL;
+			finderPath = _finderPathWithoutPaginationFindAll;
 			finderArgs = FINDER_ARGS_EMPTY;
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_ALL;
-			finderArgs = new Object[] { start, end, orderByComparator };
+			finderPath = _finderPathWithPaginationFindAll;
+			finderArgs = new Object[] {start, end, orderByComparator};
 		}
 
 		List<Entry> list = null;
 
 		if (retrieveFromCache) {
-			list = (List<Entry>)finderCache.getResult(finderPath, finderArgs,
-					this);
+			list = (List<Entry>)finderCache.getResult(
+				finderPath, finderArgs, this);
 		}
 
 		if (list == null) {
@@ -3061,13 +3108,13 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 			String sql = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(2 +
-						(orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(
+					2 + (orderByComparator.getOrderByFields().length * 2));
 
 				query.append(_SQL_SELECT_ENTRY);
 
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
 
 				sql = query.toString();
 			}
@@ -3087,16 +3134,16 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 				Query q = session.createQuery(sql);
 
 				if (!pagination) {
-					list = (List<Entry>)QueryUtil.list(q, getDialect(), start,
-							end, false);
+					list = (List<Entry>)QueryUtil.list(
+						q, getDialect(), start, end, false);
 
 					Collections.sort(list);
 
 					list = Collections.unmodifiableList(list);
 				}
 				else {
-					list = (List<Entry>)QueryUtil.list(q, getDialect(), start,
-							end);
+					list = (List<Entry>)QueryUtil.list(
+						q, getDialect(), start, end);
 				}
 
 				cacheResult(list);
@@ -3134,8 +3181,8 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 */
 	@Override
 	public int countAll() {
-		Long count = (Long)finderCache.getResult(FINDER_PATH_COUNT_ALL,
-				FINDER_ARGS_EMPTY, this);
+		Long count = (Long)finderCache.getResult(
+			_finderPathCountAll, FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
 			Session session = null;
@@ -3147,12 +3194,12 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 				count = (Long)q.uniqueResult();
 
-				finderCache.putResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY,
-					count);
+				finderCache.putResult(
+					_finderPathCountAll, FINDER_ARGS_EMPTY, count);
 			}
 			catch (Exception e) {
-				finderCache.removeResult(FINDER_PATH_COUNT_ALL,
-					FINDER_ARGS_EMPTY);
+				finderCache.removeResult(
+					_finderPathCountAll, FINDER_ARGS_EMPTY);
 
 				throw processException(e);
 			}
@@ -3178,6 +3225,106 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 	 * Initializes the entry persistence.
 	 */
 	public void afterPropertiesSet() {
+		_finderPathWithPaginationFindAll = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0]);
+
+		_finderPathWithoutPaginationFindAll = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll",
+			new String[0]);
+
+		_finderPathCountAll = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
+			new String[0]);
+
+		_finderPathWithPaginationFindByUuid = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
+			new String[] {
+				String.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			});
+
+		_finderPathWithoutPaginationFindByUuid = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
+			new String[] {String.class.getName()},
+			EntryModelImpl.UUID_COLUMN_BITMASK);
+
+		_finderPathCountByUuid = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+			new String[] {String.class.getName()});
+
+		_finderPathFetchByUUID_G = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByUUID_G",
+			new String[] {String.class.getName(), Long.class.getName()},
+			EntryModelImpl.UUID_COLUMN_BITMASK |
+			EntryModelImpl.GROUPID_COLUMN_BITMASK);
+
+		_finderPathCountByUUID_G = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUUID_G",
+			new String[] {String.class.getName(), Long.class.getName()});
+
+		_finderPathWithPaginationFindByUuid_C = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
+			new String[] {
+				String.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+
+		_finderPathWithoutPaginationFindByUuid_C = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
+			new String[] {String.class.getName(), Long.class.getName()},
+			EntryModelImpl.UUID_COLUMN_BITMASK |
+			EntryModelImpl.COMPANYID_COLUMN_BITMASK);
+
+		_finderPathCountByUuid_C = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+			new String[] {String.class.getName(), Long.class.getName()});
+
+		_finderPathWithPaginationFindByG_G = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_G",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+
+		_finderPathWithoutPaginationFindByG_G = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, EntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_G",
+			new String[] {Long.class.getName(), Long.class.getName()},
+			EntryModelImpl.GROUPID_COLUMN_BITMASK |
+			EntryModelImpl.GUESTBOOKID_COLUMN_BITMASK);
+
+		_finderPathCountByG_G = new FinderPath(
+			EntryModelImpl.ENTITY_CACHE_ENABLED,
+			EntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_G",
+			new String[] {Long.class.getName(), Long.class.getName()});
 	}
 
 	public void destroy() {
@@ -3189,30 +3336,63 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 
 	@ServiceReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
 	@ServiceReference(type = EntityCache.class)
 	protected EntityCache entityCache;
+
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
-	private static final String _SQL_SELECT_ENTRY = "SELECT entry FROM Entry entry";
-	private static final String _SQL_SELECT_ENTRY_WHERE_PKS_IN = "SELECT entry FROM Entry entry WHERE entryId IN (";
-	private static final String _SQL_SELECT_ENTRY_WHERE = "SELECT entry FROM Entry entry WHERE ";
-	private static final String _SQL_COUNT_ENTRY = "SELECT COUNT(entry) FROM Entry entry";
-	private static final String _SQL_COUNT_ENTRY_WHERE = "SELECT COUNT(entry) FROM Entry entry WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "entry.entryId";
-	private static final String _FILTER_SQL_SELECT_ENTRY_WHERE = "SELECT DISTINCT {entry.*} FROM GB_Entry entry WHERE ";
-	private static final String _FILTER_SQL_SELECT_ENTRY_NO_INLINE_DISTINCT_WHERE_1 =
-		"SELECT {GB_Entry.*} FROM (SELECT DISTINCT entry.entryId FROM GB_Entry entry WHERE ";
-	private static final String _FILTER_SQL_SELECT_ENTRY_NO_INLINE_DISTINCT_WHERE_2 =
-		") TEMP_TABLE INNER JOIN GB_Entry ON TEMP_TABLE.entryId = GB_Entry.entryId";
-	private static final String _FILTER_SQL_COUNT_ENTRY_WHERE = "SELECT COUNT(DISTINCT entry.entryId) AS COUNT_VALUE FROM GB_Entry entry WHERE ";
+
+	private static final String _SQL_SELECT_ENTRY =
+		"SELECT entry FROM Entry entry";
+
+	private static final String _SQL_SELECT_ENTRY_WHERE_PKS_IN =
+		"SELECT entry FROM Entry entry WHERE entryId IN (";
+
+	private static final String _SQL_SELECT_ENTRY_WHERE =
+		"SELECT entry FROM Entry entry WHERE ";
+
+	private static final String _SQL_COUNT_ENTRY =
+		"SELECT COUNT(entry) FROM Entry entry";
+
+	private static final String _SQL_COUNT_ENTRY_WHERE =
+		"SELECT COUNT(entry) FROM Entry entry WHERE ";
+
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN =
+		"entry.entryId";
+
+	private static final String _FILTER_SQL_SELECT_ENTRY_WHERE =
+		"SELECT DISTINCT {entry.*} FROM GB_Entry entry WHERE ";
+
+	private static final String
+		_FILTER_SQL_SELECT_ENTRY_NO_INLINE_DISTINCT_WHERE_1 =
+			"SELECT {GB_Entry.*} FROM (SELECT DISTINCT entry.entryId FROM GB_Entry entry WHERE ";
+
+	private static final String
+		_FILTER_SQL_SELECT_ENTRY_NO_INLINE_DISTINCT_WHERE_2 =
+			") TEMP_TABLE INNER JOIN GB_Entry ON TEMP_TABLE.entryId = GB_Entry.entryId";
+
+	private static final String _FILTER_SQL_COUNT_ENTRY_WHERE =
+		"SELECT COUNT(DISTINCT entry.entryId) AS COUNT_VALUE FROM GB_Entry entry WHERE ";
+
 	private static final String _FILTER_ENTITY_ALIAS = "entry";
+
 	private static final String _FILTER_ENTITY_TABLE = "GB_Entry";
+
 	private static final String _ORDER_BY_ENTITY_ALIAS = "entry.";
+
 	private static final String _ORDER_BY_ENTITY_TABLE = "GB_Entry.";
-	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Entry exists with the primary key ";
-	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Entry exists with the key {";
-	private static final Log _log = LogFactoryUtil.getLog(EntryPersistenceImpl.class);
-	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
-				"uuid"
-			});
+
+	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
+		"No Entry exists with the primary key ";
+
+	private static final String _NO_SUCH_ENTITY_WITH_KEY =
+		"No Entry exists with the key {";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		EntryPersistenceImpl.class);
+
+	private static final Set<String> _badColumnNames = SetUtil.fromArray(
+		new String[] {"uuid"});
+
 }

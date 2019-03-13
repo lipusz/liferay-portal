@@ -26,11 +26,11 @@ import java.util.List;
  * This class is used by SOAP remote services, specifically {@link com.liferay.docs.guestbook.service.http.EntryServiceSoap}.
  *
  * @author liferay
- * @see com.liferay.docs.guestbook.service.http.EntryServiceSoap
  * @generated
  */
 @ProviderType
 public class EntrySoap implements Serializable {
+
 	public static EntrySoap toSoapModel(Entry model) {
 		EntrySoap soapModel = new EntrySoap();
 
@@ -246,4 +246,5 @@ public class EntrySoap implements Serializable {
 	private String _email;
 	private String _message;
 	private long _guestbookId;
+
 }

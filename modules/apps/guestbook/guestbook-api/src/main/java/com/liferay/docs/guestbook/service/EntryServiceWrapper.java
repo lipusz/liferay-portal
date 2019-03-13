@@ -26,20 +26,29 @@ import com.liferay.portal.kernel.service.ServiceWrapper;
  * @generated
  */
 @ProviderType
-public class EntryServiceWrapper implements EntryService,
-	ServiceWrapper<EntryService> {
+public class EntryServiceWrapper
+	implements EntryService, ServiceWrapper<EntryService> {
+
 	public EntryServiceWrapper(EntryService entryService) {
 		_entryService = entryService;
 	}
 
 	/**
-	* Returns the OSGi service identifier.
-	*
-	* @return the OSGi service identifier
-	*/
+	 * Returns the OSGi service identifier.
+	 *
+	 * @return the OSGi service identifier
+	 */
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _entryService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public java.util.List<com.liferay.docs.guestbook.model.Entry> search(
+			long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _entryService.search(companyId);
 	}
 
 	@Override
@@ -53,4 +62,5 @@ public class EntryServiceWrapper implements EntryService,
 	}
 
 	private EntryService _entryService;
+
 }

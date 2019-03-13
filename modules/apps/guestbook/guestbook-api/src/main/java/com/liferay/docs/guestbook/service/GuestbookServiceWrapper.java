@@ -26,17 +26,18 @@ import com.liferay.portal.kernel.service.ServiceWrapper;
  * @generated
  */
 @ProviderType
-public class GuestbookServiceWrapper implements GuestbookService,
-	ServiceWrapper<GuestbookService> {
+public class GuestbookServiceWrapper
+	implements GuestbookService, ServiceWrapper<GuestbookService> {
+
 	public GuestbookServiceWrapper(GuestbookService guestbookService) {
 		_guestbookService = guestbookService;
 	}
 
 	/**
-	* Returns the OSGi service identifier.
-	*
-	* @return the OSGi service identifier
-	*/
+	 * Returns the OSGi service identifier.
+	 *
+	 * @return the OSGi service identifier
+	 */
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _guestbookService.getOSGiServiceIdentifier();
@@ -53,4 +54,5 @@ public class GuestbookServiceWrapper implements GuestbookService,
 	}
 
 	private GuestbookService _guestbookService;
+
 }

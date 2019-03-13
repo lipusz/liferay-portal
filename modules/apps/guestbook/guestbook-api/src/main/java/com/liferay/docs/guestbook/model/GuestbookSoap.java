@@ -26,11 +26,11 @@ import java.util.List;
  * This class is used by SOAP remote services, specifically {@link com.liferay.docs.guestbook.service.http.GuestbookServiceSoap}.
  *
  * @author liferay
- * @see com.liferay.docs.guestbook.service.http.GuestbookServiceSoap
  * @generated
  */
 @ProviderType
 public class GuestbookSoap implements Serializable {
+
 	public static GuestbookSoap toSoapModel(Guestbook model) {
 		GuestbookSoap soapModel = new GuestbookSoap();
 
@@ -79,7 +79,8 @@ public class GuestbookSoap implements Serializable {
 	}
 
 	public static GuestbookSoap[] toSoapModels(List<Guestbook> models) {
-		List<GuestbookSoap> soapModels = new ArrayList<GuestbookSoap>(models.size());
+		List<GuestbookSoap> soapModels = new ArrayList<GuestbookSoap>(
+			models.size());
 
 		for (Guestbook model : models) {
 			soapModels.add(toSoapModel(model));
@@ -216,4 +217,5 @@ public class GuestbookSoap implements Serializable {
 	private String _statusByUserName;
 	private Date _statusDate;
 	private String _name;
+
 }
