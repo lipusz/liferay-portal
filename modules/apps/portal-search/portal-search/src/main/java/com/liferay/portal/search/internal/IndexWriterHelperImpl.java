@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.search.SearchPermissionChecker;
 import com.liferay.portal.kernel.search.background.task.ReindexBackgroundTaskConstants;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.configuration.IndexWriterHelperConfiguration;
 import com.liferay.portal.search.index.IndexStatusManager;
@@ -490,8 +489,7 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 		}
 
 		taskContextMap.put(
-			ReindexBackgroundTaskConstants.COMPANY_IDS,
-			addSystemCompany(companyIds));
+			ReindexBackgroundTaskConstants.COMPANY_IDS, companyIds);
 		taskContextMap.put(
 			BackgroundTaskContextMapConstants.DELETE_ON_SUCCESS, true);
 
@@ -523,8 +521,7 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 		taskContextMap.put(
 			ReindexBackgroundTaskConstants.CLASS_NAME, className);
 		taskContextMap.put(
-			ReindexBackgroundTaskConstants.COMPANY_IDS,
-			addSystemCompany(companyIds));
+			ReindexBackgroundTaskConstants.COMPANY_IDS, companyIds);
 		taskContextMap.put(
 			BackgroundTaskContextMapConstants.DELETE_ON_SUCCESS, true);
 
@@ -649,15 +646,6 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 
 		_commitImmediately =
 			indexWriterHelperConfiguration.indexCommitImmediately();
-	}
-
-	protected long[] addSystemCompany(long[] companyIds) {
-		if (ArrayUtil.contains(companyIds, CompanyConstants.SYSTEM)) {
-			return companyIds;
-		}
-
-		return ArrayUtil.append(
-			new long[] {CompanyConstants.SYSTEM}, companyIds);
 	}
 
 	protected void setCommitImmediately(
