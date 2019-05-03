@@ -133,6 +133,12 @@ public interface IndexWriterHelper {
 		throws SearchException;
 
 	public BackgroundTask reindex(
+			long userId, String jobName, long[] companyIds,
+			boolean includeGlobalInstance,
+			Map<String, Serializable> taskContextMap)
+		throws SearchException;
+
+	public BackgroundTask reindex(
 			long userId, String jobName, long[] companyIds, String className,
 			Map<String, Serializable> taskContextMap)
 		throws SearchException;

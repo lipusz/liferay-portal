@@ -481,6 +481,23 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 	@Override
 	public BackgroundTask reindex(
 			long userId, String jobName, long[] companyIds,
+			boolean includeGlobalInstance,
+			Map<String, Serializable> taskContextMap)
+		throws SearchException {
+
+		if (includeGlobalInstance &&
+			!ArrayUtil.contains(companyIds, CompanyConstants.SYSTEM)) {
+
+			companyIds = ArrayUtil.append(
+				new long[] { CompanyConstants.SYSTEM }, companyIds);
+		}
+
+		return reindex(userId, jobName, companyIds, taskContextMap);
+	}
+
+	@Override
+	public BackgroundTask reindex(
+			long userId, String jobName, long[] companyIds,
 			Map<String, Serializable> taskContextMap)
 		throws SearchException {
 
