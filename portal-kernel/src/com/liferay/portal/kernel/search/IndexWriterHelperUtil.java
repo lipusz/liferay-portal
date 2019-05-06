@@ -215,21 +215,22 @@ public class IndexWriterHelperUtil {
 
 	public static BackgroundTask reindex(
 			long userId, String jobName, long[] companyIds,
-			boolean includeGlobalInstance,
-			Map<String, Serializable> taskContextMap)
-		throws SearchException {
-
-		return _indexWriterHelper.reindex(
-			userId, jobName, companyIds, includeGlobalInstance, taskContextMap);
-	}
-
-	public static BackgroundTask reindex(
-			long userId, String jobName, long[] companyIds,
 			Map<String, Serializable> taskContextMap)
 		throws SearchException {
 
 		return _indexWriterHelper.reindex(
 			userId, jobName, companyIds, taskContextMap);
+	}
+
+	public static BackgroundTask reindex(
+			long userId, String jobName, long[] companyIds, String className,
+			boolean includeGlobalInstance,
+			Map<String, Serializable> taskContextMap)
+		throws SearchException {
+
+		return _indexWriterHelper.reindex(
+			userId, jobName, companyIds, className, includeGlobalInstance,
+			taskContextMap);
 	}
 
 	public static BackgroundTask reindex(
