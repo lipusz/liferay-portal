@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.search.IndexWriterHelper;
@@ -109,7 +108,7 @@ public class EditMVCActionCommand extends BaseMVCActionCommand {
 		if (!ParamUtil.getBoolean(actionRequest, "blocking")) {
 			_indexWriterHelper.reindex(
 				themeDisplay.getUserId(), "reindex",
-				_portalInstancesLocalService.getCompanyIds(), className,
+				_portalInstancesLocalService.getCompanyIds(), className, true,
 				taskContextMap);
 
 			return;
@@ -161,13 +160,9 @@ public class EditMVCActionCommand extends BaseMVCActionCommand {
 			DestinationNames.BACKGROUND_TASK_STATUS, messageListener);
 
 		try {
-			long[] companyIds = {
-				CompanyConstants.SYSTEM,
-				_portalInstancesLocalService.getCompanyIds()
-			};
-
 			_indexWriterHelper.reindex(
-				themeDisplay.getUserId(), jobName, companyIds, className,
+				themeDisplay.getUserId(), jobName,
+				_portalInstancesLocalService.getCompanyIds(), className, true,
 				taskContextMap);
 
 			countDownLatch.await(
