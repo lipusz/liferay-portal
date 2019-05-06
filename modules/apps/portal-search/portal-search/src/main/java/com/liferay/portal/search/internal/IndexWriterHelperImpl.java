@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.search.SearchPermissionChecker;
 import com.liferay.portal.kernel.search.background.task.ReindexBackgroundTaskConstants;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.configuration.IndexWriterHelperConfiguration;
 import com.liferay.portal.search.index.IndexStatusManager;
@@ -481,23 +482,6 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 	@Override
 	public BackgroundTask reindex(
 			long userId, String jobName, long[] companyIds,
-			boolean includeGlobalInstance,
-			Map<String, Serializable> taskContextMap)
-		throws SearchException {
-
-		if (includeGlobalInstance &&
-			!ArrayUtil.contains(companyIds, CompanyConstants.SYSTEM)) {
-
-			companyIds = ArrayUtil.append(
-				new long[] {CompanyConstants.SYSTEM}, companyIds);
-		}
-
-		return reindex(userId, jobName, companyIds, taskContextMap);
-	}
-
-	@Override
-	public BackgroundTask reindex(
-			long userId, String jobName, long[] companyIds,
 			Map<String, Serializable> taskContextMap)
 		throws SearchException {
 
@@ -519,6 +503,23 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 		catch (PortalException pe) {
 			throw new SearchException("Unable to schedule portal reindex", pe);
 		}
+	}
+
+	@Override
+	public BackgroundTask reindex(
+			long userId, String jobName, long[] companyIds, String className,
+			boolean includeGlobalInstance,
+			Map<String, Serializable> taskContextMap)
+		throws SearchException {
+
+		if (includeGlobalInstance &&
+			!ArrayUtil.contains(companyIds, CompanyConstants.SYSTEM)) {
+
+			companyIds = ArrayUtil.append(
+				new long[] {CompanyConstants.SYSTEM}, companyIds);
+		}
+
+		return reindex(userId, jobName, companyIds, className, taskContextMap);
 	}
 
 	@Override
