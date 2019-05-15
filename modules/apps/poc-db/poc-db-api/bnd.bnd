@@ -1,0 +1,10 @@
+Bundle-Name: poc-db-api
+Bundle-SymbolicName: poc.db.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	poc.db.exception,\
+	poc.db.model,\
+	poc.db.service,\
+	poc.db.service.persistence
+-check: EXPORTS
+-includeresource: META-INF/service.xml=../poc-db-service/service.xml
