@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.templateparser.TemplateNode;
 import com.liferay.portal.kernel.util.AggregateClassLoader;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.template.RestrictedTemplateThreadLocal;
 import com.liferay.portal.util.PortalImpl;
 
 import freemarker.ext.beans.BeansWrapper;
@@ -215,19 +216,22 @@ public class LiferayObjectWrapper extends DefaultObjectWrapper {
 
 		String className = clazz.getName();
 
-		if (!_allowAllClasses) {
-			_checkClassIsRestricted(clazz);
-		}
+		if (RestrictedTemplateThreadLocal.isRestricted()) {
+			if (!_allowAllClasses) {
+				_checkClassIsRestricted(clazz);
+			}
 
-		if (_restrictedMethodNames.containsKey(className)) {
-			LiferayFreeMarkerBeanModel liferayFreeMarkerBeanModel =
-				(LiferayFreeMarkerBeanModel)
-					_LIFERAY_FREEMARKER_BEAN_MODEL_FACTORY.create(object, this);
+			if (_restrictedMethodNames.containsKey(className)) {
+				LiferayFreeMarkerBeanModel liferayFreeMarkerBeanModel =
+					(LiferayFreeMarkerBeanModel)
+						_LIFERAY_FREEMARKER_BEAN_MODEL_FACTORY.create(
+							object, this);
 
-			liferayFreeMarkerBeanModel.setRestrictedMethodNames(
-				_restrictedMethodNames.get(className));
+				liferayFreeMarkerBeanModel.setRestrictedMethodNames(
+					_restrictedMethodNames.get(className));
 
-			return liferayFreeMarkerBeanModel;
+				return liferayFreeMarkerBeanModel;
+			}
 		}
 
 		if (className.startsWith("com.liferay.")) {
