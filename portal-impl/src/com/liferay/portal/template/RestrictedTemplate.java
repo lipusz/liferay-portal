@@ -81,6 +81,8 @@ public class RestrictedTemplate implements Template {
 
 	@Override
 	public void processTemplate(Writer writer) throws TemplateException {
+		RestrictedTemplateThreadLocal.setRestricted(true);
+
 		_template.processTemplate(writer);
 	}
 
@@ -89,6 +91,8 @@ public class RestrictedTemplate implements Template {
 			Writer writer,
 			Supplier<TemplateResource> errorTemplateResourceSupplier)
 		throws TemplateException {
+
+		RestrictedTemplateThreadLocal.setRestricted(true);
 
 		_template.processTemplate(writer, errorTemplateResourceSupplier);
 	}
