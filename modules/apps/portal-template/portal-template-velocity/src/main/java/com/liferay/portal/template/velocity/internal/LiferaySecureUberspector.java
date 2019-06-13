@@ -20,6 +20,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.AggregateClassLoader;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.template.RestrictedTemplateThreadLocal;
 import com.liferay.portal.util.PortalImpl;
 
 import java.util.ArrayList;
@@ -257,9 +258,11 @@ public class LiferaySecureUberspector extends SecureUberspector {
 					"Executing method " + methodName + " is not allowed");
 			}
 
-			_checkClassIsRestricted(clazz);
+			if (RestrictedTemplateThreadLocal.isRestricted()) {
+				_checkClassIsRestricted(clazz);
 
-			_checkMethodIsRestricted(clazz, methodName);
+				_checkMethodIsRestricted(clazz, methodName);
+			}
 
 			return true;
 		}
