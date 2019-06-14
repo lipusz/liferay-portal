@@ -81,9 +81,16 @@ public class RestrictedTemplate implements Template {
 
 	@Override
 	public void processTemplate(Writer writer) throws TemplateException {
+		boolean restricted = RestrictedTemplateThreadLocal.isRestricted();
+
 		RestrictedTemplateThreadLocal.setRestricted(true);
 
-		_template.processTemplate(writer);
+		try {
+			_template.processTemplate(writer);
+		}
+		finally {
+			RestrictedTemplateThreadLocal.setRestricted(restricted);
+		}
 	}
 
 	@Override
@@ -92,9 +99,16 @@ public class RestrictedTemplate implements Template {
 			Supplier<TemplateResource> errorTemplateResourceSupplier)
 		throws TemplateException {
 
+		boolean restricted = RestrictedTemplateThreadLocal.isRestricted();
+
 		RestrictedTemplateThreadLocal.setRestricted(true);
 
-		_template.processTemplate(writer, errorTemplateResourceSupplier);
+		try {
+			_template.processTemplate(writer, errorTemplateResourceSupplier);
+		}
+		finally {
+			RestrictedTemplateThreadLocal.setRestricted(restricted);
+		}
 	}
 
 	@Override
