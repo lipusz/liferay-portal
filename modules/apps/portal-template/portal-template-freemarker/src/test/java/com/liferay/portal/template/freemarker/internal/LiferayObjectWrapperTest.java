@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.template.RestrictedTemplateThreadLocal;
 import com.liferay.portal.test.aspects.ReflectionUtilAdvice;
 import com.liferay.portal.test.rule.AdviseWith;
 import com.liferay.portal.test.rule.AspectJNewEnvTestRule;
@@ -57,6 +58,7 @@ import java.util.logging.LogRecord;
 import org.hamcrest.CoreMatchers;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,6 +76,11 @@ public class LiferayObjectWrapperTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			AspectJNewEnvTestRule.INSTANCE, CodeCoverageAssertor.INSTANCE);
+
+	@Before
+	public void setUp() {
+		RestrictedTemplateThreadLocal.setRestricted(false);
+	}
 
 	@Test
 	public void testCheckClassIsRestricted() {
@@ -306,6 +313,8 @@ public class LiferayObjectWrapperTest {
 
 	@Test
 	public void testRestrictedMethodNames() throws Exception {
+		RestrictedTemplateThreadLocal.setRestricted(true);
+
 		LiferayObjectWrapper liferayObjectWrapper = new LiferayObjectWrapper(
 			null, null,
 			new String[] {
@@ -353,6 +362,8 @@ public class LiferayObjectWrapperTest {
 
 	@Test
 	public void testWrap() throws Exception {
+		RestrictedTemplateThreadLocal.setRestricted(true);
+
 		_testWrap(new LiferayObjectWrapper(null, null, null));
 		_testWrap(
 			new LiferayObjectWrapper(
