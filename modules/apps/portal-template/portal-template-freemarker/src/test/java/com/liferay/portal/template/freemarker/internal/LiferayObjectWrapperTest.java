@@ -57,6 +57,7 @@ import java.util.logging.LogRecord;
 
 import org.hamcrest.CoreMatchers;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -79,6 +80,11 @@ public class LiferayObjectWrapperTest {
 
 	@Before
 	public void setUp() {
+		RestrictedTemplateThreadLocal.setRestricted(true);
+	}
+
+	@After
+	public void tearDown() {
 		RestrictedTemplateThreadLocal.setRestricted(false);
 	}
 
@@ -313,8 +319,6 @@ public class LiferayObjectWrapperTest {
 
 	@Test
 	public void testRestrictedMethodNames() throws Exception {
-		RestrictedTemplateThreadLocal.setRestricted(true);
-
 		LiferayObjectWrapper liferayObjectWrapper = new LiferayObjectWrapper(
 			null, null,
 			new String[] {
@@ -361,9 +365,33 @@ public class LiferayObjectWrapperTest {
 	}
 
 	@Test
-	public void testWrap() throws Exception {
+	public void testRestrictedTemplateThreadLocal() throws Exception {
 		RestrictedTemplateThreadLocal.setRestricted(true);
 
+		LiferayObjectWrapper liferayObjectWrapper = new LiferayObjectWrapper(
+			null, new String[] {Object.class.getName()}, null);
+
+		try {
+			liferayObjectWrapper.wrap(new Object());
+		}
+		catch (TemplateModelException tme) {
+			Assert.assertEquals(
+				"Denied resolving class java.lang.Object by java.lang.Object",
+				tme.getMessage());
+		}
+
+		RestrictedTemplateThreadLocal.setRestricted(false);
+
+		try {
+			liferayObjectWrapper.wrap(new Object());
+		}
+		catch (TemplateModelException tme) {
+			Assert.fail("No exception expected but got: " + tme.getMessage());
+		}
+	}
+
+	@Test
+	public void testWrap() throws Exception {
 		_testWrap(new LiferayObjectWrapper(null, null, null));
 		_testWrap(
 			new LiferayObjectWrapper(
