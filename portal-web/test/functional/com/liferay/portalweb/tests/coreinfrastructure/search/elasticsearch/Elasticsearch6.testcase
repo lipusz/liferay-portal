@@ -1,6 +1,9 @@
 @component-name = "portal-search"
 definition {
 
+	property portal.acceptance = "true";
+	property remote.elasticsearch.cluster.size = "2";
+	property remote.elasticsearch.enabled = "true";
 	property portal.release = "true";
 	property portal.suite.search.engine = "elasticsearch6";
 	property portal.upstream = "true";
@@ -89,11 +92,6 @@ definition {
 
 	@priority = "5"
 	test ElasticsearchRemoteClusterSmokeTest {
-		property portal.acceptance = "true";
-		property remote.elasticsearch.cluster.size = "2";
-		property remote.elasticsearch.enabled = "true";
-		property test.name.skip.portal.instance = "Elasticsearch6#ElasticsearchRemoteClusterSmokeTest";
-
 		Elasticsearch.viewClusterStatusViaClusterHealthAPI(numberOfNodes = "2");
 
 		Navigator.openURL();
