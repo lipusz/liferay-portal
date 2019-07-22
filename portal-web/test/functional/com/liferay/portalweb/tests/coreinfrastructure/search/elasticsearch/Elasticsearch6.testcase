@@ -4,6 +4,7 @@ definition {
 	property portal.release = "true";
 	property portal.suite.search.engine = "elasticsearch6";
 	property portal.upstream = "true";
+	property remote.elasticsearch.enabled = "true";
 	property testray.main.component.name = "Elasticsearch Impl";
 
 	setUp {
@@ -34,7 +35,7 @@ definition {
 			portlet = "Search");
 
 		SearchAdministration.assertEngineVendorAndVersions(
-			clientVersion = "6.5.0",
+			clientVersion = "6.8.1",
 			engineVendor = "Elasticsearch",
 			serverVersion = "6.5.0");
 
@@ -94,7 +95,6 @@ definition {
 	test ElasticsearchRemoteClusterSmokeTest {
 		property portal.acceptance = "true";
 		property remote.elasticsearch.cluster.size = "2";
-		property remote.elasticsearch.enabled = "true";
 		property test.name.skip.portal.instance = "Elasticsearch6#ElasticsearchRemoteClusterSmokeTest";
 
 		Elasticsearch.viewClusterStatusViaClusterHealthAPI(numberOfNodes = "2");
