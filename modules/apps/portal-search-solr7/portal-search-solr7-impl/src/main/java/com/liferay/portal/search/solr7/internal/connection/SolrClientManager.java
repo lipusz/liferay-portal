@@ -87,7 +87,7 @@ public class SolrClientManager {
 	}
 
 	@Deactivate
-	protected void deactivate(Map<String, Object> properties) {
+	protected synchronized void deactivate(Map<String, Object> properties) {
 		_close();
 	}
 
