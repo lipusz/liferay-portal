@@ -36,7 +36,7 @@ definition {
 		SearchAdministration.assertEngineVendorAndVersions(
 			clientVersion = "6.5.0",
 			engineVendor = "Elasticsearch",
-			serverVersion = "6.8.1");
+			serverVersion = "6.8.2");
 
 		Navigator.gotoNavItem(navItem = "Field Mappings");
 
