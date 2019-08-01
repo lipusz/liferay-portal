@@ -151,6 +151,7 @@ definition {
 	test OSGiConfigSmokeTest {
 		property osgi.module.configuration.file.names = "com.liferay.portal.search.elasticsearch6.configuration.ElasticsearchConfiguration.config";
 		property osgi.module.configurations = "clusterName=&quot;LiferayElasticsearchCluster1&quot;";
+		property remote.elasticsearch.enabled = "false";
 		property portal.acceptance = "true";
 
 		Navigator.openSpecificURL(url = "http://localhost:9200");
