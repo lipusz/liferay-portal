@@ -28,6 +28,8 @@ definition {
 	}
 
 	test AssertSearchAdmin {
+		property remote.elasticsearch.enabled = "true";
+
 		ProductMenu.gotoPortlet(
 			category = "Configuration",
 			panel = "Control Panel",
