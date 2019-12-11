@@ -36,6 +36,8 @@ public interface SearchBarPortletPreferences {
 	public static final String PREFERENCE_KEY_SCOPE_PARAMETER_NAME =
 		"scopeParameterName";
 
+	public static final String PREFERENCE_KEY_SHOW_STAGED = "showStaged";
+
 	public static final String PREFERENCE_KEY_SEARCH_SCOPE = "searchScope";
 
 	public static final String PREFERENCE_KEY_USE_ADVANCED_SEARCH_SYNTAX =
@@ -58,6 +60,8 @@ public interface SearchBarPortletPreferences {
 	public String getSearchScopePreferenceString();
 
 	public boolean isInvisible();
+
+	public boolean isShowStaged();
 
 	public boolean isUseAdvancedSearchSyntax();
 
