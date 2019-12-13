@@ -23,8 +23,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -32,6 +34,7 @@ import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatConstants;
@@ -276,6 +279,31 @@ public class SearchResultSummaryDisplayBuilder {
 		_themeDisplay = themeDisplay;
 
 		return this;
+	}
+
+	protected String appendStagingLabel(
+		String title, AssetRenderer assetRenderer) {
+
+		try {
+			Group group = GroupLocalServiceUtil.getGroup(
+				assetRenderer.getGroupId());
+	
+			if (group.isStagingGroup()) {
+				StringBundler sb = new StringBundler(5);
+	
+				sb.append(title);
+				sb.append(StringPool.SPACE);
+				sb.append(StringPool.OPEN_PARENTHESIS);
+				sb.append(LanguageUtil.get(_locale, "staged"));
+				sb.append(StringPool.CLOSE_PARENTHESIS);
+	
+				title = sb.toString();
+			}
+		}
+		catch (PortalException e) {
+		}
+
+		return title;
 	}
 
 	protected SearchResultSummaryDisplayContext build(
@@ -808,11 +836,14 @@ public class SearchResultSummaryDisplayBuilder {
 					_legacyDocument, snippet, _renderRequest, _renderResponse);
 
 			if (summary != null) {
+				String title = appendStagingLabel(
+					summary.getTitle(), assetRenderer);
+
 				summaryBuilder.setContent(summary.getContent());
 				summaryBuilder.setLocale(summary.getLocale());
 				summaryBuilder.setMaxContentLength(
 					summary.getMaxContentLength());
-				summaryBuilder.setTitle(summary.getTitle());
+				summaryBuilder.setTitle(title);
 
 				return summaryBuilder.build();
 			}
