@@ -52,9 +52,9 @@ public class GroupIdQueryPreFilterContributor
 
 			boolean showStaged = GetterUtil.getBoolean(
 				searchContext.getAttribute(
-					SearchContextAttributes.ATTRIBUTE_KEY_SHOW_STAGED)); 
+					SearchContextAttributes.ATTRIBUTE_KEY_SHOW_STAGED));
 
-			if(!showStaged) {
+			if (!showStaged) {
 				booleanFilter.addTerm(
 					Field.STAGING_GROUP, "true", BooleanClauseOccur.MUST_NOT);
 			}

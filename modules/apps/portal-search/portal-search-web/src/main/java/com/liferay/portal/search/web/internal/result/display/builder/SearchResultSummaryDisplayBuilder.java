@@ -287,20 +287,21 @@ public class SearchResultSummaryDisplayBuilder {
 		try {
 			Group group = GroupLocalServiceUtil.getGroup(
 				assetRenderer.getGroupId());
-	
+
 			if (group.isStagingGroup()) {
 				StringBundler sb = new StringBundler(5);
-	
+
 				sb.append(title);
 				sb.append(StringPool.SPACE);
 				sb.append(StringPool.OPEN_PARENTHESIS);
 				sb.append(LanguageUtil.get(_locale, "staged"));
 				sb.append(StringPool.CLOSE_PARENTHESIS);
-	
+
 				title = sb.toString();
 			}
 		}
-		catch (PortalException e) {
+		catch (PortalException portalException) {
+			_log.error(portalException, portalException);
 		}
 
 		return title;
