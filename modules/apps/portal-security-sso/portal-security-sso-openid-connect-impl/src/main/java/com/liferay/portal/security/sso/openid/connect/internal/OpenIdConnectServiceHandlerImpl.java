@@ -32,6 +32,8 @@ import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectCon
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
 
 import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
@@ -76,11 +78,17 @@ import com.nimbusds.openid.connect.sdk.rp.OIDCClientMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -633,8 +641,26 @@ public class OpenIdConnectServiceHandlerImpl
 		throws OpenIdConnectServiceException.TokenException {
 
 		try {
+//			// Specify the key store type, e.g. JKS
+//			KeyStore keyStore = KeyStore.getInstance("JKS");
+//
+//			// If you need a password to unlock the key store
+//			char[] password = "liferay".toCharArray();
+//
+//			// Load the key store from file
+//			keyStore.load(new FileInputStream(
+//				"/path/to/keystore.jks"), password);
+//
+//			// Extract keys and output into JWK set; the secord parameter allows lookup 
+//			// of passwords for individual private and secret keys in the store
+//			JWKSet jwkSet = JWKSet.load(keyStore, null);
+
+			JWKSet jwkSet = JWKSet.load(
+				new File("/path/to/my-key-store.json"));
+
 			IDTokenValidator idTokenValidator = IDTokenValidator.create(
-				oidcProviderMetadata, oidcClientInformation, null);
+				oidcProviderMetadata, oidcClientInformation,
+				new ImmutableJWKSet<>(jwkSet));
 
 			OIDCTokens oidcTokens = oidcTokenResponse.getOIDCTokens();
 
@@ -650,6 +676,11 @@ public class OpenIdConnectServiceHandlerImpl
 			throw new OpenIdConnectServiceException.TokenException(
 				"Unable to validate tokens: " + exception.getMessage(),
 				exception);
+		}
+		catch (java.text.ParseException | IOException e) {
+			throw new OpenIdConnectServiceException.TokenException(
+				"Unable to create client JWKSet token validator: " +
+					e.getMessage(), e);
 		}
 	}
 

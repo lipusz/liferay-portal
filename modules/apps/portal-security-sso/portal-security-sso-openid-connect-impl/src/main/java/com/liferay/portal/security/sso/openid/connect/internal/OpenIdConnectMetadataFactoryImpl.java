@@ -20,8 +20,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
-
+import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWEEncrypter;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
@@ -223,6 +224,13 @@ public class OpenIdConnectMetadataFactoryImpl
 
 		if (ListUtil.isNotEmpty(jweAlgorithms)) {
 			_oidcClientMetadata.setIDTokenJWEAlg(jweAlgorithms.get(0));
+		}
+
+		List<EncryptionMethod> jweEncs =
+			oidcProviderMetadata.getIDTokenJWEEncs();
+
+		if (ListUtil.isNotEmpty(jweEncs)) {
+			_oidcClientMetadata.setIDTokenJWEEnc(jweEncs.get(0));
 		}
 
 		List<JWSAlgorithm> jwsAlgorithms =
