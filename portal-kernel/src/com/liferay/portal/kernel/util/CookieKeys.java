@@ -22,7 +22,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Map; 
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
