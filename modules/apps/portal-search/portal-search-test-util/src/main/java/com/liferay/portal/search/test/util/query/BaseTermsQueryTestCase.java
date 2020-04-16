@@ -77,4 +77,41 @@ public abstract class BaseTermsQueryTestCase extends BaseIndexingTestCase {
 			});
 	}
 
+	@Test
+	public void testTermsQueryMaxTermsCount() throws Exception {
+		TermsQuery termsQuery = queries.terms(Field.GROUP_ID);
+
+		String[] values = new String[65537];
+
+		for (int i = 0; i <= 65536; i++) {
+			values[i] = String.valueOf(i);
+		}
+
+		termsQuery.addValues(values);
+
+		assertSearch(
+			indexingTestHelper -> {
+				indexingTestHelper.defineRequest(
+					searchRequestBuilder -> searchRequestBuilder.query(
+						termsQuery));
+
+				indexingTestHelper.search();
+
+				indexingTestHelper.verifyResponse(
+					searchResponse -> {
+						String searchResponseString =
+							searchResponse.getResponseString();
+
+						Assert.assertTrue(
+							"Response string: " + searchResponseString,
+							!searchResponseString.contains(
+								"ElasticsearchStatusException"));
+						Assert.assertTrue(
+							"Response string: " + searchResponseString,
+							!searchResponseString.contains(
+								"java.lang.IllegalArgumentException"));
+					});
+			});
+	}
+
 }
