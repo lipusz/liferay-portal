@@ -286,6 +286,31 @@ public class PermissionImporterImpl implements PermissionImporter {
 				mergeImportedPermissionsWithExistingPermissions(
 					existingRoleIdsToActionIds, importedRoleIdsToActionIds);
 
+		List<Long> roleIdsToDelete = new ArrayList<>();
+		List<Long> roleIdsToUpdate = new ArrayList<>(
+			roleIdsToActionIds.keySet());
+
+		for (Long roleId : roleIdsToUpdate) {
+			String[] actionIds = roleIdsToActionIds.get(roleId);
+
+			if ((actionIds.length == 0) &&
+				!importedRoleIdsToActionIds.containsKey(roleId)) {
+
+				roleIdsToActionIds.remove(roleId);
+
+				roleIdsToDelete.add(roleId);
+			}
+		}
+
+		if (!roleIdsToDelete.isEmpty()) {
+			ExportImportPermissionUtil.deleteResourcePermissions(
+				companyId, resourceName, resourcePrimKey, roleIdsToDelete);
+		}
+
+		if (roleIdsToActionIds.isEmpty()) {
+			return;
+		}
+
 		ExportImportPermissionUtil.updateResourcePermissions(
 			companyId, groupId, resourceName, resourcePrimKey,
 			roleIdsToActionIds);

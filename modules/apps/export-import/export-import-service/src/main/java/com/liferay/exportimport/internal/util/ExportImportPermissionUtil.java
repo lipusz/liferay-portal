@@ -34,6 +34,24 @@ public class ExportImportPermissionUtil {
 
 	public static final String ROLE_TEAM_PREFIX = "ROLE_TEAM_,*";
 
+	public static void deleteResourcePermissions(
+			long companyId, String resourceName, String resourcePrimKey,
+			List<Long> roleIds)
+		throws PortalException {
+
+		for (long roleId : roleIds) {
+			ResourcePermission resourcePermission =
+				ResourcePermissionLocalServiceUtil.fetchResourcePermission(
+					companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+					resourcePrimKey, roleId);
+
+			if (resourcePermission != null) {
+				ResourcePermissionLocalServiceUtil.deleteResourcePermission(
+					resourcePermission.getResourcePermissionId());
+			}
+		}
+	}
+
 	public static Map<Long, Set<String>> getRoleIdsToActionIds(
 		long companyId, String resourceName, long resourcePK) {
 
