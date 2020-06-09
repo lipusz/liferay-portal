@@ -108,14 +108,16 @@ public class ExportImportPermissionUtil {
 			Map<Long, String[]> importedRoleIdsToActionIds) {
 
 		Map<Long, String[]> mergedRoleIdsToActionIds = new HashMap<>();
+		Map<Long, String[]> newRoleIdsToActionIds = new HashMap<>(
+			importedRoleIdsToActionIds);
 
 		for (Map.Entry<Long, Set<String>> roleIdsToActionIds :
 				existingRoleIdsToActionIds.entrySet()) {
 
 			long roleId = roleIdsToActionIds.getKey();
 
-			if (importedRoleIdsToActionIds.containsKey(roleId)) {
-				String[] actionIds = importedRoleIdsToActionIds.remove(roleId);
+			if (newRoleIdsToActionIds.containsKey(roleId)) {
+				String[] actionIds = newRoleIdsToActionIds.remove(roleId);
 
 				mergedRoleIdsToActionIds.put(roleId, actionIds);
 			}
@@ -124,7 +126,7 @@ public class ExportImportPermissionUtil {
 			}
 		}
 
-		mergedRoleIdsToActionIds.putAll(importedRoleIdsToActionIds);
+		mergedRoleIdsToActionIds.putAll(newRoleIdsToActionIds);
 
 		return mergedRoleIdsToActionIds;
 	}
