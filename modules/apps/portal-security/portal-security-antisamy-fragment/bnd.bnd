@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Portal Security AntiSamy Fragment
+Bundle-SymbolicName: com.liferay.portal.security.antisamy.fragment
+Bundle-Version: 1.0.0
+Fragment-Host: com.liferay.portal.security.antisamy
+Import-Package: !*

@@ -1,0 +1,2506 @@
+<?xml version="1.0" ?>
+
+<!--
+W3C rules retrieved from:
+http://www.w3.org/TR/html401/struct/global.html
+-->
+
+<anti-samy-rules
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="antisamy.xsd"
+>
+	<directives>
+		<directive name="omitXmlDeclaration" value="true" />
+		<directive name="omitDoctypeDeclaration" value="true" />
+		<directive name="maxInputSize" value="200000" />
+		<directive name="useXHTML" value="true" />
+		<directive name="formatOutput" value="true" />
+
+		<!--
+		remember, this won't work for relative URIs - AntiSamy doesn't
+		know anything about the URL or your web structure
+		-->
+
+		<directive name="embedStyleSheets" value="false" />
+		<directive name="allowDynamicAttributes" value="true" />
+	</directives>
+	<common-regexps>
+
+		<!--
+		From W3C:
+		This attribute assigns a class name or set of class names to an
+		element. Any number of elements may be assigned the same class
+		name or names. Multiple class names must be separated by white
+		space characters.
+		-->
+
+		<!-- The 16 colors defined by the HTML Spec (also used by the CSS Spec) -->
+
+		<regexp name="colorName" value="(aqua|black|blue|fuchsia|gray|grey|green|lime|maroon|navy|olive|purple|red|silver|teal|white|yellow)" />
+
+		<!-- HTML/CSS Spec allows 3 or 6 digit hex to specify color -->
+
+		<regexp name="colorCode" value="(#([0-9a-fA-F]{6}|[0-9a-fA-F]{3}))" />
+		<regexp name="anything" value=".*" />
+		<regexp name="numberOrPercent" value="(\d)+(%{0,1})" />
+		<regexp name="paragraph" value="([\p{L}\p{N},'\.\s\-_\(\)]|&amp;[0-9]{2};)*" />
+		<regexp name="htmlId" value="[a-zA-Z0-9\:\-_\.]+" />
+		<regexp name="htmlTitle" value="[\p{L}\p{N}\s\-_',:\[\]!\./\\\(\)&amp;]*"/> <!-- force non-empty with a '+' at the end instead of '*' -->
+
+		<regexp name="htmlClass" value="[a-zA-Z0-9\s,\-_]+" />
+		<regexp name="onsiteURL" value="^(?![\p{L}\p{N}\\\.\#@\$%\*\+&amp;;\-_~,\?=/!]*(&amp;colon))[\p{L}\p{N}\\\.\#@\$%\*\+&amp;;\-_~,\?=/!]*" />
+		<regexp name="offsiteURL" value="(\s)*((ht|f)tp(s?)://|mailto:)[\p{L}\p{N}]+[\p{L}\p{N}\p{Zs}\.\#@\$%\*\+&amp;;:\-_~,\?=/!\(\)]*(\s)*" />
+		<regexp name="boolean" value="(true|false)" />
+		<regexp name="singlePrintable" value="[a-zA-Z0-9]{1}"/> <!-- \w allows the '_' character -->
+
+		<!-- This is for elements (ex: elemName { ... }) -->
+
+		<regexp name="cssElementSelector" value="[a-zA-Z0-9\-_]+|\*" />
+
+		<!-- This is to list out any element names that are *not* valid -->
+
+		<regexp name="cssElementExclusion" value="" />
+
+		<!-- This if for classes (ex: .className { ... }) -->
+
+		<regexp name="cssClassSelector" value="\.[a-zA-Z0-9\-_]+" />
+
+		<!-- This is to list out any class names that are *not* valid -->
+
+		<regexp name="cssClassExclusion" value="" />
+
+		<!-- This is for ID selectors (ex: #myId { ... } -->
+
+		<regexp name="cssIDSelector" value="#[a-zA-Z0-9\-_]+" />
+
+		<!-- This is to list out any IDs that are *not* valid - FIXME: What should the default be to avoid div hijacking? *? -->
+
+		<regexp name="cssIDExclusion" value="" />
+
+		<!-- This is for pseudo-element selector (ex. foo:pseudo-element { ... } -->
+
+		<regexp name="cssPseudoElementSelector" value=":[a-zA-Z0-9\-_]+" />
+
+		<!-- This is to list out any psuedo-element names that are *not* valid -->
+
+		<regexp name="cssPsuedoElementExclusion" value="" />
+
+		<!-- This is for attribute selectors (ex. foo[attr=value] { ... } -->
+
+		<regexp name="cssAttributeSelector" value="\[[a-zA-Z0-9\-_]+((=|~=|\|=){1}[a-zA-Z0-9\-_]+){1}\]" />
+
+		<!-- This is to list out any attribute names that are *not* valid -->
+
+		<regexp name="cssAttributeExclusion" value="" />
+
+		<!-- This is for resources referenced from CSS (such as background images and other imported stylesheets) -->
+
+		<regexp name="cssOnsiteUri" value="url\(([\p{L}\p{N}\\/\.\?=\#&amp;;\-_~]+|\#(\w)+)\)" />
+		<regexp name="cssOffsiteUri" value="url\((\s)*((ht|f)tp(s?)://)[\p{L}\p{N}]+[~\p{L}\p{N}\p{Zs}\-_\.@#$%&amp;;:,\?=/\+!]*(\s)*\)" />
+
+		<!-- This if for CSS Identifiers -->
+
+		<regexp name="cssIdentifier" value="[a-zA-Z0-9\-_]+" />
+
+		<!-- This is for comments within CSS (ex. /* comment */) -->
+
+		<regexp name="cssCommentText" value="[\p{L}\p{N}\-_,\/\\\.\s\(\)!\?\=\$#%\^&amp;:&quot;']+" />
+		<regexp name="integer" value="(-|\+)?[0-9]+" />
+		<regexp name="positiveInteger" value="(\+)?[0-9]+" />
+		<regexp name="number" value="(-|\+)?([0-9]+(\.[0-9]+)?)" />
+		<regexp name="angle" value="(-|\+)?([0-9]+(\.[0-9]+)?)(deg|grads|rad)" />
+		<regexp name="time" value="([0-9]+(\.[0-9]+)?)(ms|s)" />
+		<regexp name="frequency" value="([0-9]+(\.[0-9]+)?)(hz|khz)" />
+		<regexp name="length" value="((-|\+)?0|(-|\+)?([0-9]+(\.[0-9]+)?)(em|ex|px|in|cm|mm|pt|pc))" />
+		<regexp name="positiveLength" value="((\+)?0|(\+)?([0-9]+(\.[0-9]+)?)(em|ex|px|in|cm|mm|pt|pc))" />
+		<regexp name="percentage" value="(-|\+)?([0-9]+(\.[0-9]+)?)%" />
+		<regexp name="positivePercentage" value="(\+)?([0-9]+(\.[0-9]+)?)%" />
+		<regexp name="absolute-size" value="(xx-small|x-small|small|medium|large|x-large|xx-large)" />
+		<regexp name="relative-size" value="(larger|smaller)" />
+
+		<!-- Used for CSS Color specifications (complex regexp expresses integer values of 0-255) -->
+
+		<regexp name="rgbCode" value="rgb\(([1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]),([1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]),([1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\)" />
+
+		<!-- CSS2 Allowed System Color Values -->
+
+		<regexp name="systemColor" value="(activeborder|activecaption|appworkspace|background|buttonface|buttonhighlight|buttonshadow|buttontext|captiontext|graytext|highlight|highlighttext|inactiveborder|inactivecaption|inactivecaptiontext|infobackground|infotext|menu|menutext|scrollbar|threeddarkshadow|threedface|threedhighlight|threedlightshadow|threedshadow|window|windowframe|windowtext)" />
+	</common-regexps>
+
+	<!--
+
+	Tag.name = a, b, div, body, etc.
+	Tag.action = filter: remove tags, but keep content, validate: keep content as long as it passes rules, remove: remove tag and contents
+	Attribute.name = id, class, href, align, width, etc.
+	Attribute.onInvalid = what to do when the attribute is invalid, e.g., remove the tag (removeTag), remove the attribute (removeAttribute), filter the tag (filterTag)
+	Attribute.description = What rules in English you want to tell the users they can have for this attribute. Include helpful things so they'll be able to tune their HTML
+
+	 -->
+
+	<!--
+	Some attributes are common to all (or most) HTML tags. There aren't many that qualify for this. You have to make sure there's no
+	collisions between any of these attribute names with attribute names of other tags that are for different purposes.
+	-->
+
+	<common-attributes>
+		<attribute description="Allows the HTML5 'data-' attribute to be added to elements" name="data-">
+			<regexp-list>
+				<regexp name="anything" />
+			</regexp-list>
+		</attribute>
+
+		<!-- Common to all HTML tags -->
+
+		<attribute description="The 'id' of any HTML attribute should not contain anything besides letters and numbers" name="id">
+			<regexp-list>
+				<regexp name="htmlId" />
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'class' of any HTML attribute is usually a single word, but it can also be a list of class names separated by spaces" name="class">
+			<regexp-list>
+				<regexp name="htmlClass" />
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'lang' attribute tells the browser what language the element's attribute values and content are written in" name="lang">
+			<regexp-list>
+				<regexp value="[a-zA-Z]{2,20}" />
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'title' attribute provides text that shows up in a 'tooltip' when a user hovers their mouse over the element" name="title">
+			<regexp-list>
+				<regexp name="htmlTitle" />
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'alt' attribute provides alternative text to users when its visual representation is not available" name="alt">
+			<regexp-list>
+				<regexp name="paragraph" />
+			</regexp-list>
+		</attribute>
+
+		<!-- the "style" attribute will be validated by an inline stylesheet scanner, so no need to define anything here - i hate having to special case this but no other choice -->
+
+		<attribute description="The 'style' attribute provides the ability for users to change many attributes of the tag's contents using a strict syntax" name="style" />
+		<attribute name="media">
+			<regexp-list>
+				<regexp value="[a-zA-Z0-9,\-\s]+" />
+			</regexp-list>
+			<literal-list>
+				<literal value="screen" />
+				<literal value="tty" />
+				<literal value="tv" />
+				<literal value="projection" />
+				<literal value="handheld" />
+				<literal value="print" />
+				<literal value="braille" />
+				<literal value="aural" />
+				<literal value="all" />
+			</literal-list>
+		</attribute>
+
+		<!-- Anchor related -->
+
+		<!-- onInvalid="filterTag" has been removed as per suggestion at OWASP SJ 2007 - just "name" is valid -->
+
+		<attribute name="href">
+			<regexp-list>
+				<regexp name="onsiteURL" />
+				<regexp name="offsiteURL" />
+			</regexp-list>
+		</attribute>
+		<attribute name="name">
+			<regexp-list>
+				<regexp value="[a-zA-Z0-9\-_\$]+" />
+
+				<!--
+		 		have to allow the $ for .NET controls - although,
+		 		will users be supplying input that has server-generated
+		 		.NET control names? methinks not, but i want to pass my
+		 		test cases
+		 		-->
+
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'shape' attribute defines the shape of the selectable area" name="shape">
+			<literal-list>
+				<literal value="default" />
+				<literal value="rect" />
+				<literal value="circle" />
+				<literal value="poly" />
+			</literal-list>
+		</attribute>
+
+		<!-- Table attributes -->
+
+		<attribute name="border">
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</attribute>
+		<attribute name="cellpadding">
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</attribute>
+		<attribute name="cellspacing">
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</attribute>
+		<attribute name="colspan">
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</attribute>
+		<attribute name="rowspan">
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</attribute>
+		<attribute name="background">
+			<regexp-list>
+				<regexp name="onsiteURL" />
+			</regexp-list>
+		</attribute>
+		<attribute name="bgcolor">
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+			</regexp-list>
+		</attribute>
+		<attribute name="abbr">
+			<regexp-list>
+				<regexp name="paragraph" />
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'headers' attribute is a space-separated list of cell IDs" name="headers">
+			<regexp-list>
+				<regexp value="[a-zA-Z0-9\s*]*" />
+			</regexp-list>
+		</attribute>
+		<attribute name="charoff">
+			<regexp-list>
+				<regexp value="numberOrPercent" />
+			</regexp-list>
+		</attribute>
+		<attribute name="char">
+			<regexp-list>
+				<regexp value=".{0,1}" />
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'headers' attribute is a comma-separated list of related header cells" name="axis">
+			<regexp-list>
+				<regexp value="[a-zA-Z0-9\s*,]*" />
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'nowrap' attribute tells the browser not to wrap text that goes over one line" name="nowrap">
+			<regexp-list>
+				<regexp name="anything" />
+
+				<!-- <regexp value="(nowrap){0,1}"/> -->
+
+			</regexp-list>
+		</attribute>
+
+		<!-- Common positioning attributes -->
+
+		<attribute name="width">
+			<regexp-list>
+				<regexp name="numberOrPercent" />
+			</regexp-list>
+		</attribute>
+		<attribute name="height">
+			<regexp-list>
+				<regexp name="numberOrPercent" />
+			</regexp-list>
+		</attribute>
+		<attribute description="The 'align' attribute of an HTML element is a direction word, like 'left', 'right' or 'center'" name="align">
+			<literal-list>
+				<literal value="center" />
+				<literal value="middle" />
+				<literal value="left" />
+				<literal value="right" />
+				<literal value="justify" />
+				<literal value="char" />
+			</literal-list>
+		</attribute>
+		<attribute description="The 'valign' attribute of an HTML attribute is a direction word, like 'baseline','bottom','middle' or 'top'" name="valign">
+			<literal-list>
+				<literal value="baseline" />
+				<literal value="bottom" />
+				<literal value="middle" />
+				<literal value="top" />
+			</literal-list>
+		</attribute>
+
+		<!-- Intrinsic JavaScript Events -->
+
+		<attribute description="The 'onFocus' event is executed when the control associated with the tag gains focus" name="onFocus">
+			<literal-list>
+				<literal value="javascript:void(0)" />
+				<literal value="javascript:history.go(-1)" />
+			</literal-list>
+		</attribute>
+		<attribute description="The 'onBlur' event is executed when the control associated with the tag loses focus" name="onBlur">
+			<literal-list>
+				<literal value="javascript:void(0)" />
+				<literal value="javascript:history.go(-1)" />
+			</literal-list>
+		</attribute>
+		<attribute description="The 'onClick' event is executed when the control associated with the tag is clicked" name="onClick">
+			<literal-list>
+				<literal value="javascript:void(0)" />
+				<literal value="javascript:history.go(-1)" />
+			</literal-list>
+		</attribute>
+		<attribute description="The 'onDblClick' event is executed when the control associated with the tag is clicked twice immediately" name="onDblClick">
+			<literal-list>
+				<literal value="javascript:void(0)" />
+				<literal value="javascript:history.go(-1)" />
+			</literal-list>
+		</attribute>
+		<attribute description="The 'onMouseDown' event is executed when the control associated with the tag is clicked but not yet released" name="onMouseDown">
+			<literal-list>
+				<literal value="javascript:void(0)" />
+				<literal value="javascript:history.go(-1)" />
+			</literal-list>
+		</attribute>
+		<attribute description="The 'onMouseUp' event is executed when the control associated with the tag is clicked after the button is released" name="onMouseUp">
+			<literal-list>
+				<literal value="javascript:void(0)" />
+				<literal value="javascript:history.go(-1)" />
+			</literal-list>
+		</attribute>
+		<attribute description="The 'onMouseOver' event is executed when the user's mouse hovers over the control associated with the tag" name="onMouseOver">
+			<literal-list>
+				<literal value="javascript:void(0)" />
+				<literal value="javascript:history.go(-1)" />
+			</literal-list>
+		</attribute>
+		<attribute description="The 'scope' attribute defines what's covered by the header cells" name="scope">
+			<literal-list>
+				<literal value="row" />
+				<literal value="col" />
+				<literal value="rowgroup" />
+				<literal value="colgroup" />
+			</literal-list>
+		</attribute>
+
+		<!-- If you want users to be able to mess with tabindex, uncomment this -->
+
+		<!--
+		<attribute description="..." name="tabindex">
+		 	<regexp-list>
+		<regexp name="number" />
+		 	</regexp-list>
+		 </attribute>
+		  -->
+
+		<!-- Input/form related common attributes -->
+
+		<attribute name="disabled">
+			<regexp-list>
+				<regexp name="anything" />
+			</regexp-list>
+		</attribute>
+		<attribute name="readonly">
+			<regexp-list>
+				<regexp name="anything" />
+			</regexp-list>
+		</attribute>
+		<attribute name="accesskey">
+			<regexp-list>
+				<regexp name="anything" />
+			</regexp-list>
+		</attribute>
+		<attribute name="size">
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</attribute>
+		<attribute name="autocomplete">
+			<literal-list>
+				<literal value="on" />
+				<literal value="off" />
+			</literal-list>
+		</attribute>
+		<attribute name="rows">
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</attribute>
+		<attribute name="cols">
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</attribute>
+	</common-attributes>
+
+	<!--
+	This requires normal updates as browsers continue to diverge from the W3C and each other. As long as the browser wars continue
+	this is going to continue. I'm not sure war is the right word for what's going on. Doesn't somebody have to win a war after
+	a while? Even wars of attrition, surely?
+	 -->
+
+	<global-tag-attributes>
+
+		<!-- Not valid in base, head, html, meta, param, script, style, and title elements. -->
+
+		<attribute name="id" />
+		<attribute name="style" />
+		<attribute name="title" />
+		<attribute name="class" />
+
+		<!-- Not valid in base, br, frame, frameset, hr, iframe, param, and script elements. -->
+
+		<attribute name="lang" />
+	</global-tag-attributes>
+	<dynamic-tag-attributes>
+		<attribute name="data-" />
+	</dynamic-tag-attributes>
+	<tags-to-encode>
+		<tag>g</tag>
+		<tag>grin</tag>
+	</tags-to-encode>
+	<allowed-empty-tags>
+		<literal-list>
+			<literal value="br" />
+			<literal value="hr" />
+			<literal value="iframe" />
+			<literal value="a" />
+			<literal value="img" />
+			<literal value="param" />
+			<literal value="input" />
+			<literal value="textarea" />
+			<literal value="basefont" />
+			<literal value="col" />
+			<literal value="div" />
+			<literal value="source" />
+		</literal-list>
+	</allowed-empty-tags>
+	<tag-rules>
+		<tag action="validate" name="article" />
+		<tag action="validate" name="aside" />
+		<tag action="validate" name="bdi" />
+		<tag action="validate" name="details" />
+		<tag action="validate" name="dialog" />
+		<tag action="validate" name="figcaption" />
+		<tag action="validate" name="figure" />
+		<tag action="validate" name="footer" />
+		<tag action="validate" name="header" />
+		<tag action="validate" name="main" />
+		<tag action="validate" name="mark" />
+		<tag action="validate" name="meter" />
+		<tag action="validate" name="nav" />
+		<tag action="validate" name="picture">
+			<attribute name="data-fileentryid" onInvalid="removeAttribute">
+				<regexp-list>
+					<regexp name="positiveInteger" />
+				</regexp-list>
+			</attribute>
+		</tag>
+		<tag action="validate" name="progress" />
+		<tag action="validate" name="rp" />
+		<tag action="validate" name="rt" />
+		<tag action="validate" name="ruby" />
+		<tag action="validate" name="section" />
+		<tag action="validate" name="source">
+			<attribute name="srcset">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="media">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="type">
+				<regexp-list>
+					<regexp value="[a-zA-Z0-9\-]+/[a-zA-Z0-9\-]+" />
+				</regexp-list>
+			</attribute>
+		</tag>
+		<tag action="validate" name="summary" />
+		<tag action="validate" name="time" />
+		<tag action="validate" name="wbr" />
+
+		<!-- Tags related to JavaScript -->
+
+		<tag action="remove" name="script" />
+		<tag name="noscript" action="validate"/> <!-- although no javascript can fire inside a noscript tag, css is still a viable attack vector -->
+
+		<!-- Frame & related tags -->
+
+		<tag action="validate" name="iframe">
+			<attribute name="allow">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="allowfullscreen">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="allowTransparency">
+				<regexp-list>
+					<regexp name="boolean" />
+				</regexp-list>
+			</attribute>
+			<attribute name="frameborder">
+				<regexp-list>
+					<regexp name="integer" />
+				</regexp-list>
+			</attribute>
+			<attribute name="height" />
+			<attribute name="mozallowfullscreen">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="scrolling">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="src">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="style">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="webkitallowfullscreen">
+				<regexp-list>
+					<regexp name="boolean" />
+				</regexp-list>
+			</attribute>
+			<attribute name="width" />
+		</tag>
+		<tag action="remove" name="frameset" />
+		<tag action="remove" name="frame" />
+
+		<!-- Form related tags -->
+
+		<tag action="validate" name="label">
+			<attribute name="for">
+				<regexp-list>
+					<regexp name="htmlId" />
+				</regexp-list>
+			</attribute>
+		</tag>
+
+		<!-- All formatting tags -->
+
+		<tag action="validate" name="h1" />
+		<tag action="validate" name="h2" />
+		<tag action="validate" name="h3" />
+		<tag action="validate" name="h4" />
+		<tag action="validate" name="h5" />
+		<tag action="validate" name="h6" />
+		<tag action="validate" name="p">
+			<attribute name="align" />
+		</tag>
+		<tag action="validate" name="i" />
+		<tag action="validate" name="b" />
+		<tag action="validate" name="u" />
+		<tag action="validate" name="strong" />
+		<tag action="validate" name="em" />
+		<tag action="validate" name="small" />
+		<tag action="validate" name="big" />
+		<tag action="validate" name="pre" />
+		<tag action="validate" name="code" />
+		<tag action="validate" name="cite" />
+		<tag action="validate" name="samp" />
+		<tag action="validate" name="sub" />
+		<tag action="validate" name="sup" />
+		<tag action="validate" name="strike" />
+		<tag action="validate" name="center" />
+		<tag action="validate" name="blockquote" />
+		<tag action="validate" name="hr" />
+		<tag action="validate" name="br" />
+		<tag action="validate" name="col" />
+		<tag action="validate" name="font">
+			<attribute name="color">
+				<regexp-list>
+					<regexp name="colorName" />
+					<regexp name="colorCode" />
+				</regexp-list>
+			</attribute>
+			<attribute name="face">
+				<regexp-list>
+					<regexp value="[\w;, \-]+" />
+				</regexp-list>
+			</attribute>
+			<attribute name="size">
+				<regexp-list>
+					<regexp value="(\+|-){0,1}(\d)+" />
+				</regexp-list>
+			</attribute>
+		</tag>
+
+		<!-- Anchor and anchor related tags -->
+
+		<tag action="validate" name="a">
+			<attribute name="target">
+				<regexp-list>
+					<regexp name="htmlId" />
+				</regexp-list>
+			</attribute>
+
+			<!-- onInvalid="filterTag" has been removed as per suggestion at OWASP SJ 2007 - just "name" is valid -->
+
+			<attribute name="href" />
+			<attribute name="onFocus" />
+			<attribute name="onBlur" />
+			<attribute name="nohref">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="rel">
+				<literal-list>
+					<literal value="nofollow" />
+				</literal-list>
+			</attribute>
+			<attribute name="name" />
+		</tag>
+		<tag action="validate" name="map" />
+
+		<!-- base tag removed per demo - this could be enabled with literal-list values you allow -->
+
+		<!--
+		<tag action="validate" name="base">
+			<attribute name="href" />
+		</tag>
+		-->
+
+		<!-- Stylesheet Tags -->
+
+		<tag action="validate" name="style">
+			<attribute name="type">
+				<literal-list>
+					<literal value="text/css" />
+				</literal-list>
+			</attribute>
+			<attribute name="media" />
+		</tag>
+		<tag action="validate" name="span" />
+		<tag action="validate" name="div">
+			<attribute name="align" />
+		</tag>
+
+		<!-- <attribute name="id"/> what could an attacker do if they could overwrite an existing div definition? prolly something bad -->
+
+		<!-- <attribute name="class"/> what could an attacker do if they could specify any class in the namespace? prolly something bad -->
+
+		<!-- Image & image related tags -->
+
+		<tag action="validate" name="img">
+			<attribute name="data-fileentryid" onInvalid="removeAttribute">
+				<regexp-list>
+					<regexp name="positiveInteger" />
+				</regexp-list>
+			</attribute>
+			<attribute name="src" onInvalid="removeTag">
+				<regexp-list>
+					<regexp name="onsiteURL" />
+					<regexp name="offsiteURL" />
+				</regexp-list>
+			</attribute>
+			<attribute name="name" />
+			<attribute name="alt" />
+			<attribute name="height" />
+			<attribute name="width" />
+			<attribute name="border" />
+			<attribute name="align" />
+			<attribute name="hspace">
+				<regexp-list>
+					<regexp name="number" />
+				</regexp-list>
+			</attribute>
+			<attribute name="vspace">
+				<regexp-list>
+					<regexp name="number" />
+				</regexp-list>
+			</attribute>
+		</tag>
+
+		<!-- no way to do this safely without hooking up the same code to @import to embed the remote stylesheet (malicious user could change offsite resource to be malicious after validation -->
+
+		<!-- <attribute name="href" onInvalid="removeTag"/> -->
+
+		<tag action="validate" name="link">
+
+			<!-- <attribute name="href" onInvalid="removeTag"/> -->
+
+			<attribute name="media" />
+			<attribute name="type" onInvalid="removeTag">
+				<literal-list>
+					<literal value="text/css" />
+					<literal value="application/rss+xml" />
+					<literal value="image/x-icon" />
+				</literal-list>
+			</attribute>
+			<attribute name="rel">
+				<literal-list>
+					<literal value="stylesheet" />
+					<literal value="shortcut icon" />
+					<literal value="search" />
+					<literal value="copyright" />
+					<literal value="top" />
+					<literal value="alternate" />
+				</literal-list>
+			</attribute>
+		</tag>
+
+		<!-- List tags -->
+
+		<tag action="validate" name="ul" />
+		<tag action="validate" name="ol">
+			<attribute name="type">
+				<literal-list>
+					<literal value="1" />
+					<literal value="a" />
+					<literal value="A" />
+					<literal value="i" />
+					<literal value="I" />
+				</literal-list>
+			</attribute>
+		</tag>
+		<tag action="validate" name="li" />
+
+		<!-- Dictionary tags -->
+
+		<tag action="truncate" name="dd" />
+		<tag action="truncate" name="dl" />
+		<tag action="truncate" name="dt" />
+
+		<!-- Table tags (tbody, thead, tfoot)-->
+
+		<tag action="validate" name="thead">
+			<attribute name="align" />
+			<attribute name="char" />
+			<attribute name="charoff" />
+			<attribute name="valign" />
+		</tag>
+		<tag action="validate" name="tbody">
+			<attribute name="align" />
+			<attribute name="char" />
+			<attribute name="charoff" />
+			<attribute name="valign" />
+		</tag>
+		<tag action="validate" name="tfoot">
+			<attribute name="align" />
+			<attribute name="char" />
+			<attribute name="charoff" />
+			<attribute name="valign" />
+		</tag>
+		<tag action="validate" name="table">
+			<attribute name="height" />
+			<attribute name="width" />
+			<attribute name="border" />
+			<attribute name="bgcolor" />
+			<attribute name="cellpadding" />
+			<attribute name="cellspacing" />
+			<attribute name="background" />
+			<attribute name="align" />
+			<attribute name="noresize">
+				<literal-list>
+					<literal value="noresize" />
+					<literal value="" />
+				</literal-list>
+			</attribute>
+		</tag>
+		<tag action="validate" name="td">
+			<attribute name="background" />
+			<attribute name="bgcolor" />
+			<attribute name="abbr" />
+			<attribute name="axis" />
+			<attribute name="headers" />
+			<attribute name="scope" />
+			<attribute name="nowrap" />
+			<attribute name="height" />
+			<attribute name="width" />
+			<attribute name="align" />
+			<attribute name="char" />
+			<attribute name="charoff" />
+			<attribute name="valign" />
+			<attribute name="colspan" />
+			<attribute name="rowspan" />
+		</tag>
+		<tag action="validate" name="th">
+			<attribute name="abbr" />
+			<attribute name="axis" />
+			<attribute name="headers" />
+			<attribute name="scope" />
+			<attribute name="nowrap" />
+			<attribute name="bgcolor" />
+			<attribute name="height" />
+			<attribute name="width" />
+			<attribute name="align" />
+			<attribute name="char" />
+			<attribute name="charoff" />
+			<attribute name="valign" />
+			<attribute name="colspan" />
+			<attribute name="rowspan" />
+		</tag>
+		<tag action="validate" name="tr">
+			<attribute name="height" />
+			<attribute name="width" />
+			<attribute name="align" />
+			<attribute name="valign" />
+			<attribute name="char" />
+			<attribute name="charoff" />
+			<attribute name="background" />
+		</tag>
+		<tag action="validate" name="colgroup">
+			<attribute name="span">
+				<regexp-list>
+					<regexp name="number" />
+				</regexp-list>
+			</attribute>
+			<attribute name="width" />
+			<attribute name="align" />
+			<attribute name="char" />
+			<attribute name="charoff" />
+			<attribute name="valign" />
+		</tag>
+		<tag action="validate" name="col">
+			<attribute name="align" />
+			<attribute name="char" />
+			<attribute name="charoff" />
+			<attribute name="valign" />
+			<attribute name="span">
+				<regexp-list>
+					<regexp name="number" />
+				</regexp-list>
+			</attribute>
+			<attribute name="width" />
+		</tag>
+		<tag action="validate" name="fieldset" />
+		<tag action="validate" name="legend" />
+	</tag-rules>
+
+	<!-- CSS validation processing rules -->
+
+	<css-rules>
+		<property description="This property is most likely to be implemented by mixing the same signal into different channels at differing volumes." name="azimuth">
+			<literal-list>
+				<literal value="left-side" />
+				<literal value="far-left" />
+				<literal value="left" />
+				<literal value="center-left" />
+				<literal value="center" />
+				<literal value="center-right" />
+				<literal value="right" />
+				<literal value="far-right" />
+				<literal value="right-side" />
+				<literal value="behind" />
+				<literal value="leftwards" />
+				<literal value="rightwards" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="angle" />
+			</regexp-list>
+		</property>
+		<property description="The 'background' property is a shorthand property for setting the individual background properties (i.e., 'background-color', 'background-image', 'background-repeat', 'background-attachment' and 'background-position') at the same place in the style sheet." name="background">
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="background-color" />
+				<shorthand name="background-image" />
+				<shorthand name="background-repeat" />
+				<shorthand name="background-attachment" />
+				<shorthand name="background-position" />
+			</shorthand-list>
+		</property>
+		<property description="If a background image is specified, this property specifies whether it is fixed with regard to the viewport ('fixed') or scrolls along with the document ('scroll')." name="background-attachment">
+			<literal-list>
+				<literal value="scroll" />
+				<literal value="fixed" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property description="This property sets the background color of an element, either a &lt;color&gt; value or the keyword 'transparent', to make the underlying colors shine through." name="background-color">
+			<literal-list>
+				<literal value="transparent" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+		</property>
+		<property description="This property sets the background image of an element." name="background-image">
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="cssOffsiteUri" />
+				<regexp name="cssOnsiteUri" />
+			</regexp-list>
+		</property>
+		<property description="If a background image has been specified, this property specifies its initial position." name="background-position">
+			<literal-list>
+				<literal value="top" />
+				<literal value="center" />
+				<literal value="bottom" />
+				<literal value="left" />
+				<literal value="center" />
+				<literal value="right" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="percentage" />
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property description="If a background image is specified, this property specifies whether the image is repeated (tiled), and how." name="background-repeat">
+			<literal-list>
+				<literal value="repeat" />
+				<literal value="repeat-x" />
+				<literal value="repeat-y" />
+				<literal value="no-repeat" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+
+		<!-- Begin simple properties -->
+
+		<property default="collapse" description="" name="border-collapse">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="collapse" />
+				<literal value="separate" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property description="" name="border-color">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="transparent" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+		</property>
+		<property description="" name="border-top-color">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+		</property>
+		<property description="" name="border-right-color">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+		</property>
+		<property description="" name="border-bottom-color">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+		</property>
+		<property description="" name="border-left-color">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="" name="bottom">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="top" description="" name="caption-side">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="top" />
+				<literal value="bottom" />
+				<literal value="left" />
+				<literal value="right" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="none" description="" name="clear">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="left" />
+				<literal value="right" />
+				<literal value="both" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property description="" name="color">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+		</property>
+		<property default="none" description="" name="cue-after">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="cssOffsiteUri" />
+				<regexp name="cssOnsiteUri" />
+			</regexp-list>
+		</property>
+		<property default="none" description="" name="cue-before">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="cssOffsiteUri" />
+				<regexp name="cssOnsiteUri" />
+			</regexp-list>
+		</property>
+		<property default="ltr" description="" name="direction">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="ltr" />
+				<literal value="rtl" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="inline" description="" name="display">
+			<category-list>
+				<category value="all" />
+			</category-list>
+			<literal-list>
+				<literal value="inline" />
+				<literal value="block" />
+				<literal value="list-item" />
+				<literal value="run-in" />
+				<literal value="compact" />
+				<literal value="marker" />
+				<literal value="table" />
+				<literal value="inline-table" />
+				<literal value="table-row-group" />
+				<literal value="table-header-group" />
+				<literal value="table-footer-group" />
+				<literal value="table-row" />
+				<literal value="table-column-group" />
+				<literal value="table-column" />
+				<literal value="table-cell" />
+				<literal value="table-caption" />
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="level" description="" name="elevation">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="below" />
+				<literal value="level" />
+				<literal value="above" />
+				<literal value="higher" />
+				<literal value="lower" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="angle" />
+			</regexp-list>
+		</property>
+		<property default="show" description="" name="empty-cells">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="show" />
+				<literal value="hide" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="none" description="" name="float">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="left" />
+				<literal value="right" />
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="medium" description="" name="font-size">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="absolute-size" />
+				<regexp name="relative-size" />
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="none" description="" name="font-size-adjust">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</property>
+		<property default="normal" description="" name="font-stretch">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="wider" />
+				<literal value="narrower" />
+				<literal value="ultra-condensed" />
+				<literal value="extra-condensed" />
+				<literal value="condensed" />
+				<literal value="semi-condensed" />
+				<literal value="semi-expanded" />
+				<literal value="expanded" />
+				<literal value="extra-expanded" />
+				<literal value="ultra-expanded" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="normal" description="" name="font-style">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="italic" />
+				<literal value="oblique" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="normal" description="" name="font-variant">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="small-caps" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="normal" description="" name="font-weight">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="bold" />
+				<literal value="bolder" />
+				<literal value="lighter" />
+				<literal value="100" />
+				<literal value="200" />
+				<literal value="300" />
+				<literal value="400" />
+				<literal value="500" />
+				<literal value="600" />
+				<literal value="700" />
+				<literal value="800" />
+				<literal value="900" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="auto" description="" name="height">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="" name="left">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="normal" description="" name="letter-spacing">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property default="normal" description="" name="line-height">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="number" />
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="none" description="" name="list-style-image">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="cssOffsiteUri" />
+				<regexp name="cssOnsiteUri" />
+			</regexp-list>
+		</property>
+		<property default="outside" description="" name="list-style-position">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inside" />
+				<literal value="outside" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="disc" description="" name="list-style-type">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="disc" />
+				<literal value="circle" />
+				<literal value="square" />
+				<literal value="decimal" />
+				<literal value="decimal-leading-zero" />
+				<literal value="lower-roman" />
+				<literal value="upper-roman" />
+				<literal value="lower-greek" />
+				<literal value="lower-alpha" />
+				<literal value="lower-latin" />
+				<literal value="upper-alpha" />
+				<literal value="upper-latin" />
+				<literal value="hebrew" />
+				<literal value="armenian" />
+				<literal value="georgian" />
+				<literal value="cjk-ideographic" />
+				<literal value="hiragana" />
+				<literal value="katakana" />
+				<literal value="hiragana-iroha" />
+				<literal value="katakana-iroha" />
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="auto" description="" name="marker-offset">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property default="none" description="" name="max-height">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="none" description="" name="max-width">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="0" description="" name="min-height">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property description="" name="min-width">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="2" description="" name="orphans">
+			<category-list>
+				<category value="visual" />
+				<category value="paged" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="integer" />
+			</regexp-list>
+		</property>
+		<property default="invert" description="" name="outline-color">
+			<category-list>
+				<category value="visual" />
+				<category value="interactive" />
+			</category-list>
+			<literal-list>
+				<literal value="invert" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+		</property>
+		<property default="visible" description="" name="overflow">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="visible" />
+				<literal value="hidden" />
+				<literal value="scroll" />
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="auto" description="" name="page-break-after">
+			<category-list>
+				<category value="visual" />
+				<category value="paged" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="always" />
+				<literal value="avoid" />
+				<literal value="left" />
+				<literal value="right" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="auto" description="" name="page-break-before">
+			<category-list>
+				<category value="visual" />
+				<category value="paged" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="always" />
+				<literal value="avoid" />
+				<literal value="left" />
+				<literal value="right" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="auto" description="" name="page-break-inside">
+			<category-list>
+				<category value="visual" />
+				<category value="paged" />
+			</category-list>
+			<literal-list>
+				<literal value="avoid" />
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property description="" name="pause-after">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="time" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property description="" name="pause-before">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="time" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="medium" description="" name="pitch">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="x-low" />
+				<literal value="low" />
+				<literal value="medium" />
+				<literal value="high" />
+				<literal value="x-high" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="frequency" />
+			</regexp-list>
+		</property>
+		<property default="50" description="" name="pitch-range">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</property>
+		<property default="static" description="" name="position">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="static" />
+
+				<!-- possible to perform phishing attacks with the following -->
+
+				<!--
+				<literal value="relative" />
+				<literal value="absolute" />
+				<literal value="fixed" />
+				 -->
+
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="50" description="" name="richness">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="" name="right">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="" name="size">
+			<category-list>
+				<category value="visual" />
+				<category value="paged" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="portrait" />
+				<literal value="landscape" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property default="normal" description="" name="speak">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="none" />
+				<literal value="spell-out" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="once" description="" name="speak-header">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="once" />
+				<literal value="always" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="continuous" description="" name="speak-numeral">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="digits" />
+				<literal value="continuous" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="none" description="" name="speak-punctuation">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="code" />
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="medium" description="" name="speech-rate">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="x-slow" />
+				<literal value="slow" />
+				<literal value="medium" />
+				<literal value="fast" />
+				<literal value="x-fast" />
+				<literal value="faster" />
+				<literal value="slower" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</property>
+		<property default="50" description="" name="stress">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="number" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="" name="table-layout">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="fixed" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="0" description="" name="text-indent">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="none" description="" name="text-transform">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="capitalize" />
+				<literal value="uppercase" />
+				<literal value="lowercase" />
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="auto" description="" name="top">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="normal" description="" name="unicode-bidi">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="embed" />
+				<literal value="bidi-override" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="baseline" description="" name="vertical-align">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="baseline" />
+				<literal value="sub" />
+				<literal value="super" />
+				<literal value="top" />
+				<literal value="text-top" />
+				<literal value="middle" />
+				<literal value="bottom" />
+				<literal value="text-bottom" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="percentage" />
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property default="inherit" description="" name="visibility">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="visible" />
+				<literal value="hidden" />
+				<literal value="collapse" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="medium" description="" name="volume">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="silent" />
+				<literal value="x-soft" />
+				<literal value="soft" />
+				<literal value="medium" />
+				<literal value="loud" />
+				<literal value="x-loud" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="number" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="normal" description="" name="white-space">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="pre" />
+				<literal value="nowrap" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="2" description="" name="widows">
+			<category-list>
+				<category value="visual" />
+				<category value="paged" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="integer" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="" name="width">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="normal" description="" name="word-spacing">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="normal" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+
+		<!-- end simple properties -->
+
+		<!-- begin medium properties -->
+
+		<property description="" name="border-style">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+				<literal value="none" />
+				<literal value="hidden" />
+				<literal value="dotted" />
+				<literal value="dashed" />
+				<literal value="solid" />
+				<literal value="double" />
+				<literal value="groove" />
+				<literal value="ridge" />
+				<literal value="inset" />
+				<literal value="outset" />
+			</literal-list>
+		</property>
+		<property default="none" description="" name="border-top-style">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property default="none" description="" name="border-right-style">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property default="none" description="" name="border-bottom-style">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property default="none" description="" name="border-left-style">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property default="medium" description="" name="border-top-width">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-width" />
+			</shorthand-list>
+		</property>
+		<property default="medium" description="" name="border-right-width">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-width" />
+			</shorthand-list>
+		</property>
+		<property default="medium" description="" name="border-bottom-width">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-width" />
+			</shorthand-list>
+		</property>
+		<property default="medium" description="" name="border-left-width">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-width" />
+			</shorthand-list>
+		</property>
+		<property description="" name="border-width">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+				<literal value="thin" />
+				<literal value="medium" />
+				<literal value="thick" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property description="" name="margin">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+				<literal value="auto" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="positiveLength" />
+				<regexp name="positivePercentage" />
+			</regexp-list>
+		</property>
+		<property default="0" description="" name="margin-top">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="margin" />
+			</shorthand-list>
+		</property>
+		<property default="0" description="" name="margin-right">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="margin" />
+			</shorthand-list>
+		</property>
+		<property default="0" description="" name="margin-bottom">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="margin" />
+			</shorthand-list>
+		</property>
+		<property default="0" description="" name="margin-left">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="margin" />
+			</shorthand-list>
+		</property>
+		<property default="none" description="" name="outline-style">
+			<category-list>
+				<category value="visual" />
+				<category value="interactive" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property default="medium" description="" name="outline-width">
+			<category-list>
+				<category value="visual" />
+				<category value="interactive" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="border-width" />
+			</shorthand-list>
+		</property>
+		<property description="" name="padding">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="0" description="" name="padding-top">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="padding" />
+			</shorthand-list>
+		</property>
+		<property default="0" description="" name="padding-right">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="padding" />
+			</shorthand-list>
+		</property>
+		<property default="0" description="" name="padding-bottom">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="padding" />
+			</shorthand-list>
+		</property>
+		<property default="0" description="" name="padding-left">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="padding" />
+			</shorthand-list>
+		</property>
+
+		<!-- end medium properties -->
+
+		<!-- begin hard properties -->
+
+		<property description="" name="border">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+			<shorthand-list>
+				<shorthand name="border-width" />
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property description="" name="border-top">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+			<shorthand-list>
+				<shorthand name="border-top-width" />
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property description="" name="border-right">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+			<shorthand-list>
+				<shorthand name="border-top-width" />
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property description="" name="border-bottom">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+			<shorthand-list>
+				<shorthand name="border-top-width" />
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property description="" name="border-left">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+			</regexp-list>
+			<shorthand-list>
+				<shorthand name="border-top-width" />
+				<shorthand name="border-style" />
+			</shorthand-list>
+		</property>
+		<property description="" name="cue">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="cue-before" />
+				<shorthand name="cue-after" />
+			</shorthand-list>
+		</property>
+		<property description="" name="list-style">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="list-style-type" />
+				<shorthand name="list-style-position" />
+				<shorthand name="list-style-image" />
+			</shorthand-list>
+		</property>
+		<property default="none" description="" name="marks">
+			<category-list>
+				<category value="visual" />
+				<category value="paged" />
+			</category-list>
+			<literal-list>
+				<literal value="crop" />
+				<literal value="cross" />
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property description="" name="outline">
+			<category-list>
+				<category value="visual" />
+				<category value="interactive" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="outline-color" />
+				<shorthand name="outline-style" />
+				<shorthand name="outline-width" />
+			</shorthand-list>
+		</property>
+		<property description="" name="pause">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="time" />
+				<regexp name="percentage" />
+			</regexp-list>
+		</property>
+		<property default="none" description="" name="text-decoration">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="underline" />
+				<literal value="overline" />
+				<literal value="line-through" />
+				<literal value="blink" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+
+		<!-- end hard properties -->
+
+		<!-- begin manual properties -->
+
+		<property default="0" description="The lengths specify the distance that separates adjacent cell borders. If one length is specified, it gives both the horizontal and vertical spacing. If two are specified, the first gives the horizontal spacing and the second the vertical spacing. Lengths may not be negative." name="border-spacing">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="The 'clip' property applies to elements that have a 'overflow' property with a value other than 'visible'." name="clip">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property default="none" description="The 'counter-increment' property accepts one or more names of counters (identifiers), each one optionally followed by an integer." name="counter-increment">
+			<category-list>
+				<category value="all" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="cssIdentifier" />
+				<regexp name="integer" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="The 'clip' property applies to elements that have a 'overflow' property with a value other than 'visible'." name="clip">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="This property specifies the type of cursor to be displayed for the pointing device." name="cursor">
+			<category-list>
+				<category value="visual" />
+				<category value="interactive" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+				<literal value="inherit" />
+				<literal value="crosshair" />
+				<literal value="default" />
+				<literal value="pointer" />
+				<literal value="move" />
+				<literal value="e-resize" />
+				<literal value="ne-resize" />
+				<literal value="nw-resize" />
+				<literal value="n-resize" />
+				<literal value="se-resize" />
+				<literal value="sw-resize" />
+				<literal value="s-resize" />
+				<literal value="w-resize| text" />
+				<literal value="wait" />
+				<literal value="help" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="cssOffsiteUri" />
+				<regexp name="cssOnsiteUri" />
+			</regexp-list>
+		</property>
+		<property default="none" description="This property accepts a comma-separated list of shadow effects to be applied to the text of the element." name="text-shadow">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="none" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="colorName" />
+				<regexp name="colorCode" />
+				<regexp name="rgbCode" />
+				<regexp name="systemColor" />
+				<regexp name="length" />
+			</regexp-list>
+		</property>
+		<property description="The 'font' property is, except as described below, a shorthand property for setting 'font-style', 'font-variant', 'font-weight', 'font-size', 'line-height', and 'font-family', at the same place in the style sheet." name="font">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+			<literal-list>
+				<literal value="/" />
+				<literal value="caption" />
+				<literal value="icon" />
+				<literal value="menu" />
+				<literal value="message-box" />
+				<literal value="small-caption" />
+				<literal value="status-bar" />
+				<literal value="inherit" />
+			</literal-list>
+			<shorthand-list>
+				<shorthand name="font-style" />
+				<shorthand name="font-variant" />
+				<shorthand name="font-weight" />
+				<shorthand name="font-size" />
+				<shorthand name="line-height" />
+				<shorthand name="font-family" />
+			</shorthand-list>
+		</property>
+		<property description="This property specifies a prioritized list of font family names and/or generic family names." name="font-family">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+
+			<!-- allowing only generic font families -->
+
+			<literal-list>
+				<literal value="serif" />
+				<literal value="arial" />
+				<literal value="lucida console" />
+				<literal value="sans-serif" />
+				<literal value="cursive" />
+				<literal value="verdana" />
+				<literal value="fantasy" />
+				<literal value="monospace" />
+			</literal-list>
+			<regexp-list>
+				<regexp value="[\w,\-&apos;&quot; ]+" />
+			</regexp-list>
+		</property>
+		<property description="The 'page' property can be used to specify a particular type of page where an element should be displayed." name="page">
+			<category-list>
+				<category value="visual" />
+				<category value="paged" />
+			</category-list>
+			<literal-list>
+				<literal value="auto" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="cssIdentifier" />
+			</regexp-list>
+		</property>
+		<property default="auto" description="Similar to the 'cue-before' and 'cue-after' properties, this property specifies a sound to be played as a background while an element's content is spoken." name="play-during">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+			<literal-list>
+				<literal value="mix" />
+				<literal value="repeat" />
+				<literal value="none" />
+				<literal value="auto" />
+				<literal value="inherit" />
+			</literal-list>
+			<regexp-list>
+				<regexp name="cssOffsiteUri" />
+				<regexp name="cssOnsiteUri" />
+			</regexp-list>
+		</property>
+		<property description="This property describes how inline content of a block is aligned." name="text-align">
+			<category-list>
+				<category value="visual" />
+			</category-list>
+
+			<!-- For safety, ignoring string alignment which can be used to line table cells on characters -->
+
+			<literal-list>
+				<literal value="left" />
+				<literal value="right" />
+				<literal value="center" />
+				<literal value="justify" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+		<property description="The value is a comma-separated, prioritized list of voice family names (compare with 'font-family')." name="voice-family">
+			<category-list>
+				<category value="aural" />
+			</category-list>
+
+			<!-- Allowing only generic voice family -->
+
+			<literal-list>
+				<literal value="male" />
+				<literal value="female" />
+				<literal value="child" />
+				<literal value="inherit" />
+			</literal-list>
+		</property>
+
+		<!-- end manual properties -->
+
+	</css-rules>
+</anti-samy-rules>
