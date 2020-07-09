@@ -19,6 +19,9 @@ import com.liferay.portal.kernel.settings.definition.ConfigurationBeanDeclaratio
 
 import org.osgi.service.component.annotations.Component;
 
+/**
+ * @author Marta Medio
+ */
 @Component(
 	property = "mfa.visibility.configuration.pid=com.liferay.multi.factor.authentication.poc.internal.configuration.MFAPocConfiguration",
 	service = ConfigurationBeanDeclaration.class
