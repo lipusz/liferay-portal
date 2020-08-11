@@ -2,3 +2,9 @@
 @import 'search_bar';
 @import 'search_facet';
 @import 'suggestions';
+
+.lfr-search-button-wrapper {
+    position: absolute;
+    line-height: 2.5rem;
+    margin-left: -2rem;
+}
