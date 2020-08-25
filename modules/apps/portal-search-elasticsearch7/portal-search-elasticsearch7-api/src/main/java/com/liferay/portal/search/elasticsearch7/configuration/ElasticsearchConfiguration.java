@@ -141,7 +141,7 @@ public interface ElasticsearchConfiguration {
 	public String overrideTypeMappings();
 
 	@Meta.AD(
-		deflt = "true", description = "log-exceptions-only-help",
+		deflt = "false", description = "log-exceptions-only-help",
 		name = "log-exceptions-only", required = false
 	)
 	public boolean logExceptionsOnly();
