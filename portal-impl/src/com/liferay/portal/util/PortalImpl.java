@@ -334,7 +334,7 @@ public class PortalImpl implements Portal {
 			}
 		}
 
-		_computerName = computerName;
+		_computerName = computerName;      		
 
 		try {
 			List<NetworkInterface> networkInterfaces = Collections.list(
