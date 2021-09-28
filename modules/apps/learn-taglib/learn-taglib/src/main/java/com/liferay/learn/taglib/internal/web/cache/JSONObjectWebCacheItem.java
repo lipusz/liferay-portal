@@ -46,7 +46,7 @@ public class JSONObjectWebCacheItem implements WebCacheItem {
 	public JSONObject convert(String key) {
 		try {
 			if (!PropsValues.LEARN_RESOURCES_ENABLED) {
-				return JSONFactoryUtil.createJSONObject();
+				return JSONFactoryUtil.createJSONObject(HttpUtil.URLtoString("http://localhost:8080/static/" + _resource + ".json"));
 			}
 
 			StringBundler sb = new StringBundler(5);

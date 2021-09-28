@@ -16,6 +16,7 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<%@ taglib uri="http://liferay.com/tld/learn" prefix="liferay-learn" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.portal.kernel.security.auth.PrincipalException" %><%@
@@ -46,4 +47,11 @@ Exception e = errorDisplayContext.getException();
 	<c:if test="<%= e instanceof PrincipalException.MustHavePermission %>">
 		<liferay-ui:message key="you-do-not-have-the-required-permissions" />
 	</c:if>
+</div>
+
+<div>
+	<liferay-learn:message
+		key="configure"
+		resource="portal-search-elasticsearch-monitoring-web"
+	/>
 </div>
