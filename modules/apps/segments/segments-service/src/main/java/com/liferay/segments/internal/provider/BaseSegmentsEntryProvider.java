@@ -312,6 +312,13 @@ public abstract class BaseSegmentsEntryProvider
 
 				return false;
 			}
+
+			if (!segmentsEntryRelLocalService.hasSegmentsEntryRel(
+					segmentsEntry.getSegmentsEntryId(),
+					portal.getClassNameId(className), classPK)) {
+
+				return false;
+			}
 		}
 
 		return true;
