@@ -14,19 +14,30 @@
 
 package com.liferay.object.web.internal.asset.model;
 
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.web.internal.constants.ObjectWebKeys;
 import com.liferay.object.web.internal.object.entries.display.context.ObjectEntryDisplayContextFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 
 import javax.servlet.ServletContext;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 /**
  * @author Feliphe Marinho
  */
+@Component(
+	immediate = true,
+	property = "javax.portlet.name=" + ObjectWebKeys.OBJECT_ENTRY,
+	service = AssetRendererFactory.class
+)
 public class ObjectEntryAssetRendererFactory
 	extends BaseAssetRendererFactory<ObjectEntry> {
 
@@ -53,6 +64,8 @@ public class ObjectEntryAssetRendererFactory
 				_objectDefinition, _objectEntryService.getObjectEntry(classPK),
 				_objectEntryDisplayContextFactory, _objectEntryService);
 
+		objectEntryAssetRenderer.setAssetDisplayPageFriendlyURLProvider(
+			_assetDisplayPageFriendlyURLProvider);
 		objectEntryAssetRenderer.setServletContext(_servletContext);
 
 		return objectEntryAssetRenderer;
@@ -62,6 +75,10 @@ public class ObjectEntryAssetRendererFactory
 	public String getType() {
 		return _objectDefinition.getClassName();
 	}
+
+	@Reference
+	private AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
 
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectEntryDisplayContextFactory

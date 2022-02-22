@@ -14,6 +14,7 @@
 
 package com.liferay.object.web.internal.asset.model;
 
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.model.BaseJSPAssetRenderer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -24,8 +25,12 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Locale;
@@ -109,6 +114,31 @@ public class ObjectEntryAssetRenderer
 	}
 
 	@Override
+	public String getURLViewInContext(
+			LiferayPortletRequest liferayPortletRequest,
+			LiferayPortletResponse liferayPortletResponse,
+			String noSuchEntryRedirect)
+		throws Exception {
+
+		if (_assetDisplayPageFriendlyURLProvider != null) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)liferayPortletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			String friendlyURL =
+				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					_objectEntry.getModelClassName(),
+					_objectEntry.getObjectEntryId(), themeDisplay);
+
+			if (Validator.isNotNull(friendlyURL)) {
+				return friendlyURL;
+			}
+		}
+
+		return null;
+	}
+
+	@Override
 	public long getUserId() {
 		return _objectEntry.getUserId();
 	}
@@ -157,9 +187,19 @@ public class ObjectEntryAssetRenderer
 		return super.include(httpServletRequest, httpServletResponse, template);
 	}
 
+	public void setAssetDisplayPageFriendlyURLProvider(
+		AssetDisplayPageFriendlyURLProvider
+			assetDisplayPageFriendlyURLProvider) {
+
+		_assetDisplayPageFriendlyURLProvider =
+			assetDisplayPageFriendlyURLProvider;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryAssetRenderer.class);
 
+	private AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectEntry _objectEntry;
 	private final ObjectEntryDisplayContextFactory
