@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchPaginationUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.log.SanitizerLogWrapper;
 import com.liferay.portal.kernel.search.BaseIndexSearcher;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Hits;
@@ -127,12 +128,15 @@ public class ElasticsearchIndexSearcher extends BaseIndexSearcher {
 					_searchEngineAdapter.execute(searchSearchRequest);
 
 				if (_log.isInfoEnabled()) {
-					_log.info(
+					Log log = SanitizerLogWrapper.allowCRLF(_log);
+
+					log.info(
 						StringBundler.concat(
-							"The search engine processed ",
+							"The search engine processed",
+							System.lineSeparator(),
 							searchSearchResponse.getSearchRequestString(),
-							" in ", searchSearchResponse.getExecutionTime(),
-							" ms"));
+							System.lineSeparator(), "in ",
+							searchSearchResponse.getExecutionTime(), " ms"));
 				}
 
 				_populateResponse(searchSearchResponse, searchResponseBuilder);
@@ -200,10 +204,13 @@ public class ElasticsearchIndexSearcher extends BaseIndexSearcher {
 				_searchEngineAdapter.execute(countSearchRequest);
 
 			if (_log.isInfoEnabled()) {
-				_log.info(
+				Log log = SanitizerLogWrapper.allowCRLF(_log);
+
+				log.info(
 					StringBundler.concat(
-						"The search engine processed ",
-						countSearchResponse.getSearchRequestString(), " in ",
+						"The search engine processed", System.lineSeparator(),
+						countSearchResponse.getSearchRequestString(),
+						System.lineSeparator(), "in ",
 						countSearchResponse.getExecutionTime(), " ms"));
 			}
 
