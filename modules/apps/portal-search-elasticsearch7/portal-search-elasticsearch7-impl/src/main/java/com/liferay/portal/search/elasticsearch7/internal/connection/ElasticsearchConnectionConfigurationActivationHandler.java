@@ -45,6 +45,8 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 
 		elasticsearchConnectionBuilder.active(
 			elasticsearchConnectionConfiguration.active()
+		).apiCompatibilityMode(
+			elasticsearchConnectionConfiguration.apiCompatibilityModeEnabled()
 		).authenticationEnabled(
 			elasticsearchConnectionConfiguration.authenticationEnabled()
 		).connectionId(

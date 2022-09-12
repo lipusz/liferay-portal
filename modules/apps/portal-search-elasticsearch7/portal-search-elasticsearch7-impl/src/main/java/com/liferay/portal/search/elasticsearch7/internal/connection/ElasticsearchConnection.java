@@ -88,6 +88,9 @@ public class ElasticsearchConnection {
 		_active = active;
 	}
 
+	public void setApiCompatibilityMode(boolean apiCompatibilityMode) {
+		_apiCompatibilityMode = apiCompatibilityMode;
+	}
 	public void setAuthenticationEnabled(boolean authenticationEnabled) {
 		_authenticationEnabled = authenticationEnabled;
 	}
@@ -142,6 +145,8 @@ public class ElasticsearchConnection {
 
 	private RestHighLevelClient _createRestHighLevelClient() {
 		return RestHighLevelClientFactory.builder(
+		).apiCompatibilityModeEnabled(
+			_apiCompatibilityMode
 		).authenticationEnabled(
 			_authenticationEnabled
 		).httpSSLEnabled(
@@ -168,6 +173,7 @@ public class ElasticsearchConnection {
 		ElasticsearchConnection.class);
 
 	private boolean _active;
+	private boolean _apiCompatibilityMode;
 	private boolean _authenticationEnabled;
 	private String _connectionId;
 	private boolean _httpSSLEnabled;

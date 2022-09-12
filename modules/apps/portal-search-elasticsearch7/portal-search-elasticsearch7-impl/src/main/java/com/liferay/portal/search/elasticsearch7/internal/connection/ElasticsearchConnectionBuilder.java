@@ -27,6 +27,12 @@ public class ElasticsearchConnectionBuilder {
 		return this;
 	}
 
+	public ElasticsearchConnectionBuilder apiCompatibilityMode(boolean apiCompatibilityMode) {
+		_apiCompatibilityMode = apiCompatibilityMode;
+
+		return this;
+	}
+
 	public ElasticsearchConnectionBuilder authenticationEnabled(
 		boolean authenticationEnabled) {
 
@@ -40,6 +46,7 @@ public class ElasticsearchConnectionBuilder {
 			new ElasticsearchConnection();
 
 		elasticsearchConnection.setActive(_active);
+		elasticsearchConnection.setApiCompatibilityMode(_apiCompatibilityMode);
 		elasticsearchConnection.setAuthenticationEnabled(
 			_authenticationEnabled);
 		elasticsearchConnection.setConnectionId(_connectionId);
@@ -142,6 +149,7 @@ public class ElasticsearchConnectionBuilder {
 	}
 
 	private boolean _active;
+	private boolean _apiCompatibilityMode;
 	private boolean _authenticationEnabled;
 	private String _connectionId;
 	private boolean _httpSSLEnabled;
