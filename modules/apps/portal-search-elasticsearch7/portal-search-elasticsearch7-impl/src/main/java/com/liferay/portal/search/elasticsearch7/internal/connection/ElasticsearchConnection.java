@@ -91,6 +91,7 @@ public class ElasticsearchConnection {
 	public void setApiCompatibilityMode(boolean apiCompatibilityMode) {
 		_apiCompatibilityMode = apiCompatibilityMode;
 	}
+
 	public void setAuthenticationEnabled(boolean authenticationEnabled) {
 		_authenticationEnabled = authenticationEnabled;
 	}

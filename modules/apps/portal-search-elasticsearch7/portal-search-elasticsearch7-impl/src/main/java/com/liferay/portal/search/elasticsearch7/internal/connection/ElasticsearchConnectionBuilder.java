@@ -27,7 +27,9 @@ public class ElasticsearchConnectionBuilder {
 		return this;
 	}
 
-	public ElasticsearchConnectionBuilder apiCompatibilityMode(boolean apiCompatibilityMode) {
+	public ElasticsearchConnectionBuilder apiCompatibilityMode(
+		boolean apiCompatibilityMode) {
+
 		_apiCompatibilityMode = apiCompatibilityMode;
 
 		return this;
