@@ -78,7 +78,7 @@ public class RestHighLevelClientFactory {
 			() -> new RestHighLevelClientBuilder(
 				restClientBuilder.build()
 			).setApiCompatibilityMode(
-				_apiCompatibilityModeEnabled
+				true
 			).build(),
 			getClass());
 	}
