@@ -85,7 +85,9 @@ public class RestHighLevelClientFactory {
 
 	public static class Builder {
 
-		public Builder apiCompatibilityModeEnabled(boolean apiCompatibilityModeEnabled) {
+		public Builder apiCompatibilityModeEnabled(
+			boolean apiCompatibilityModeEnabled) {
+
 			_restHighLevelClientFactory._apiCompatibilityModeEnabled =
 				apiCompatibilityModeEnabled;
 
@@ -164,7 +166,8 @@ public class RestHighLevelClientFactory {
 	private RestHighLevelClientFactory(
 		RestHighLevelClientFactory restHighLevelClientFactory) {
 
-		_apiCompatibilityModeEnabled = restHighLevelClientFactory._apiCompatibilityModeEnabled;
+		_apiCompatibilityModeEnabled =
+			restHighLevelClientFactory._apiCompatibilityModeEnabled;
 		_authenticationEnabled =
 			restHighLevelClientFactory._authenticationEnabled;
 		_httpSSLEnabled = restHighLevelClientFactory._httpSSLEnabled;
