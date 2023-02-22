@@ -1,0 +1,9 @@
+apiDir: "../portal-search-learn-rest-api/src/main/java"
+apiPackagePath: "com.liferay.portal.search.learn.rest"
+application:
+    baseURI: "/portal-search-learn-rest"
+    className: "PortalSearchLearnRESTApplication"
+    name: "Liferay.Portal.Search.Learn.REST"
+author: "Tibor Lipusz"
+clientDir: "../portal-search-learn-rest-client/src/main/java"
+forcePredictableOperationId: true

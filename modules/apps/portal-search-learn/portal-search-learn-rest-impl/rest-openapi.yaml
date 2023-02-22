@@ -1,0 +1,97 @@
+components:
+    schemas:
+        DocumentField:
+            properties:
+                values:
+                    items:
+                        type: object
+                    type: array
+        SearchRequest:
+            properties:
+                queryString:
+                    type: string
+            type: object
+        SearchResponse:
+            properties:
+                errors:
+                    items:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    type: array
+                page:
+                    type: integer
+                pageSize:
+                    type: integer
+                request:
+                    type: object
+                requestString:
+                    type: string
+                response:
+                    type: object
+                responseString:
+                    type: string
+                searchHits:
+                    properties:
+                        hits:
+                            items:
+                                properties:
+                                    explanation:
+                                        type: string
+                                    id:
+                                        type: string
+                                    score:
+                                        format: float
+                                        type: number
+                                    version:
+                                        format: int64
+                                        type: integer
+                                type: object
+                            type: array
+                        maxScore:
+                            format: float
+                            type: number
+                        totalHits:
+                            format: int64
+                            type: integer
+                    type: object
+                searchRequest:
+                    $ref: "#/components/schemas/SearchRequest"
+            type: object
+info:
+    description:
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
+        'com.liferay.portal.search.learn.rest.client', and version '1.0.0'."
+    license:
+        name: "Apache 2.0"
+        url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+    title: ""
+    version: v1.0
+openapi: "3.0.1"
+paths:
+    "/search":
+        post:
+            operationId: postSearch
+            parameters:
+                - in: query
+                  name: query
+                  schema:
+                      type: string
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SearchResponse"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SearchResponse"
+            tags: ["SearchResponse"]

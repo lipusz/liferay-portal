@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Portal Search Learn REST API
+Bundle-SymbolicName: com.liferay.portal.search.learn.rest.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.portal.search.learn.rest.dto.v1_0,\
+	com.liferay.portal.search.learn.rest.resource.v1_0
