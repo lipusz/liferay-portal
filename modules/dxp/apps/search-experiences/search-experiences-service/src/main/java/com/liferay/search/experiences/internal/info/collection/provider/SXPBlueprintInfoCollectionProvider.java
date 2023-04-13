@@ -61,7 +61,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Tibor Lipusz
  */
 @Component(
-	enabled = false,
 	property = "item.class.name=com.liferay.asset.kernel.model.AssetEntry",
 	service = InfoCollectionProvider.class
 )
@@ -83,7 +82,7 @@ public class SXPBlueprintInfoCollectionProvider
 		String[] sxpBlueprintExternalReferenceCodes = configuration.get(
 			"sxpBlueprintExternalReferenceCode");
 
-		if ((sxpBlueprintExternalReferenceCodes == null) ||
+		if (ArrayUtil.isEmpty(sxpBlueprintExternalReferenceCodes) ||
 			Validator.isNull(sxpBlueprintExternalReferenceCodes[0])) {
 
 			return InfoPage.of(
@@ -94,6 +93,8 @@ public class SXPBlueprintInfoCollectionProvider
 			sxpBlueprintExternalReferenceCodes[0];
 
 		try {
+			Pagination pagination = collectionQuery.getPagination();
+
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
@@ -103,7 +104,7 @@ public class SXPBlueprintInfoCollectionProvider
 						sxpBlueprintExternalReferenceCode,
 						serviceContext.getCompanyId());
 
-			Pagination pagination = collectionQuery.getPagination();
+			// TODO Set default from and size values if pagination is null
 
 			SearchRequestBuilder searchRequestBuilder =
 				_searchRequestBuilderFactory.builder(
@@ -114,7 +115,7 @@ public class SXPBlueprintInfoCollectionProvider
 				).from(
 					pagination.getStart()
 				).size(
-					pagination.getEnd()
+					pagination.getEnd() - pagination.getStart()
 				).withSearchContext(
 					searchContext -> {
 						CategoriesInfoFilter categoriesInfoFilter =
@@ -133,6 +134,15 @@ public class SXPBlueprintInfoCollectionProvider
 							searchContext.setAssetCategoryIds(categoryIds);
 						}
 
+						KeywordsInfoFilter keywordsInfoFilter =
+							collectionQuery.getInfoFilter(
+								KeywordsInfoFilter.class);
+
+						if (keywordsInfoFilter != null) {
+							searchContext.setKeywords(
+								keywordsInfoFilter.getKeywords());
+						}
+
 						TagsInfoFilter tagsInfoFilter =
 							collectionQuery.getInfoFilter(TagsInfoFilter.class);
 
@@ -147,19 +157,9 @@ public class SXPBlueprintInfoCollectionProvider
 							searchContext.setAssetTagNames(tagNames);
 						}
 
-						KeywordsInfoFilter keywordsInfoFilter =
-							collectionQuery.getInfoFilter(
-								KeywordsInfoFilter.class);
-
-						if (keywordsInfoFilter != null) {
-							searchContext.setKeywords(
-								keywordsInfoFilter.getKeywords());
-						}
-
 						searchContext.setAttribute(
 							"search.experiences.blueprint.id",
 							sxpBlueprint.getSXPBlueprintId());
-						searchContext.setLocale(serviceContext.getLocale());
 
 						searchContext.setAttribute(
 							"search.experiences.ip.address",
@@ -172,6 +172,7 @@ public class SXPBlueprintInfoCollectionProvider
 							"search.experiences.scope.group.id",
 							themeDisplay.getScopeGroupId());
 
+						searchContext.setLocale(serviceContext.getLocale());
 						searchContext.setTimeZone(serviceContext.getTimeZone());
 						searchContext.setUserId(serviceContext.getUserId());
 					}
@@ -194,7 +195,7 @@ public class SXPBlueprintInfoCollectionProvider
 			Collections.emptyList(), collectionQuery.getPagination(), 0);
 	}
 
-	// TODO Implement SXPBlueprntsOptionsPortlet Selector screen
+	// TODO Implement SXPBlueprintsOptionsPortlet Selector screen
 
 	@Override
 	public InfoForm getConfigurationInfoForm() {
