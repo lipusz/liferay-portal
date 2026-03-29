@@ -5,6 +5,7 @@
 
 package com.liferay.search.experiences.internal.blueprint.parameter;
 
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
@@ -21,6 +22,7 @@ import com.liferay.portal.search.configuration.SemanticSearchConfigurationProvid
 import com.liferay.portal.search.ml.embedding.text.TextEmbeddingRetriever;
 import com.liferay.search.experiences.blueprint.parameter.contributor.SXPParameterContributor;
 import com.liferay.search.experiences.blueprint.parameter.contributor.SXPParameterContributorProvider;
+import com.liferay.search.experiences.internal.blueprint.parameter.contributor.AccountSXPParameterContributor;
 import com.liferay.search.experiences.internal.blueprint.parameter.contributor.ContextSXPParameterContributor;
 import com.liferay.search.experiences.internal.blueprint.parameter.contributor.IpstackSXPParameterContributor;
 import com.liferay.search.experiences.internal.blueprint.parameter.contributor.MLSXPParameterContributor;
@@ -60,7 +62,10 @@ public class SXPParameterContributorProviderImpl
 				_expandoColumnLocalService, _expandoValueLocalService,
 				_groupLocalService, _language, _portal, _segmentsEntryRetriever,
 				_userGroupGroupRoleLocalService, _userGroupLocalService,
-				_userGroupRoleLocalService, _userLocalService)
+				_userGroupRoleLocalService, _userLocalService),
+			new AccountSXPParameterContributor(
+				_expandoColumnLocalService, _expandoValueLocalService,
+				_language, _segmentsEntryRetriever, _userLocalService, _accountEntryLocalService)
 		};
 	}
 
@@ -111,5 +116,8 @@ public class SXPParameterContributorProviderImpl
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
 
 }
